@@ -53,6 +53,36 @@
       "platformsLabel": "Mobile + Web + Telegram"
     }
   },
+  "solution": {
+    "eyebrow": "Our Solution",
+    "lead": "Legacy CRMs are outdated. We're building an ecosystem for businesses and players.",
+    "platform": "The RabbitMatch Platform",
+    "aiHighlight": "AI that helps you earn money",
+    "items": {
+      "01title": "The RabbitMatch app for players",
+      "01body": "iOS, Android, Web and Telegram Mini App. A live stream of players and bookings flows directly to your courts. Run tournaments and collect player analytics.",
+      "02title": "A single database of all players",
+      "02body": "Browsing history, preferences, contacts. Personalized offers for every client.",
+      "03title": "CRM dashboard with AI",
+      "03body": "Use artificial intelligence to analyze financial KPIs and recommendations, monitor court utilization, revenue and player communication — all in one place."
+    },
+    "mockupPhoneAlt": "RabbitMatch mobile app — courts feed",
+    "mockupCrmAlt": "RabbitMatch CRM dashboard",
+    "crm": {
+      "title": "RABBITMATCH",
+      "subtitle": "CLUBS CRM",
+      "nav": ["Bookings", "Courts", "Schedule", "Finance", "Clients", "Analytics", "Settings"],
+      "kpiRevenue": "Daily revenue",
+      "kpiBookings": "Total bookings",
+      "kpiOccupancy": "Occupancy",
+      "scheduleTitle": "Court Schedule",
+      "scheduleSubtitle": "Live view of facility operations",
+      "today": "Today",
+      "weekly": "Weekly",
+      "newBooking": "+ New Booking",
+      "search": "Search bookings, players, courts…"
+    }
+  },
   "sections": {
     "features": "Features",
     "sports": "Sports we cover",
