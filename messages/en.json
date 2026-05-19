@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "RabbitMatch — Match & tournament platform for racket sports",
+    "description": "Organize matches and tournaments for padel, tennis, table tennis, badminton and squash. CRM for sports clubs."
+  },
+  "nav": {
+    "features": "Features",
+    "crm": "For clubs",
+    "sports": "Sports",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "login": "Log in"
+  },
+  "hero": {
+    "eyebrow": "Racket sports, organized",
+    "title": "Matches, tournaments, clubs — one platform",
+    "subtitle": "RabbitMatch helps players find games and helps clubs run their operations.",
+    "ctaPrimary": "Open the app",
+    "ctaSecondary": "For clubs"
+  },
+  "sections": {
+    "features": "Features",
+    "sports": "Sports we cover",
+    "crm": "CRM for clubs",
+    "social": "Community",
+    "download": "Get the app",
+    "contact": "Get in touch"
+  },
+  "contact": {
+    "name": "Your name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send",
+    "success": "Thanks — we'll be in touch shortly.",
+    "error": "Something went wrong. Please try again."
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}
