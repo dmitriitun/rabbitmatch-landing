@@ -5,18 +5,53 @@
   },
   "nav": {
     "features": "Возможности",
-    "crm": "Для клубов",
-    "sports": "Виды спорта",
+    "clubs": "Для клубов",
     "pricing": "Тарифы",
-    "contact": "Связаться",
-    "login": "Войти"
+    "contact": "Контакты",
+    "login": "Войти",
+    "getStarted": "Начать",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "languageEn": "EN",
+    "languageRu": "RU",
+    "switchLanguage": "Сменить язык",
+    "logoAlt": "RabbitMatch"
+  },
+  "login": {
+    "title": "Вход для админов",
+    "subtitle": "Доступ к редактору контента",
+    "email": "Email",
+    "password": "Пароль",
+    "submit": "Войти",
+    "submitting": "Входим…",
+    "error": "Неверный email или пароль",
+    "close": "Закрыть",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••"
   },
   "hero": {
     "eyebrow": "Ракеточный спорт без хаоса",
-    "title": "Матчи, турниры, клубы — всё на одной платформе",
-    "subtitle": "RabbitMatch помогает игрокам находить игры, а клубам — управлять работой.",
+    "title": "Организуй. Играй. Развивай.",
+    "subtitle": "RabbitMatch — единая платформа для падела, тенниса, настольного тенниса, бадминтона и сквоша: матчи, турниры и CRM для клубов.",
     "ctaPrimary": "Открыть приложение",
-    "ctaSecondary": "Для клубов"
+    "ctaSecondary": "Для клубов",
+    "downloadOn": "Скачать в",
+    "getItOn": "Скачать в",
+    "openIn": "Открыть в",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "webApp": "Web-версия",
+    "telegram": "Telegram",
+    "stats": {
+      "sportsValue": "5+",
+      "sportsLabel": "Видов спорта",
+      "languagesValue": "13+",
+      "languagesLabel": "Языков",
+      "aiValue": "Лучшая",
+      "aiLabel": "AI аналитика",
+      "platformsValue": "3 в 1",
+      "platformsLabel": "Mobile + Web + Telegram"
+    }
   },
   "sections": {
     "features": "Возможности",

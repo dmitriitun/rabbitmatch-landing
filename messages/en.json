@@ -5,18 +5,53 @@
   },
   "nav": {
     "features": "Features",
-    "crm": "For clubs",
-    "sports": "Sports",
+    "clubs": "For Clubs",
     "pricing": "Pricing",
     "contact": "Contact",
-    "login": "Log in"
+    "login": "Log in",
+    "getStarted": "Get Started",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "languageEn": "EN",
+    "languageRu": "RU",
+    "switchLanguage": "Switch language",
+    "logoAlt": "RabbitMatch"
+  },
+  "login": {
+    "title": "Admin sign in",
+    "subtitle": "Access the content editor",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "error": "Invalid email or password",
+    "close": "Close",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "••••••••"
   },
   "hero": {
     "eyebrow": "Racket sports, organized",
-    "title": "Matches, tournaments, clubs — one platform",
-    "subtitle": "RabbitMatch helps players find games and helps clubs run their operations.",
+    "title": "Organize. Play. Grow.",
+    "subtitle": "RabbitMatch is the all-in-one platform for padel, tennis, table tennis, badminton and squash — matches, tournaments, and a CRM for clubs.",
     "ctaPrimary": "Open the app",
-    "ctaSecondary": "For clubs"
+    "ctaSecondary": "For clubs",
+    "downloadOn": "Download on",
+    "getItOn": "Get it on",
+    "openIn": "Open in",
+    "appStore": "App Store",
+    "googlePlay": "Google Play",
+    "webApp": "Web App",
+    "telegram": "Telegram",
+    "stats": {
+      "sportsValue": "5+",
+      "sportsLabel": "Sports",
+      "languagesValue": "13+",
+      "languagesLabel": "Languages",
+      "aiValue": "Best",
+      "aiLabel": "AI Analytics",
+      "platformsValue": "3 in 1",
+      "platformsLabel": "Mobile + Web + Telegram"
+    }
   },
   "sections": {
     "features": "Features",

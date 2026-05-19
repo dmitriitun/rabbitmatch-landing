@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
+import { Header } from '@/components/Header/Header';
 import './globals.css';
 
 const inter = Inter({
@@ -49,6 +50,7 @@ export default async function RootLayout({
     <html lang={locale} className={inter.variable}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <Header />
           {children}
         </NextIntlClientProvider>
       </body>
