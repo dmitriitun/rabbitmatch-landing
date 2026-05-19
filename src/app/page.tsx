@@ -1,22 +1,21 @@
 import { getTranslations } from 'next-intl/server';
 import { Hero } from '@/components/Hero/Hero';
+import { Players } from '@/components/Players/Players';
 import { Solution } from '@/components/Solution/Solution';
 import styles from './page.module.css';
 
-type SectionKey = 'sports' | 'crm' | 'pricing' | 'social' | 'download' | 'contact';
+type SectionKey = 'sports' | 'pricing' | 'social' | 'download' | 'contact';
 
 const PLACEHOLDER_SECTIONS: SectionKey[] = [
   'sports',
-  'crm',
   'pricing',
   'social',
   'download',
   'contact',
 ];
 
-const SECTION_LABEL_KEY: Record<SectionKey, 'sports' | 'crm' | 'social' | 'download' | 'contact' | 'pricing'> = {
+const SECTION_LABEL_KEY: Record<SectionKey, 'sports' | 'crm' | 'social' | 'download' | 'contact'> = {
   sports: 'sports',
-  crm: 'crm',
   pricing: 'crm',
   social: 'social',
   download: 'download',
@@ -31,6 +30,7 @@ export default async function Home() {
       <main>
         <Hero />
         <Solution />
+        <Players />
 
         {PLACEHOLDER_SECTIONS.map((key) => {
           const labelKey = SECTION_LABEL_KEY[key];

@@ -83,6 +83,46 @@
       "search": "Search bookings, players, courts…"
     }
   },
+  "players": {
+    "eyebrow": "For clubs",
+    "title": "The players find you themselves",
+    "tournamentsTitle": "Tournaments and games",
+    "tournamentsBody": "An interface for organizing and managing tournaments with 5+ formats and 20+ individual settings. A pro rating system that simplifies finding the right players for every game. A growing player base, ratings and profiles — your club inside a live venue.",
+    "tournamentsHighlight": "On average +30% in customers for bookings",
+    "bookingTitle": "Court booking",
+    "bookingBody": "Pick the date, time and court in two clicks — no phone calls or messengers. Direct integration with the CRM for club owners.",
+    "bookingHighlight": "On average +40% in bookings",
+    "controlTitle": "Full control",
+    "controlBody": "Manage prices, subscriptions, schedules, promotions and news for your customers — from one place.",
+    "controlHighlight": "Your schedule is always at hand",
+    "cta": "Connect your club for free",
+    "phoneAlt": {
+      "courts": "Courts feed in the RabbitMatch app",
+      "profile": "Player profile with rating",
+      "matchMap": "Pick a club on the map",
+      "matchForm": "Create a match form"
+    }
+  },
+  "contactModal": {
+    "title": "Connect your club",
+    "subtitle": "Tell us a bit about you and we'll get back within one business day.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "club": "Club name",
+    "clubPlaceholder": "RabbitMatch Padel Club",
+    "message": "Message",
+    "messagePlaceholder": "What would you like to discuss?",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "success": "Thank you! We'll be in touch within one business day.",
+    "error": "Something went wrong. Please try again.",
+    "close": "Close",
+    "directTitle": "Or reach us directly",
+    "directTelegram": "Telegram",
+    "directEmail": "Email"
+  },
   "sections": {
     "features": "Features",
     "sports": "Sports we cover",
