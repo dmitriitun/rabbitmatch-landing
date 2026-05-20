@@ -123,6 +123,21 @@
     "directTelegram": "Telegram",
     "directEmail": "Email"
   },
+  "launch": {
+    "eyebrow": "Onboarding",
+    "title": "Launch in 3 steps",
+    "intro1Highlight": "Full localization in your language,",
+    "intro1Body": "English and Russian. The interface, notifications and reports are clear to your customers and staff. Round-the-clock support in Russian and English from our team.",
+    "intro2Highlight": "A quick start in 48 hours.",
+    "intro2Body": "We set up RabbitMatch CRM for your club: courts, schedule, prices and promotions. A personal manager runs onboarding for your team.",
+    "step1Title": "Set up the system",
+    "step1Body": "Branding, courts, rates, schedule.",
+    "step2Title": "Import the customer base",
+    "step2Body": "Move contacts, booking history and subscriptions from Excel or any other system.",
+    "step3Title": "Train your team",
+    "step3Body": "Online training for administrators and coaches. 24/7 support in Russian and English.",
+    "runnerAlt": "Stylized lime line drawing of a runner climbing steps"
+  },
   "sections": {
     "features": "Features",
     "sports": "Sports we cover",
