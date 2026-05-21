@@ -1,0 +1,76 @@
+# Auto-translate EN → RU via Microsoft Azure Translator.
+#
+# Trigger: push to main when `messages/en.json` changes.
+# Output:  the workflow runs `npm run translate`, which updates
+#          `messages/ru.json` and `messages/.translation-cache.json`,
+#          then commits the result back to main.
+#
+# Required repository secrets:
+#   - AZURE_TRANSLATOR_KEY    Azure Translator subscription key
+#   - AZURE_TRANSLATOR_REGION Azure region (e.g. "westeurope")
+#
+# The commit step is no-op if the translator produced no changes
+# (e.g. only formatting tweaks landed in en.json), so the workflow
+# can never loop on itself: it only watches en.json, and only
+# touches ru.json / .translation-cache.json.
+
+name: Auto-translate i18n
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'messages/en.json'
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: translate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run translation script
+        env:
+          AZURE_TRANSLATOR_KEY: ${{ secrets.AZURE_TRANSLATOR_KEY }}
+          AZURE_TRANSLATOR_REGION: ${{ secrets.AZURE_TRANSLATOR_REGION }}
+        run: npm run translate
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Stage translation files
+        run: git add messages/ru.json messages/.translation-cache.json
+
+      - name: Commit and push if changes exist
+        run: |
+          if git diff --cached --quiet; then
+            echo "No new translations generated, skipping commit"
+          else
+            echo "New translations found, committing..."
+            git commit -m "chore(i18n): auto-translate EN → RU"
+            git push
+          fi
