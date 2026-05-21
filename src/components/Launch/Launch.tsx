@@ -19,7 +19,7 @@ export async function Launch() {
   const t = await getTranslations('launch');
 
   return (
-    <section id="pricing" className={styles.section} aria-label={t('title')}>
+    <section id="onboarding" className={styles.section} aria-label={t('title')}>
       <div className={styles.bgGlow} aria-hidden="true" />
 
       <div className={styles.container}>

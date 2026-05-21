@@ -3,6 +3,7 @@ import { Comparison } from '@/components/Comparison/Comparison';
 import { Hero } from '@/components/Hero/Hero';
 import { Launch } from '@/components/Launch/Launch';
 import { Players } from '@/components/Players/Players';
+import { Pricing } from '@/components/Pricing/Pricing';
 import { Solution } from '@/components/Solution/Solution';
 import styles from './page.module.css';
 
@@ -33,6 +34,7 @@ export default async function Home() {
         <Players />
         <Launch />
         <Comparison />
+        <Pricing />
 
         {PLACEHOLDER_SECTIONS.map((key) => {
           const labelKey = SECTION_LABEL_KEY[key];

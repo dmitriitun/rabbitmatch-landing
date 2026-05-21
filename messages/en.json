@@ -168,6 +168,60 @@
       "rabbitPrice": "FREE for the first 2 months, then from $39 / month"
     }
   },
+  "pricing": {
+    "title": "Subscriptions for clubs",
+    "badgePopular": "Most popular",
+    "badgeAi": "AI",
+    "monthly": "Monthly",
+    "annual": "Annual",
+    "perMonth": "/month",
+    "cta": "Choose this plan",
+    "classic": {
+      "name": "Classic",
+      "tagline": "Basic start:",
+      "feature1": "Storage of analytics for up to 1 month",
+      "feature2": "Online booking of courts",
+      "feature3": "Basic CRM system",
+      "feature4": "Mobile app",
+      "feature5": "Uploading financial reports",
+      "feature6": "Limited technical support",
+      "feature7": "",
+      "priceMonthlyOld": "$70",
+      "priceMonthlyNew": "$49",
+      "priceAnnualOld": "$60",
+      "priceAnnualNew": "$39"
+    },
+    "comfort": {
+      "name": "Comfort",
+      "tagline": "The perfect start for your club, Classic plus:",
+      "feature1": "Storage of analytics for up to 6 months",
+      "feature2": "Improved CRM system",
+      "feature3": "Club promotion",
+      "feature4": "Customer analytics",
+      "feature5": "Email notifications",
+      "feature6": "Mobile app",
+      "feature7": "Technical support during business hours",
+      "priceMonthlyOld": "$120",
+      "priceMonthlyNew": "$95",
+      "priceAnnualOld": "$100",
+      "priceAnnualNew": "$79"
+    },
+    "max": {
+      "name": "Max",
+      "tagline": "Maximum opportunities for growth, Comfort plus:",
+      "feature1": "Storage of analytics for up to 12 months",
+      "feature2": "AI analytics",
+      "feature3": "Customized CRM system",
+      "feature4": "Priority promotion of the club",
+      "feature5": "Advanced customer analytics reports",
+      "feature6": "Personal recommendations for attracting clients",
+      "feature7": "24/7 priority support",
+      "priceMonthlyOld": "$190",
+      "priceMonthlyNew": "$145",
+      "priceAnnualOld": "$160",
+      "priceAnnualNew": "$129"
+    }
+  },
   "sections": {
     "features": "Features",
     "sports": "Sports we cover",

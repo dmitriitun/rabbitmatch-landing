@@ -168,6 +168,60 @@
       "rabbitPrice": "Бесплатно первые 2 месяца, далее от 39$ / месяц"
     }
   },
+  "pricing": {
+    "title": "Подписки для клубов",
+    "badgePopular": "Популярный",
+    "badgeAi": "AI",
+    "monthly": "Месяц",
+    "annual": "Год",
+    "perMonth": "/мес",
+    "cta": "Выбрать тариф",
+    "classic": {
+      "name": "Classic",
+      "tagline": "Базовый старт:",
+      "feature1": "Хранение аналитики до 1 месяца",
+      "feature2": "Онлайн-бронирование кортов",
+      "feature3": "Базовая CRM",
+      "feature4": "Мобильное приложение",
+      "feature5": "Выгрузка финансовых отчётов",
+      "feature6": "Ограниченная техподдержка",
+      "feature7": "",
+      "priceMonthlyOld": "$70",
+      "priceMonthlyNew": "$49",
+      "priceAnnualOld": "$60",
+      "priceAnnualNew": "$39"
+    },
+    "comfort": {
+      "name": "Comfort",
+      "tagline": "Идеальный старт для клуба — всё из Classic, и сверху:",
+      "feature1": "Хранение аналитики до 6 месяцев",
+      "feature2": "Улучшенная CRM-система",
+      "feature3": "Продвижение клуба",
+      "feature4": "Аналитика клиентов",
+      "feature5": "Email-уведомления",
+      "feature6": "Мобильное приложение",
+      "feature7": "Техподдержка в рабочие часы",
+      "priceMonthlyOld": "$120",
+      "priceMonthlyNew": "$95",
+      "priceAnnualOld": "$100",
+      "priceAnnualNew": "$79"
+    },
+    "max": {
+      "name": "Max",
+      "tagline": "Максимальные возможности для роста — всё из Comfort, и сверху:",
+      "feature1": "Хранение аналитики до 12 месяцев",
+      "feature2": "AI-аналитика",
+      "feature3": "Кастомизированная CRM",
+      "feature4": "Приоритетное продвижение клуба",
+      "feature5": "Расширенные отчёты по клиентам",
+      "feature6": "Персональные рекомендации по привлечению клиентов",
+      "feature7": "Приоритетная поддержка 24/7",
+      "priceMonthlyOld": "$190",
+      "priceMonthlyNew": "$145",
+      "priceAnnualOld": "$160",
+      "priceAnnualNew": "$129"
+    }
+  },
   "sections": {
     "features": "Возможности",
     "sports": "Какие виды спорта",
