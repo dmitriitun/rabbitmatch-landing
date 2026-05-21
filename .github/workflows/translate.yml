@@ -35,6 +35,11 @@ jobs:
   translate:
     runs-on: ubuntu-latest
 
+    # Opt in to Node.js 24 for the actions themselves (checkout, setup-node).
+    # Node 20 actions get hard-deprecated on 2026-06-02 and removed on 2026-09-16.
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -45,7 +50,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # Node version used to RUN our scripts (node scripts/translate.js).
+          # Independent from the Node version the actions themselves run on.
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
