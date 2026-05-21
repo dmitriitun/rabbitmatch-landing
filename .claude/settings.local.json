@@ -4,7 +4,8 @@
       "Bash(cp \"/Users/admin/Desktop/RM/presentation and screen/apple-iphone-15-black-mockup \\(1\\)/Снимок экрана 2026-05-04 в 23.32.52-left.png\" /Users/admin/rabbitmatch-landing/public/images/phone-courts-2.png)",
       "Bash(cp \"/Users/admin/Desktop/RM/presentation and screen/apple-iphone-15-black-mockup \\(2\\)/Снимок экрана 2026-05-04 в 23.34.40-left.png\" /Users/admin/rabbitmatch-landing/public/images/phone-profile.png)",
       "Bash(cp \"/Users/admin/Desktop/RM/presentation and screen/apple-iphone-15-black-mockup \\(3\\)/Снимок экрана 2026-05-04 в 23.57.56-left.png\" /Users/admin/rabbitmatch-landing/public/images/phone-match-map.png)",
-      "Bash(cp \"/Users/admin/Desktop/RM/presentation and screen/apple-iphone-15-black-mockup \\(4\\)/Снимок экрана 2026-05-05 в 00.00.51-left.png\" /Users/admin/rabbitmatch-landing/public/images/phone-match-form.png)"
+      "Bash(cp \"/Users/admin/Desktop/RM/presentation and screen/apple-iphone-15-black-mockup \\(4\\)/Снимок экрана 2026-05-05 в 00.00.51-left.png\" /Users/admin/rabbitmatch-landing/public/images/phone-match-form.png)",
+      "Bash(curl -Iv https://www.rabbitmatch.pro)"
     ]
   }
 }

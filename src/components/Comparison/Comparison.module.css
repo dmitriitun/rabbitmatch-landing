@@ -1,0 +1,216 @@
+.section {
+  position: relative;
+  padding: var(--space-24) var(--container-pad) var(--space-20);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.bgGlow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 500px at 12% 10%, rgba(67, 0, 189, 0.14), transparent 70%),
+    radial-gradient(700px 500px at 90% 90%, rgba(185, 233, 1, 0.07), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.title {
+  margin: 0 auto var(--space-12);
+  font-size: clamp(28px, 4.6vw, 48px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  text-align: center;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #c7c7c7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-wrap: balance;
+  max-width: 900px;
+}
+
+/* ---------- Table (≥720px) ---------- */
+.tableScroll {
+  display: none;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.thead {
+  padding: var(--space-5) var(--space-4) var(--space-6);
+  font-size: clamp(15px, 1.5vw, 18px);
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: center;
+  letter-spacing: -0.005em;
+  border-bottom: 1px solid rgba(229, 231, 235, 0.12);
+}
+
+.thead.colOpportunity {
+  text-align: left;
+  padding-left: 0;
+}
+
+.theadRabbit {
+  color: var(--color-lime);
+  text-shadow: 0 0 22px rgba(185, 233, 1, 0.3);
+}
+
+.colOpportunity {
+  width: 30%;
+}
+
+.colCenter {
+  text-align: center;
+}
+
+.row {
+  transition: background var(--duration-base) var(--ease-out);
+}
+
+.row:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cell {
+  padding: var(--space-5) var(--space-4);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.08);
+  vertical-align: middle;
+  font-size: 15px;
+  line-height: 1.4;
+}
+
+.opportunity {
+  color: var(--color-text);
+  font-weight: 600;
+  text-align: left;
+  padding-left: 0;
+}
+
+.cellRabbit {
+  background: linear-gradient(180deg, rgba(185, 233, 1, 0.04), rgba(185, 233, 1, 0.015));
+}
+
+.icons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.cellText {
+  display: inline-block;
+  font-weight: 600;
+}
+
+.toneLime {
+  color: var(--color-lime);
+}
+
+.toneLime.icons {
+  filter: drop-shadow(0 0 8px rgba(185, 233, 1, 0.4));
+}
+
+.toneRed {
+  color: var(--color-danger);
+}
+
+.toneNeutral {
+  color: #d1d5db;
+}
+
+/* ---------- Mobile cards (<720px) ---------- */
+.cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card {
+  padding: 16px;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: border-color var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.card:hover {
+  border-color: rgba(185, 233, 1, 0.25);
+  transform: translateY(-1px);
+}
+
+.cardTitle {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-text);
+  letter-spacing: -0.005em;
+}
+
+.cardList {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.cardRow dt {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin: 0;
+  font-weight: 600;
+}
+
+.cardRow dd {
+  margin: 0;
+  text-align: right;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cardRowRabbit {
+  background: linear-gradient(180deg, rgba(185, 233, 1, 0.08), rgba(185, 233, 1, 0.02));
+  border: 1px solid rgba(185, 233, 1, 0.18);
+}
+
+.cardRowRabbit dt {
+  color: var(--color-lime);
+}
+
+@media (min-width: 720px) {
+  .cards {
+    display: none;
+  }
+  .tableScroll {
+    display: block;
+  }
+}

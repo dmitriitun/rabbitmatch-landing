@@ -138,6 +138,36 @@
     "step3Body": "Онлайн-обучение администраторов и тренеров. Поддержка 24/7 на русском и английском.",
     "runnerAlt": "Стилизованная лайм-фигура бегуна по ступеням"
   },
+  "comparison": {
+    "title": "RabbitMatch vs альтернативы",
+    "colOpportunity": "Возможность",
+    "colExcel": "Excel / Звонки",
+    "colPlaytomic": "Playtomic",
+    "colRabbit": "RabbitMatch",
+    "rows": {
+      "onlineBooking": "Онлайн-бронирование",
+      "ecosystem": "Экосистема",
+      "crm": "CRM и аналитика",
+      "tournaments": "Турниры и форматы игр",
+      "localization": "Локализация",
+      "telegram": "Быстрый доступ через Telegram и Web",
+      "commission": "Комиссия за бронь",
+      "price": "Цена"
+    },
+    "values": {
+      "simple": "Простая",
+      "full": "Полная",
+      "minimal": "Минимально",
+      "diverse": "Разнообразные",
+      "noGeorgia": "Не работает в Грузии",
+      "bankAcquiring": "Банковский эквайринг до 5%",
+      "errorsLoss": "Ошибки, потеря данных и контроля",
+      "playtomicCommission": "8–10%",
+      "rabbitCommission": "6,5%",
+      "playtomicPrice": "326$ / месяц",
+      "rabbitPrice": "Бесплатно первые 2 месяца, далее от 39$ / месяц"
+    }
+  },
   "sections": {
     "features": "Возможности",
     "sports": "Какие виды спорта",

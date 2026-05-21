@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { Comparison } from '@/components/Comparison/Comparison';
 import { Hero } from '@/components/Hero/Hero';
 import { Launch } from '@/components/Launch/Launch';
 import { Players } from '@/components/Players/Players';
@@ -31,6 +32,7 @@ export default async function Home() {
         <Solution />
         <Players />
         <Launch />
+        <Comparison />
 
         {PLACEHOLDER_SECTIONS.map((key) => {
           const labelKey = SECTION_LABEL_KEY[key];

@@ -138,6 +138,36 @@
     "step3Body": "Online training for administrators and coaches. 24/7 support in Russian and English.",
     "runnerAlt": "Stylized lime line drawing of a runner climbing steps"
   },
+  "comparison": {
+    "title": "RabbitMatch vs alternatives",
+    "colOpportunity": "Opportunity",
+    "colExcel": "Excel / Calls",
+    "colPlaytomic": "Playtomic",
+    "colRabbit": "RabbitMatch",
+    "rows": {
+      "onlineBooking": "Online booking",
+      "ecosystem": "Ecosystem",
+      "crm": "CRM and analytics",
+      "tournaments": "Tournaments and game formats",
+      "localization": "Localization",
+      "telegram": "Quick access from Telegram and Web",
+      "commission": "Booking commission",
+      "price": "Price"
+    },
+    "values": {
+      "simple": "Simple",
+      "full": "Full",
+      "minimal": "Minimal",
+      "diverse": "Diverse",
+      "noGeorgia": "Does not work in Georgia",
+      "bankAcquiring": "Bank acquiring up to 5%",
+      "errorsLoss": "Errors, loss of data and control",
+      "playtomicCommission": "8–10%",
+      "rabbitCommission": "6.5%",
+      "playtomicPrice": "$326 / month",
+      "rabbitPrice": "FREE for the first 2 months, then from $39 / month"
+    }
+  },
   "sections": {
     "features": "Features",
     "sports": "Sports we cover",
