@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { AnimatedCounter } from '@/components/AnimatedCounter/AnimatedCounter';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { HeroCta, type HeroCtaIconKey } from './HeroCta';
 import styles from './Hero.module.css';
 
@@ -35,11 +36,11 @@ export async function Hero() {
     },
   ];
 
-  const stats: Array<{ value: string; label: string }> = [
-    { value: t('stats.sportsValue'), label: t('stats.sportsLabel') },
-    { value: t('stats.languagesValue'), label: t('stats.languagesLabel') },
-    { value: t('stats.aiValue'), label: t('stats.aiLabel') },
-    { value: t('stats.platformsValue'), label: t('stats.platformsLabel') },
+  const stats: Array<{ valueKey: string; labelKey: string; rawValue: string }> = [
+    { valueKey: 'hero.stats.sportsValue', labelKey: 'hero.stats.sportsLabel', rawValue: t('stats.sportsValue') },
+    { valueKey: 'hero.stats.languagesValue', labelKey: 'hero.stats.languagesLabel', rawValue: t('stats.languagesValue') },
+    { valueKey: 'hero.stats.aiValue', labelKey: 'hero.stats.aiLabel', rawValue: t('stats.aiValue') },
+    { valueKey: 'hero.stats.platformsValue', labelKey: 'hero.stats.platformsLabel', rawValue: t('stats.platformsValue') },
   ];
 
   return (
@@ -51,9 +52,9 @@ export async function Hero() {
       <div className={styles.grid} aria-hidden="true" />
 
       <div className={styles.inner}>
-        <p className={styles.eyebrow}>{t('eyebrow')}</p>
-        <h1 className={styles.title}>{t('title')}</h1>
-        <p className={styles.subtitle}>{t('subtitle')}</p>
+        <EditableText tKey="hero.eyebrow" as="p" className={styles.eyebrow} />
+        <EditableText tKey="hero.title" as="h1" className={styles.title} />
+        <EditableText tKey="hero.subtitle" as="p" multiline className={styles.subtitle} />
 
         <div className={styles.appButtons}>
           {appLinks.map(({ key, href, small }) => (
@@ -70,11 +71,11 @@ export async function Hero() {
 
         <ul className={styles.stats}>
           {stats.map((stat) => (
-            <li key={stat.label} className={styles.statItem}>
+            <li key={stat.labelKey} className={styles.statItem}>
               <span className={styles.statValue}>
-                <AnimatedCounter value={stat.value} />
+                <AnimatedCounter value={stat.rawValue} />
               </span>
-              <span className={styles.statLabel}>{stat.label}</span>
+              <EditableText tKey={stat.labelKey} as="span" className={styles.statLabel} />
             </li>
           ))}
         </ul>

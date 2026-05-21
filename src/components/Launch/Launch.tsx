@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { RunnerArt } from './RunnerArt';
 import styles from './Launch.module.css';
@@ -26,24 +27,24 @@ export async function Launch() {
         <div className={styles.grid}>
           <div className={styles.col}>
             <ScrollReveal>
-              <p className={styles.eyebrow}>{t('eyebrow')}</p>
+              <EditableText tKey="launch.eyebrow" as="p" className={styles.eyebrow} />
             </ScrollReveal>
 
             <ScrollReveal delayMs={120}>
-              <h2 className={styles.title}>{t('title')}</h2>
+              <EditableText tKey="launch.title" as="h2" className={styles.title} />
             </ScrollReveal>
 
             <ScrollReveal delayMs={220}>
               <p className={styles.intro}>
-                <span className={styles.introHighlight}>{t('intro1Highlight')}</span>{' '}
-                {t('intro1Body')}
+                <EditableText tKey="launch.intro1Highlight" as="span" className={styles.introHighlight} />{' '}
+                <EditableText tKey="launch.intro1Body" as="span" multiline />
               </p>
             </ScrollReveal>
 
             <ScrollReveal delayMs={300}>
               <p className={styles.intro}>
-                <span className={styles.introHighlight}>{t('intro2Highlight')}</span>{' '}
-                {t('intro2Body')}
+                <EditableText tKey="launch.intro2Highlight" as="span" className={styles.introHighlight} />{' '}
+                <EditableText tKey="launch.intro2Body" as="span" multiline />
               </p>
             </ScrollReveal>
 
@@ -60,8 +61,8 @@ export async function Launch() {
                       {step.num}
                     </span>
                     <div className={styles.stepBody}>
-                      <h4 className={styles.stepTitle}>{t(step.titleKey)}</h4>
-                      <p className={styles.stepText}>{t(step.bodyKey)}</p>
+                      <EditableText tKey={`launch.${step.titleKey}`} as="h4" className={styles.stepTitle} />
+                      <EditableText tKey={`launch.${step.bodyKey}`} as="p" multiline className={styles.stepText} />
                     </div>
                   </div>
                 </ScrollReveal>

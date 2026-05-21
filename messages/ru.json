@@ -18,8 +18,8 @@
     "logoAlt": "RabbitMatch"
   },
   "login": {
-    "title": "Вход для админов",
-    "subtitle": "Доступ к редактору контента",
+    "title": "Войти",
+    "subtitle": "С возвращением",
     "email": "Email",
     "password": "Пароль",
     "submit": "Войти",

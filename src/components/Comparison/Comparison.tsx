@@ -1,5 +1,6 @@
 import { Check, X } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import styles from './Comparison.module.css';
 
@@ -83,13 +84,7 @@ function toneClass(tone: Tone): string {
   return styles.toneNeutral;
 }
 
-function CellView({
-  cell,
-  values,
-}: {
-  cell: Cell;
-  values: (key: string) => string;
-}) {
+function CellView({ cell }: { cell: Cell }) {
   if (cell.kind === 'check') {
     const count = cell.count ?? 1;
     return (
@@ -107,12 +102,17 @@ function CellView({
       </span>
     );
   }
-  return <span className={`${styles.cellText} ${toneClass(cell.tone)}`}>{values(cell.value)}</span>;
+  return (
+    <EditableText
+      tKey={`comparison.values.${cell.value}`}
+      as="span"
+      className={`${styles.cellText} ${toneClass(cell.tone)}`}
+    />
+  );
 }
 
 export async function Comparison() {
   const t = await getTranslations('comparison');
-  const v = (key: string) => t(`values.${key}`);
 
   return (
     <section id="comparison" className={styles.section} aria-label={t('title')}>
@@ -120,7 +120,7 @@ export async function Comparison() {
 
       <div className={styles.container}>
         <ScrollReveal>
-          <h2 className={styles.title}>{t('title')}</h2>
+          <EditableText tKey="comparison.title" as="h2" className={styles.title} />
         </ScrollReveal>
 
         {/* Desktop table */}
@@ -129,16 +129,16 @@ export async function Comparison() {
             <thead>
               <tr>
                 <th scope="col" className={`${styles.colOpportunity} ${styles.thead}`}>
-                  {t('colOpportunity')}
+                  <EditableText tKey="comparison.colOpportunity" as="span" />
                 </th>
                 <th scope="col" className={`${styles.colCenter} ${styles.thead}`}>
-                  {t('colExcel')}
+                  <EditableText tKey="comparison.colExcel" as="span" />
                 </th>
                 <th scope="col" className={`${styles.colCenter} ${styles.thead}`}>
-                  {t('colPlaytomic')}
+                  <EditableText tKey="comparison.colPlaytomic" as="span" />
                 </th>
                 <th scope="col" className={`${styles.colCenter} ${styles.thead} ${styles.theadRabbit}`}>
-                  {t('colRabbit')}
+                  <EditableText tKey="comparison.colRabbit" as="span" />
                 </th>
               </tr>
             </thead>
@@ -146,16 +146,16 @@ export async function Comparison() {
               {ROWS.map((row, idx) => (
                 <ScrollReveal key={row.id} as="tr" delayMs={120 + idx * 70} className={styles.row}>
                   <th scope="row" className={`${styles.opportunity} ${styles.cell}`}>
-                    {t(row.labelKey)}
+                    <EditableText tKey={`comparison.${row.labelKey}`} as="span" />
                   </th>
                   <td className={`${styles.cell} ${styles.colCenter}`}>
-                    <CellView cell={row.excel} values={v} />
+                    <CellView cell={row.excel} />
                   </td>
                   <td className={`${styles.cell} ${styles.colCenter}`}>
-                    <CellView cell={row.playtomic} values={v} />
+                    <CellView cell={row.playtomic} />
                   </td>
                   <td className={`${styles.cell} ${styles.colCenter} ${styles.cellRabbit}`}>
-                    <CellView cell={row.rabbit} values={v} />
+                    <CellView cell={row.rabbit} />
                   </td>
                 </ScrollReveal>
               ))}
@@ -167,19 +167,19 @@ export async function Comparison() {
         <ul className={styles.cards}>
           {ROWS.map((row, idx) => (
             <ScrollReveal key={row.id} as="li" delayMs={80 + idx * 70} className={styles.card}>
-              <h3 className={styles.cardTitle}>{t(row.labelKey)}</h3>
+              <EditableText tKey={`comparison.${row.labelKey}`} as="h3" className={styles.cardTitle} />
               <dl className={styles.cardList}>
                 <div className={styles.cardRow}>
-                  <dt>{t('colExcel')}</dt>
-                  <dd><CellView cell={row.excel} values={v} /></dd>
+                  <dt><EditableText tKey="comparison.colExcel" as="span" /></dt>
+                  <dd><CellView cell={row.excel} /></dd>
                 </div>
                 <div className={styles.cardRow}>
-                  <dt>{t('colPlaytomic')}</dt>
-                  <dd><CellView cell={row.playtomic} values={v} /></dd>
+                  <dt><EditableText tKey="comparison.colPlaytomic" as="span" /></dt>
+                  <dd><CellView cell={row.playtomic} /></dd>
                 </div>
                 <div className={`${styles.cardRow} ${styles.cardRowRabbit}`}>
-                  <dt>{t('colRabbit')}</dt>
-                  <dd><CellView cell={row.rabbit} values={v} /></dd>
+                  <dt><EditableText tKey="comparison.colRabbit" as="span" /></dt>
+                  <dd><CellView cell={row.rabbit} /></dd>
                 </div>
               </dl>
             </ScrollReveal>

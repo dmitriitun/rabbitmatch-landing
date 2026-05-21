@@ -18,8 +18,8 @@
     "logoAlt": "RabbitMatch"
   },
   "login": {
-    "title": "Admin sign in",
-    "subtitle": "Access the content editor",
+    "title": "Sign in",
+    "subtitle": "Welcome back",
     "email": "Email",
     "password": "Password",
     "submit": "Sign in",

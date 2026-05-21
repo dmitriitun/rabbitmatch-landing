@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { ContactForm } from '@/components/ContactForm/ContactForm';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import styles from './Contact.module.css';
 
@@ -15,13 +16,13 @@ export async function Contact() {
         <div className={styles.layout}>
           <div className={styles.intro}>
             <ScrollReveal>
-              <p className={styles.eyebrow}>{t('eyebrow')}</p>
+              <EditableText tKey="contact.eyebrow" as="p" className={styles.eyebrow} />
             </ScrollReveal>
             <ScrollReveal delayMs={100}>
-              <h2 className={styles.title}>{t('title')}</h2>
+              <EditableText tKey="contact.title" as="h2" className={styles.title} />
             </ScrollReveal>
             <ScrollReveal delayMs={200}>
-              <p className={styles.lead}>{t('lead')}</p>
+              <EditableText tKey="contact.lead" as="p" multiline className={styles.lead} />
             </ScrollReveal>
           </div>
 

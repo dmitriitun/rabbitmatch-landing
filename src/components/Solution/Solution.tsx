@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Sparkles } from 'lucide-react';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { CrmMockup } from './CrmMockup';
 import styles from './Solution.module.css';
@@ -24,15 +25,15 @@ export async function Solution() {
         <div className={styles.grid}>
           <div className={styles.col}>
             <ScrollReveal>
-              <p className={styles.eyebrow}>{t('eyebrow')}</p>
+              <EditableText tKey="solution.eyebrow" as="p" className={styles.eyebrow} />
             </ScrollReveal>
 
             <ScrollReveal delayMs={80}>
-              <p className={styles.lead}>{t('lead')}</p>
+              <EditableText tKey="solution.lead" as="p" multiline className={styles.lead} />
             </ScrollReveal>
 
             <ScrollReveal delayMs={140}>
-              <p className={styles.platform}>{t('platform')}</p>
+              <EditableText tKey="solution.platform" as="p" className={styles.platform} />
             </ScrollReveal>
 
             <ul className={styles.items}>
@@ -43,8 +44,8 @@ export async function Solution() {
                       {item.num}
                     </span>
                     <div className={styles.itemBody}>
-                      <h3 className={styles.itemTitle}>{t(item.titleKey)}</h3>
-                      <p className={styles.itemText}>{t(item.bodyKey)}</p>
+                      <EditableText tKey={`solution.${item.titleKey}`} as="h3" className={styles.itemTitle} />
+                      <EditableText tKey={`solution.${item.bodyKey}`} as="p" multiline className={styles.itemText} />
                     </div>
                   </div>
                 </ScrollReveal>
@@ -73,7 +74,7 @@ export async function Solution() {
             <ScrollReveal delayMs={420} className={styles.aiBadge}>
               <span className={styles.aiGlow} aria-hidden="true" />
               <Sparkles size={16} className={styles.aiIcon} aria-hidden="true" />
-              <span className={styles.aiText}>{t('aiHighlight')}</span>
+              <EditableText tKey="solution.aiHighlight" as="span" className={styles.aiText} />
             </ScrollReveal>
           </div>
         </div>

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
@@ -24,8 +25,10 @@
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
+    "tsx": "^4.22.3",
     "typescript": "^5"
   }
 }

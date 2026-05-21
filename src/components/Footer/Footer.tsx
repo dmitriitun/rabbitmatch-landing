@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { FacebookIcon } from '@/components/icons/FacebookIcon';
 import { InstagramIcon } from '@/components/icons/InstagramIcon';
 import { TelegramIcon } from '@/components/icons/TelegramIcon';
@@ -70,7 +71,7 @@ export function Footer() {
               />
               <span className={styles.brandText}>RabbitMatch</span>
             </a>
-            <p className={styles.tagline}>{tFooter('tagline')}</p>
+            <EditableText tKey="footer.tagline" as="p" multiline className={styles.tagline} />
 
             <ul className={styles.socials} aria-label={tFooter('socialTitle')}>
               {socials.map(({ key, href, Icon }) =>
@@ -93,7 +94,7 @@ export function Footer() {
           </div>
 
           <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>{tFooter('navTitle')}</h3>
+            <EditableText tKey="footer.navTitle" as="h3" className={styles.colTitle} />
             <ul className={styles.linkList}>
               {NAV.map((link) => (
                 <li key={link.id}>
@@ -110,16 +111,16 @@ export function Footer() {
           </div>
 
           <div className={styles.linksCol}>
-            <h3 className={styles.colTitle}>{tFooter('legalTitle')}</h3>
+            <EditableText tKey="footer.legalTitle" as="h3" className={styles.colTitle} />
             <ul className={styles.linkList}>
               <li>
                 <a href="#" className={styles.linkBtn}>
-                  {tFooter('privacy')}
+                  <EditableText tKey="footer.privacy" as="span" />
                 </a>
               </li>
               <li>
                 <a href="#" className={styles.linkBtn}>
-                  {tFooter('terms')}
+                  <EditableText tKey="footer.terms" as="span" />
                 </a>
               </li>
             </ul>

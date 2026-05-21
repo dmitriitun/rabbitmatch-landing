@@ -7,6 +7,7 @@ type UserRow = {
   email: string;
   password_hash: string;
   role: string;
+  is_admin: boolean;
 };
 
 export async function POST(request: Request): Promise<Response> {
@@ -29,7 +30,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const { rows } = await query<UserRow>(
-    'SELECT id, email, password_hash, role FROM users WHERE email = $1 LIMIT 1',
+    'SELECT id, email, password_hash, role, is_admin FROM users WHERE email = $1 LIMIT 1',
     [email],
   );
 
@@ -43,8 +44,16 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ error: 'invalid_credentials' }, { status: 401 });
   }
 
-  const token = await signSession({ uid: user.id, email: user.email, role: user.role });
+  const token = await signSession({
+    uid: user.id,
+    email: user.email,
+    role: user.role,
+    isAdmin: user.is_admin === true,
+  });
   await setSessionCookie(token);
 
-  return NextResponse.json({ ok: true, user: { id: user.id, email: user.email, role: user.role } });
+  return NextResponse.json({
+    ok: true,
+    user: { id: user.id, email: user.email, role: user.role, isAdmin: user.is_admin === true },
+  });
 }

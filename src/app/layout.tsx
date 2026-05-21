@@ -4,6 +4,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getLocale, getMessages, getTranslations } from 'next-intl/server';
 import { Footer } from '@/components/Footer/Footer';
 import { Header } from '@/components/Header/Header';
+import { AuthProvider, type SessionUser } from '@/components/Providers/AuthProvider';
+import { getSession } from '@/lib/auth';
 import './globals.css';
 
 const inter = Inter({
@@ -46,14 +48,20 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const session = await getSession();
+  const initialUser: SessionUser | null = session
+    ? { email: session.email, isAdmin: session.isAdmin }
+    : null;
 
   return (
     <html lang={locale} className={inter.variable}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Header />
-          {children}
-          <Footer />
+          <AuthProvider initialUser={initialUser}>
+            <Header />
+            {children}
+            <Footer />
+          </AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

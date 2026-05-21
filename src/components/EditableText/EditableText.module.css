@@ -1,0 +1,140 @@
+.editable {
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  outline: 1px dashed transparent;
+  outline-offset: 4px;
+  transition: outline-color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out);
+}
+
+.editable:hover,
+.editable:focus-visible {
+  outline-color: rgba(185, 233, 1, 0.6);
+  background: rgba(185, 233, 1, 0.05);
+}
+
+.pencil {
+  display: inline-block;
+  margin-right: 4px;
+  vertical-align: -1px;
+  opacity: 0;
+  color: var(--color-lime);
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.editable:hover .pencil,
+.editable:focus-visible .pencil {
+  opacity: 1;
+}
+
+.editWrap {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 8px;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.75);
+  outline: 1px solid rgba(185, 233, 1, 0.6);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  min-width: 240px;
+  max-width: 100%;
+  text-align: left;
+}
+
+.editLabel {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+.input,
+.textarea {
+  width: 100%;
+  font: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: 1.4;
+  color: var(--color-text);
+  background: #0a0a0a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--font-sans);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-lime);
+  box-shadow: 0 0 0 3px rgba(185, 233, 1, 0.18);
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.cancelBtn,
+.saveBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font-sans);
+  transition: background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.cancelBtn {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text);
+}
+
+.cancelBtn:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.saveBtn {
+  background: var(--color-lime);
+  color: var(--color-black);
+}
+
+.saveBtn:hover:not(:disabled) {
+  box-shadow: var(--glow-lime);
+}
+
+.saveBtn:disabled,
+.cancelBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: editableSpin 0.9s linear infinite;
+}
+
+.error {
+  font-size: 11px;
+  color: var(--color-danger);
+  font-weight: 600;
+  font-family: var(--font-sans);
+}
+
+@keyframes editableSpin {
+  to { transform: rotate(360deg); }
+}

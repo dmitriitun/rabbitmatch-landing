@@ -6,8 +6,10 @@ import { useTranslations } from 'next-intl';
 import { LogIn, Menu, X } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { LoginModal } from '@/components/LoginModal/LoginModal';
+import { useAuth } from '@/components/Providers/AuthProvider';
 import { tap } from '@/lib/haptics';
 import styles from './Header.module.css';
+import { UserMenu } from './UserMenu';
 
 type NavLink = { id: 'features' | 'clubs' | 'pricing' | 'contact'; target: string };
 
@@ -20,6 +22,7 @@ const LINKS: NavLink[] = [
 
 export function Header() {
   const t = useTranslations('nav');
+  const { user } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -89,18 +92,22 @@ export function Header() {
           <div className={styles.actions}>
             <LanguageSwitcher compact />
 
-            <button
-              type="button"
-              onClick={() => {
-                tap();
-                setLoginOpen(true);
-              }}
-              className={styles.loginBtn}
-              aria-label={t('login')}
-            >
-              <LogIn size={16} aria-hidden="true" />
-              <span className={styles.loginLabel}>{t('login')}</span>
-            </button>
+            {user ? (
+              <UserMenu email={user.email} />
+            ) : (
+              <button
+                type="button"
+                onClick={() => {
+                  tap();
+                  setLoginOpen(true);
+                }}
+                className={styles.loginBtn}
+                aria-label={t('login')}
+              >
+                <LogIn size={16} aria-hidden="true" />
+                <span className={styles.loginLabel}>{t('login')}</span>
+              </button>
+            )}
 
             <button
               type="button"
@@ -146,18 +153,22 @@ export function Header() {
         </nav>
         <div className={styles.mobileFooter}>
           <LanguageSwitcher />
-          <button
-            type="button"
-            onClick={() => {
-              tap();
-              setMenuOpen(false);
-              setLoginOpen(true);
-            }}
-            className={styles.mobileLogin}
-          >
-            <LogIn size={16} aria-hidden="true" />
-            {t('login')}
-          </button>
+          {user ? (
+            <UserMenu email={user.email} />
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                tap();
+                setMenuOpen(false);
+                setLoginOpen(true);
+              }}
+              className={styles.mobileLogin}
+            >
+              <LogIn size={16} aria-hidden="true" />
+              {t('login')}
+            </button>
+          )}
           <button
             type="button"
             onClick={() => scrollTo('contact')}

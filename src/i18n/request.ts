@@ -1,5 +1,6 @@
 import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
+import { loadOverridesAndMerge } from '@/lib/content';
 import { defaultLocale, isLocale, localeCookieName, locales, type Locale } from './config';
 
 function pickFromAcceptLanguage(header: string | null): Locale | null {
@@ -32,7 +33,8 @@ export default getRequestConfig(async () => {
     locale = pickFromAcceptLanguage(headerStore.get('accept-language')) ?? defaultLocale;
   }
 
-  const messages = (await import(`../../messages/${locale}.json`)).default;
+  const base = (await import(`../../messages/${locale}.json`)).default as Record<string, unknown>;
+  const messages = await loadOverridesAndMerge(locale, base);
 
   return { locale, messages };
 });

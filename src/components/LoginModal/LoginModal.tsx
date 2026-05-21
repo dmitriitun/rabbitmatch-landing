@@ -2,7 +2,9 @@
 
 import { useEffect, useId, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { Loader, Lock, Mail, X } from 'lucide-react';
+import { useAuth } from '@/components/Providers/AuthProvider';
 import { tap } from '@/lib/haptics';
 import styles from './LoginModal.module.css';
 
@@ -12,6 +14,8 @@ type Props = {
 
 export function LoginModal({ onClose }: Props) {
   const t = useTranslations('login');
+  const { setUser } = useAuth();
+  const router = useRouter();
   const emailId = useId();
   const passwordId = useId();
   const [email, setEmail] = useState('');
@@ -59,7 +63,12 @@ export function LoginModal({ onClose }: Props) {
         setSubmitting(false);
         return;
       }
+      const data = (await res.json()) as { user?: { email: string; isAdmin: boolean } };
+      if (data.user) {
+        setUser({ email: data.user.email, isAdmin: data.user.isAdmin });
+      }
       onClose();
+      router.refresh();
     } catch {
       setError(t('error'));
       setSubmitting(false);

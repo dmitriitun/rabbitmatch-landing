@@ -1,5 +1,6 @@
 import { Sparkles } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { PricingCta } from './PricingCta';
 import styles from './Pricing.module.css';
@@ -21,15 +22,16 @@ export async function Pricing() {
 
       <div className={styles.container}>
         <ScrollReveal>
-          <h2 className={styles.title}>{t('title')}</h2>
+          <EditableText tKey="pricing.title" as="h2" className={styles.title} />
         </ScrollReveal>
 
         <div className={styles.grid}>
           {TIERS.map((tier, idx) => {
             const tg = (k: string) => t(`${tier.key}.${k}`);
-            const features = Array.from({ length: tier.featureCount }, (_, i) => tg(`feature${i + 1}`)).filter(
-              Boolean,
-            );
+            const featureKeys = Array.from(
+              { length: tier.featureCount },
+              (_, i) => ({ key: `feature${i + 1}`, value: tg(`feature${i + 1}`) }),
+            ).filter((f) => Boolean(f.value));
 
             return (
               <ScrollReveal
@@ -39,41 +41,54 @@ export async function Pricing() {
               >
                 <article className={`${styles.card} ${styles[`card_${tier.key}`]}`}>
                   {tier.badge === 'popular' ? (
-                    <span className={styles.badgePopular}>{t('badgePopular')}</span>
+                    <EditableText
+                      tKey="pricing.badgePopular"
+                      as="span"
+                      className={styles.badgePopular}
+                    />
                   ) : null}
                   {tier.badge === 'ai' ? (
                     <span className={styles.badgeAi}>
                       <Sparkles size={12} aria-hidden="true" />
-                      {t('badgeAi')}
+                      <EditableText tKey="pricing.badgeAi" as="span" />
                     </span>
                   ) : null}
 
                   <header className={styles.cardHead}>
-                    <h3 className={`${styles.name} ${styles[`name_${tier.key}`]}`}>{tg('name')}</h3>
-                    <p className={styles.tagline}>{tg('tagline')}</p>
+                    <EditableText
+                      tKey={`pricing.${tier.key}.name`}
+                      as="h3"
+                      className={`${styles.name} ${styles[`name_${tier.key}`]}`}
+                    />
+                    <EditableText
+                      tKey={`pricing.${tier.key}.tagline`}
+                      as="p"
+                      multiline
+                      className={styles.tagline}
+                    />
                   </header>
 
                   <ul className={styles.features}>
-                    {features.map((feature, i) => (
-                      <li key={i} className={styles.feature}>
+                    {featureKeys.map((feature) => (
+                      <li key={feature.key} className={styles.feature}>
                         <span className={styles.featureDot} aria-hidden="true" />
-                        <span>{feature}</span>
+                        <EditableText tKey={`pricing.${tier.key}.${feature.key}`} as="span" />
                       </li>
                     ))}
                   </ul>
 
                   <div className={styles.prices}>
                     <PricePill
-                      label={t('monthly')}
-                      oldValue={tg('priceMonthlyOld')}
-                      newValue={tg('priceMonthlyNew')}
-                      suffix={t('perMonth')}
+                      labelKey="pricing.monthly"
+                      oldKey={`pricing.${tier.key}.priceMonthlyOld`}
+                      newKey={`pricing.${tier.key}.priceMonthlyNew`}
+                      suffixKey="pricing.perMonth"
                     />
                     <PricePill
-                      label={t('annual')}
-                      oldValue={tg('priceAnnualOld')}
-                      newValue={tg('priceAnnualNew')}
-                      suffix={t('perMonth')}
+                      labelKey="pricing.annual"
+                      oldKey={`pricing.${tier.key}.priceAnnualOld`}
+                      newKey={`pricing.${tier.key}.priceAnnualNew`}
+                      suffixKey="pricing.perMonth"
                     />
                   </div>
 
@@ -91,27 +106,27 @@ export async function Pricing() {
 }
 
 function PricePill({
-  label,
-  oldValue,
-  newValue,
-  suffix,
+  labelKey,
+  oldKey,
+  newKey,
+  suffixKey,
 }: {
-  label: string;
-  oldValue: string;
-  newValue: string;
-  suffix: string;
+  labelKey: string;
+  oldKey: string;
+  newKey: string;
+  suffixKey: string;
 }) {
   return (
     <div className={styles.pricePillWrap}>
-      <span className={styles.priceLabel}>{label}</span>
+      <EditableText tKey={labelKey} as="span" className={styles.priceLabel} />
       <span className={styles.pricePill}>
         <span className={styles.priceOld}>
-          {oldValue}
-          {suffix}
+          <EditableText tKey={oldKey} as="span" />
+          <EditableText tKey={suffixKey} as="span" />
         </span>
         <span className={styles.priceNew}>
-          {newValue}
-          {suffix}
+          <EditableText tKey={newKey} as="span" />
+          <EditableText tKey={suffixKey} as="span" />
         </span>
       </span>
     </div>

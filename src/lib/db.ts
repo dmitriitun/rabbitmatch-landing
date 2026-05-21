@@ -90,6 +90,15 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
         ON contact_requests (created_at DESC);
     `,
   },
+  {
+    id: '0002_is_admin',
+    sql: `
+      ALTER TABLE users
+        ADD COLUMN IF NOT EXISTS is_admin BOOLEAN NOT NULL DEFAULT FALSE;
+
+      UPDATE users SET is_admin = TRUE WHERE role = 'admin' AND is_admin = FALSE;
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {

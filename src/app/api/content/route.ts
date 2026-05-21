@@ -34,6 +34,9 @@ export async function PUT(request: Request): Promise<Response> {
   if (!session) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
+  if (!session.isAdmin) {
+    return NextResponse.json({ error: 'forbidden' }, { status: 403 });
+  }
 
   let body: unknown;
   try {

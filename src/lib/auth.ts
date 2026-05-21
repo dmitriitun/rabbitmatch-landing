@@ -10,6 +10,7 @@ export type SessionPayload = {
   uid: number;
   email: string;
   role: string;
+  isAdmin: boolean;
 };
 
 function getSecret(): Uint8Array {
@@ -43,7 +44,12 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
     if (!Number.isFinite(uid) || typeof payload.email !== 'string' || typeof payload.role !== 'string') {
       return null;
     }
-    return { uid, email: payload.email, role: payload.role };
+    return {
+      uid,
+      email: payload.email,
+      role: payload.role,
+      isAdmin: payload.isAdmin === true,
+    };
   } catch {
     return null;
   }

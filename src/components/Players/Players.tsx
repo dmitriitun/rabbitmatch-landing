@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { Calendar, Settings2, Trophy } from 'lucide-react';
+import { EditableText } from '@/components/EditableText/EditableText';
 import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { PlayersCta } from './PlayersCta';
 import styles from './Players.module.css';
@@ -59,10 +60,10 @@ export async function Players() {
 
       <div className={styles.container}>
         <ScrollReveal>
-          <p className={styles.eyebrow}>{t('eyebrow')}</p>
+          <EditableText tKey="players.eyebrow" as="p" className={styles.eyebrow} />
         </ScrollReveal>
         <ScrollReveal delayMs={80}>
-          <h2 className={styles.title}>{t('title')}</h2>
+          <EditableText tKey="players.title" as="h2" className={styles.title} />
         </ScrollReveal>
 
         <div className={styles.grid}>
@@ -73,10 +74,10 @@ export async function Players() {
                   <span className={styles.blockIcon} aria-hidden="true">
                     <Icon size={18} />
                   </span>
-                  <h3 className={styles.blockTitle}>{t(titleKey)}</h3>
+                  <EditableText tKey={`players.${titleKey}`} as="h3" className={styles.blockTitle} />
                 </header>
-                <p className={styles.blockBody}>{t(bodyKey)}</p>
-                <p className={styles.blockHighlight}>{t(highlightKey)}</p>
+                <EditableText tKey={`players.${bodyKey}`} as="p" multiline className={styles.blockBody} />
+                <EditableText tKey={`players.${highlightKey}`} as="p" className={styles.blockHighlight} />
               </ScrollReveal>
             ))}
 
