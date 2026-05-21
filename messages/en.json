@@ -231,14 +231,38 @@
     "contact": "Get in touch"
   },
   "contact": {
+    "eyebrow": "Contact us",
+    "title": "Ready to grow your club?",
+    "lead": "Tell us about your club — we'll set up RabbitMatch CRM for you within 48 hours and run a free demo.",
     "name": "Your name",
     "email": "Email",
+    "club": "Club name",
     "message": "Message",
-    "submit": "Send",
+    "namePlaceholder": "Your name",
+    "emailPlaceholder": "you@example.com",
+    "clubPlaceholder": "RabbitMatch Padel Club",
+    "messagePlaceholder": "Anything we should know?",
+    "submit": "Send request",
+    "submitting": "Sending…",
     "success": "Thanks — we'll be in touch shortly.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "invalidEmail": "Please enter a valid email address.",
+    "required": "This field is required.",
+    "directTitle": "Or reach us directly",
+    "directTelegram": "Telegram",
+    "directEmail": "Email"
   },
   "footer": {
-    "rights": "All rights reserved."
+    "tagline": "The all-in-one platform for racket sports clubs.",
+    "rights": "All rights reserved.",
+    "navTitle": "Navigation",
+    "legalTitle": "Legal",
+    "socialTitle": "Follow us",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "telegram": "Telegram channel"
   }
 }

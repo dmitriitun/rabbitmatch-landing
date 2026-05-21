@@ -231,14 +231,38 @@
     "contact": "Связаться с нами"
   },
   "contact": {
-    "name": "Ваше имя",
+    "eyebrow": "Связаться",
+    "title": "Готовы развивать клуб?",
+    "lead": "Расскажите о клубе — настроим RabbitMatch CRM за 48 часов и проведём бесплатное демо.",
+    "name": "Имя",
     "email": "Email",
+    "club": "Название клуба",
     "message": "Сообщение",
-    "submit": "Отправить",
+    "namePlaceholder": "Ваше имя",
+    "emailPlaceholder": "you@example.com",
+    "clubPlaceholder": "RabbitMatch Padel Club",
+    "messagePlaceholder": "О чём поговорим?",
+    "submit": "Отправить заявку",
+    "submitting": "Отправляем…",
     "success": "Спасибо — мы скоро свяжемся.",
-    "error": "Что-то пошло не так. Попробуйте ещё раз."
+    "error": "Что-то пошло не так. Попробуйте ещё раз.",
+    "invalidEmail": "Введите корректный email.",
+    "required": "Это поле обязательное.",
+    "directTitle": "Или напишите напрямую",
+    "directTelegram": "Telegram",
+    "directEmail": "Email"
   },
   "footer": {
-    "rights": "Все права защищены."
+    "tagline": "Единая платформа для клубов ракеточных видов спорта.",
+    "rights": "Все права защищены.",
+    "navTitle": "Навигация",
+    "legalTitle": "Правовое",
+    "socialTitle": "Следите за нами",
+    "privacy": "Политика конфиденциальности",
+    "terms": "Условия использования",
+    "tiktok": "TikTok",
+    "instagram": "Instagram",
+    "facebook": "Facebook",
+    "telegram": "Telegram-канал"
   }
 }

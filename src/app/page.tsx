@@ -1,5 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { Comparison } from '@/components/Comparison/Comparison';
+import { Contact } from '@/components/Contact/Contact';
 import { Hero } from '@/components/Hero/Hero';
 import { Launch } from '@/components/Launch/Launch';
 import { Players } from '@/components/Players/Players';
@@ -7,20 +8,14 @@ import { Pricing } from '@/components/Pricing/Pricing';
 import { Solution } from '@/components/Solution/Solution';
 import styles from './page.module.css';
 
-type SectionKey = 'sports' | 'social' | 'download' | 'contact';
+type SectionKey = 'sports' | 'social' | 'download';
 
-const PLACEHOLDER_SECTIONS: SectionKey[] = [
-  'sports',
-  'social',
-  'download',
-  'contact',
-];
+const PLACEHOLDER_SECTIONS: SectionKey[] = ['sports', 'social', 'download'];
 
-const SECTION_LABEL_KEY: Record<SectionKey, 'sports' | 'social' | 'download' | 'contact'> = {
+const SECTION_LABEL_KEY: Record<SectionKey, 'sports' | 'social' | 'download'> = {
   sports: 'sports',
   social: 'social',
   download: 'download',
-  contact: 'contact',
 };
 
 export default async function Home() {
@@ -50,6 +45,8 @@ export default async function Home() {
             </section>
           );
         })}
+
+        <Contact />
       </main>
     </div>
   );
