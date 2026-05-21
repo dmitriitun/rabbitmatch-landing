@@ -1,15 +1,12 @@
-import { Apple, Globe, Play } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { AnimatedCounter } from '@/components/AnimatedCounter/AnimatedCounter';
-import { TelegramIcon } from '@/components/icons/TelegramIcon';
-import { HeroCta } from './HeroCta';
+import { HeroCta, type HeroCtaIconKey } from './HeroCta';
 import styles from './Hero.module.css';
 
 type AppLink = {
-  key: 'appStore' | 'googlePlay' | 'webApp' | 'telegram';
+  key: HeroCtaIconKey;
   href: string | undefined;
   small: 'downloadOn' | 'getItOn' | 'openIn';
-  Icon: React.ComponentType<{ size?: number; className?: string }>;
 };
 
 export async function Hero() {
@@ -20,25 +17,21 @@ export async function Hero() {
       key: 'appStore',
       href: process.env.NEXT_PUBLIC_IOS_URL,
       small: 'downloadOn',
-      Icon: Apple,
     },
     {
       key: 'googlePlay',
       href: process.env.NEXT_PUBLIC_GOOGLE_PLAY_URL,
       small: 'getItOn',
-      Icon: Play,
     },
     {
       key: 'webApp',
       href: process.env.NEXT_PUBLIC_APP_URL,
       small: 'openIn',
-      Icon: Globe,
     },
     {
       key: 'telegram',
       href: process.env.NEXT_PUBLIC_TELEGRAM_APP_URL,
       small: 'openIn',
-      Icon: TelegramIcon,
     },
   ];
 
@@ -63,14 +56,14 @@ export async function Hero() {
         <p className={styles.subtitle}>{t('subtitle')}</p>
 
         <div className={styles.appButtons}>
-          {appLinks.map(({ key, href, small, Icon }) => (
+          {appLinks.map(({ key, href, small }) => (
             <HeroCta
               key={key}
               href={href}
               ariaLabel={`${t(small)} ${t(key)}`}
               small={t(small)}
               label={t(key)}
-              Icon={Icon}
+              iconKey={key}
             />
           ))}
         </div>

@@ -1,17 +1,29 @@
 'use client';
 
+import { Apple, Globe, Play } from 'lucide-react';
+import { TelegramIcon } from '@/components/icons/TelegramIcon';
 import { tap } from '@/lib/haptics';
 import styles from './Hero.module.css';
+
+const ICONS = {
+  appStore: Apple,
+  googlePlay: Play,
+  webApp: Globe,
+  telegram: TelegramIcon,
+} as const;
+
+export type HeroCtaIconKey = keyof typeof ICONS;
 
 type Props = {
   href: string | undefined;
   ariaLabel: string;
   small: string;
   label: string;
-  Icon: React.ComponentType<{ size?: number; className?: string }>;
+  iconKey: HeroCtaIconKey;
 };
 
-export function HeroCta({ href, ariaLabel, small, label, Icon }: Props) {
+export function HeroCta({ href, ariaLabel, small, label, iconKey }: Props) {
+  const Icon = ICONS[iconKey];
   const disabled = !href;
   const className = `${styles.appBtn} ${disabled ? styles.appBtnDisabled : ''}`;
 
