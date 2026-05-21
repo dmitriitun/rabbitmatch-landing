@@ -196,6 +196,25 @@ async function main() {
   const sourceFlat = flatten(sourceTree);
   const targetFlat = flatten(targetTree);
 
+  // Bootstrap: if the cache is empty (first run on an existing project),
+  // adopt the current target translations as the source of truth — seed
+  // the cache so the script doesn't mistake hand-written RU for "stale"
+  // and overwrite it with auto-translations on every key.
+  let seeded = 0;
+  if (Object.keys(cache).length === 0) {
+    for (const [key, value] of Object.entries(sourceFlat)) {
+      if (!shouldTranslate(value)) continue;
+      const existing = targetFlat[key];
+      if (typeof existing === 'string' && existing.trim() !== '') {
+        cache[key] = value;
+        seeded += 1;
+      }
+    }
+    if (seeded > 0) {
+      console.log(`[translate] cache empty, seeded ${seeded} key(s) from existing target`);
+    }
+  }
+
   /** @type {{ key: string, source: string }[]} */
   const todo = [];
 
