@@ -24,8 +24,8 @@
   "login.emailPlaceholder": "you@example.com",
   "login.passwordPlaceholder": "••••••••",
   "hero.eyebrow": "Racket sports, organized",
-  "hero.title": "Organize. Play. Grow.",
-  "hero.subtitle": "RabbitMatch is the all-in-one platform for padel, tennis, table tennis, badminton and squash — matches, tournaments, and a CRM for clubs.",
+  "hero.title": "Sports without the chaos",
+  "hero.subtitle": "RabbitMatch is the unified platform for racket sports: tournament and match organization, an international-grade rating system, deep analytics, easy booking and a CRM for clubs.",
   "hero.ctaPrimary": "Open the app",
   "hero.ctaSecondary": "For clubs",
   "hero.downloadOn": "Download on",
@@ -39,8 +39,8 @@
   "hero.stats.sportsLabel": "Sports",
   "hero.stats.languagesValue": "13+",
   "hero.stats.languagesLabel": "Languages",
-  "hero.stats.aiValue": "Best",
-  "hero.stats.aiLabel": "AI Analytics",
+  "hero.stats.aiValue": "Smart AI",
+  "hero.stats.aiLabel": "for analytics",
   "hero.stats.platformsValue": "3 in 1",
   "hero.stats.platformsLabel": "Mobile + Web + Telegram",
   "solution.eyebrow": "Our Solution",
@@ -225,5 +225,8 @@
   "footer.tiktok": "TikTok",
   "footer.instagram": "Instagram",
   "footer.facebook": "Facebook",
-  "footer.telegram": "Telegram channel"
+  "footer.telegram": "Telegram channel",
+  "nav.products": "Products",
+  "nav.organizers": "For Organizers",
+  "nav.playersNav": "For Players"
 }
