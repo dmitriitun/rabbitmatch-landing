@@ -5,7 +5,10 @@
   },
   "nav": {
     "features": "Features",
+    "products": "Products",
     "clubs": "For Clubs",
+    "organizers": "For Organizers",
+    "playersNav": "For Players",
     "pricing": "Pricing",
     "contact": "Contact",
     "login": "Log in",
@@ -31,8 +34,8 @@
   },
   "hero": {
     "eyebrow": "Racket sports, organized",
-    "title": "Organize. Play. Grow.",
-    "subtitle": "RabbitMatch is the all-in-one platform for padel, tennis, table tennis, badminton and squash — matches, tournaments, and a CRM for clubs.",
+    "title": "Sports without the chaos",
+    "subtitle": "RabbitMatch is the unified platform for racket sports: tournament and match organization, an international-grade rating system, deep analytics, easy booking and a CRM for clubs.",
     "ctaPrimary": "Open the app",
     "ctaSecondary": "For clubs",
     "downloadOn": "Download on",
@@ -47,8 +50,8 @@
       "sportsLabel": "Sports",
       "languagesValue": "13+",
       "languagesLabel": "Languages",
-      "aiValue": "Best",
-      "aiLabel": "AI Analytics",
+      "aiValue": "Smart AI",
+      "aiLabel": "for analytics",
       "platformsValue": "3 in 1",
       "platformsLabel": "Mobile + Web + Telegram"
     }

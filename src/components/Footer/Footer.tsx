@@ -18,14 +18,15 @@ type SocialLink = {
 };
 
 type NavLink = {
-  id: 'features' | 'clubs' | 'pricing' | 'contact';
+  id: 'products' | 'clubs' | 'organizers' | 'playersNav' | 'contact';
   target: string;
 };
 
 const NAV: NavLink[] = [
-  { id: 'features', target: 'features' },
+  { id: 'products', target: 'features' },
   { id: 'clubs', target: 'crm' },
-  { id: 'pricing', target: 'pricing' },
+  { id: 'organizers', target: 'organizers' },
+  { id: 'playersNav', target: 'players' },
   { id: 'contact', target: 'contact' },
 ];
 

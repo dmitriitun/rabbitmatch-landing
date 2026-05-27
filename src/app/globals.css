@@ -55,7 +55,8 @@
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
   --glow-lime: 0 0 60px rgba(185, 233, 1, 0.35);
-  --glow-purple: 0 0 60px rgba(67, 0, 189, 0.35);
+  --glow-purple: 0 0 60px rgba(255, 255, 255, 0.22);
+  --glow-white: 0 0 60px rgba(255, 255, 255, 0.22);
 
   /* Typography */
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -119,6 +120,12 @@ video {
   outline: 2px solid var(--color-lime);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
+}
+
+/* Reusable subtle pulsing glow — applied to every .bgGlow / glow element */
+@keyframes rmGlowPulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.03); }
 }
 
 @media (prefers-reduced-motion: reduce) {

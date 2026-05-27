@@ -1,6 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { AnimatedCounter } from '@/components/AnimatedCounter/AnimatedCounter';
 import { EditableText } from '@/components/EditableText/EditableText';
+import { InteractiveDots } from '@/components/InteractiveDots/InteractiveDots';
 import { HeroCta, type HeroCtaIconKey } from './HeroCta';
 import styles from './Hero.module.css';
 
@@ -49,7 +50,7 @@ export async function Hero() {
         <span className={`${styles.blob} ${styles.blobLime}`} />
         <span className={`${styles.blob} ${styles.blobPurple}`} />
       </div>
-      <div className={styles.grid} aria-hidden="true" />
+      <InteractiveDots />
 
       <div className={styles.inner}>
         <EditableText tKey="hero.eyebrow" as="p" className={styles.eyebrow} />

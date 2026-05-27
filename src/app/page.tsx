@@ -35,7 +35,14 @@ export default async function Home() {
           const labelKey = SECTION_LABEL_KEY[key];
           const label = t(labelKey);
           return (
-            <section key={key} id={key} className={styles.section} aria-label={label}>
+            <section
+              key={key}
+              id={key}
+              className={`${styles.section} ${styles.hiddenSection}`}
+              aria-label={label}
+              aria-hidden="true"
+              hidden
+            >
               <div className={styles.container}>
                 <div className={styles.placeholder}>
                   <h2>{label}</h2>

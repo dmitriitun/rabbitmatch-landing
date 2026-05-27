@@ -1,18 +1,21 @@
 'use client';
 
-import { Apple, Globe, Play } from 'lucide-react';
+import Image from 'next/image';
+import { Globe, Play } from 'lucide-react';
+import type { ComponentType } from 'react';
 import { TelegramIcon } from '@/components/icons/TelegramIcon';
 import { tap } from '@/lib/haptics';
 import styles from './Hero.module.css';
 
-const ICONS = {
-  appStore: Apple,
+type LucideLikeIcon = ComponentType<{ size?: number; className?: string }>;
+
+const LUCIDE_ICONS: Record<'googlePlay' | 'webApp' | 'telegram', LucideLikeIcon> = {
   googlePlay: Play,
   webApp: Globe,
   telegram: TelegramIcon,
-} as const;
+};
 
-export type HeroCtaIconKey = keyof typeof ICONS;
+export type HeroCtaIconKey = 'appStore' | keyof typeof LUCIDE_ICONS;
 
 type Props = {
   href: string | undefined;
@@ -22,14 +25,30 @@ type Props = {
   iconKey: HeroCtaIconKey;
 };
 
+function CtaIcon({ iconKey }: { iconKey: HeroCtaIconKey }) {
+  if (iconKey === 'appStore') {
+    return (
+      <Image
+        src="/icons/apple-logo-white.svg"
+        alt=""
+        width={22}
+        height={22}
+        aria-hidden="true"
+        className={styles.appBtnIcon}
+      />
+    );
+  }
+  const Icon = LUCIDE_ICONS[iconKey];
+  return <Icon size={22} className={styles.appBtnIcon} />;
+}
+
 export function HeroCta({ href, ariaLabel, small, label, iconKey }: Props) {
-  const Icon = ICONS[iconKey];
   const disabled = !href;
   const className = `${styles.appBtn} ${disabled ? styles.appBtnDisabled : ''}`;
 
   const content = (
     <>
-      <Icon size={22} className={styles.appBtnIcon} />
+      <CtaIcon iconKey={iconKey} />
       <span className={styles.appBtnText}>
         <span className={styles.appBtnSmall}>{small}</span>
         <span className={styles.appBtnLabel}>{label}</span>

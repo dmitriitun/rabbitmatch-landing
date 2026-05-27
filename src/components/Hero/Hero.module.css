@@ -52,7 +52,7 @@
   bottom: -120px;
   right: 50%;
   transform: translateX(55%);
-  background: radial-gradient(circle at 70% 70%, var(--color-purple) 0%, rgba(67, 0, 189, 0) 70%);
+  background: radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 70%);
   animation: blobFloatB 18s ease-in-out infinite;
 }
 

@@ -11,12 +11,14 @@ import { tap } from '@/lib/haptics';
 import styles from './Header.module.css';
 import { UserMenu } from './UserMenu';
 
-type NavLink = { id: 'features' | 'clubs' | 'pricing' | 'contact'; target: string };
+type NavLinkId = 'products' | 'clubs' | 'organizers' | 'playersNav' | 'contact';
+type NavLink = { id: NavLinkId; target: string };
 
 const LINKS: NavLink[] = [
-  { id: 'features', target: 'features' },
+  { id: 'products', target: 'features' },
   { id: 'clubs', target: 'crm' },
-  { id: 'pricing', target: 'pricing' },
+  { id: 'organizers', target: 'organizers' },
+  { id: 'playersNav', target: 'players' },
   { id: 'contact', target: 'contact' },
 ];
 

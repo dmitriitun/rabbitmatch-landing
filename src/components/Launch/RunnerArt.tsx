@@ -31,20 +31,20 @@ export function RunnerArt({ ariaLabel }: { ariaLabel: string }) {
         {/* Head */}
         <circle cx="210" cy="80" r="26" />
 
-        {/* Spine + torso */}
-        <polyline points="208,105 195,150 180,205 168,260" />
+        {/* Neck + spine to hips */}
+        <polyline points="210,106 205,150 200,200 200,235" />
 
-        {/* Hips → leading leg (lifted to the next step) */}
-        <polyline points="168,260 222,235 250,210" />
+        {/* Leading leg: hips → bent knee on next step → foot planted on step (y=275) */}
+        <polyline points="200,235 235,255 230,275" />
 
-        {/* Trailing leg planted on the lower step */}
-        <polyline points="168,260 165,310 175,340" />
+        {/* Trailing leg: hips → knee → foot planted on lower step (y=340) */}
+        <polyline points="200,235 180,290 170,340" />
 
         {/* Trailing arm swung back */}
-        <polyline points="195,150 162,138 134,162" />
+        <polyline points="205,150 175,170 160,205" />
 
         {/* Leading arm swung forward */}
-        <polyline points="195,150 230,140 252,170" />
+        <polyline points="205,150 240,168 258,200" />
       </g>
     </svg>
   );

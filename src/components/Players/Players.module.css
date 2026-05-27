@@ -10,9 +10,11 @@
   inset: 0;
   background:
     radial-gradient(700px 500px at 88% 14%, rgba(185, 233, 1, 0.08), transparent 70%),
-    radial-gradient(800px 500px at 8% 90%, rgba(67, 0, 189, 0.16), transparent 70%);
+    radial-gradient(800px 500px at 8% 90%, rgba(255, 255, 255, 0.16), transparent 70%);
   pointer-events: none;
   z-index: 0;
+  animation: rmGlowPulse 6s ease-in-out infinite;
+  will-change: opacity, transform;
 }
 
 /* Decorative corner frame, like the reference slide */

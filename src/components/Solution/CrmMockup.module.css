@@ -27,7 +27,7 @@
   left: -30px;
   width: 260px;
   height: 260px;
-  background: radial-gradient(circle, rgba(67, 0, 189, 0.45), rgba(67, 0, 189, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 70%);
 }
 
 .window {

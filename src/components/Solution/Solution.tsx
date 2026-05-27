@@ -57,7 +57,7 @@ export async function Solution() {
             <ScrollReveal delayMs={120} className={styles.phoneWrap}>
               <div className={styles.phoneGlow} aria-hidden="true" />
               <Image
-                src="/images/phone-courts.png"
+                src="/images/phone-products.png"
                 alt={t('mockupPhoneAlt')}
                 width={720}
                 height={1280}
