@@ -121,7 +121,7 @@ export function EditableText({ tKey, as: Tag = 'span', multiline = false, classN
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={onKey}
-            rows={Math.min(8, Math.max(3, draft.split('\n').length + 1))}
+            rows={Math.min(24, Math.max(3, draft.split('\n').length + 1))}
             className={styles.textarea}
           />
         ) : (

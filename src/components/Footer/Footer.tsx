@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { EditableText } from '@/components/EditableText/EditableText';
@@ -28,6 +29,21 @@ const NAV: NavLink[] = [
   { id: 'organizers', target: 'organizers' },
   { id: 'playersNav', target: 'players' },
   { id: 'contact', target: 'contact' },
+];
+
+type LegalLink = {
+  key: 'terms' | 'privacy' | 'cookies' | 'eula' | 'subscription' | 'refund' | 'booking';
+  slug: string;
+};
+
+const LEGAL: LegalLink[] = [
+  { key: 'terms', slug: 'terms' },
+  { key: 'privacy', slug: 'privacy' },
+  { key: 'cookies', slug: 'cookies' },
+  { key: 'eula', slug: 'eula' },
+  { key: 'subscription', slug: 'subscription' },
+  { key: 'refund', slug: 'refund' },
+  { key: 'booking', slug: 'booking' },
 ];
 
 export function Footer() {
@@ -114,16 +130,13 @@ export function Footer() {
           <div className={styles.linksCol}>
             <EditableText tKey="footer.legalTitle" as="h3" className={styles.colTitle} />
             <ul className={styles.linkList}>
-              <li>
-                <a href="#" className={styles.linkBtn}>
-                  <EditableText tKey="footer.privacy" as="span" />
-                </a>
-              </li>
-              <li>
-                <a href="#" className={styles.linkBtn}>
-                  <EditableText tKey="footer.terms" as="span" />
-                </a>
-              </li>
+              {LEGAL.map((link) => (
+                <li key={link.key}>
+                  <Link href={`/legal/${link.slug}`} className={styles.linkBtn} onClick={() => tap()}>
+                    <EditableText tKey={`footer.${link.key}`} as="span" />
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>

@@ -99,6 +99,26 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
       UPDATE users SET is_admin = TRUE WHERE role = 'admin' AND is_admin = FALSE;
     `,
   },
+  {
+    id: '0003_cookie_consents',
+    sql: `
+      CREATE TABLE IF NOT EXISTS cookie_consents (
+        id BIGSERIAL PRIMARY KEY,
+        visitor_id TEXT NOT NULL,
+        user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
+        choice TEXT NOT NULL,
+        locale TEXT,
+        ip TEXT,
+        user_agent TEXT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS cookie_consents_visitor_id_idx
+        ON cookie_consents (visitor_id);
+      CREATE INDEX IF NOT EXISTS cookie_consents_created_at_idx
+        ON cookie_consents (created_at DESC);
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {
