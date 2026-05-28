@@ -24,8 +24,8 @@
   "login.emailPlaceholder": "you@example.com",
   "login.passwordPlaceholder": "••••••••",
   "hero.eyebrow": "Racket sports, organized",
-  "hero.title": "Organize. Play. Grow.",
-  "hero.subtitle": "RabbitMatch is the all-in-one platform for padel, tennis, table tennis, badminton and squash — matches, tournaments, and a CRM for clubs.",
+  "hero.title": "Sports without the chaos",
+  "hero.subtitle": "RabbitMatch is the unified platform for racket sports: tournament and match organization, an international-grade rating system, deep analytics, easy booking and a CRM for clubs.",
   "hero.ctaPrimary": "Open the app",
   "hero.ctaSecondary": "For clubs",
   "hero.downloadOn": "Download on",
@@ -39,8 +39,8 @@
   "hero.stats.sportsLabel": "Sports",
   "hero.stats.languagesValue": "13+",
   "hero.stats.languagesLabel": "Languages",
-  "hero.stats.aiValue": "Best",
-  "hero.stats.aiLabel": "AI Analytics",
+  "hero.stats.aiValue": "Smart AI",
+  "hero.stats.aiLabel": "for analytics",
   "hero.stats.platformsValue": "3 in 1",
   "hero.stats.platformsLabel": "Mobile + Web + Telegram",
   "solution.eyebrow": "Our Solution",
@@ -226,6 +226,7 @@
   "footer.instagram": "Instagram",
   "footer.facebook": "Facebook",
   "footer.telegram": "Telegram channel",
+<<<<<<< HEAD
   "footer.eula": "EULA",
   "footer.cookies": "Cookie Policy",
   "footer.subscription": "Subscription Terms",
@@ -249,4 +250,9 @@
   "legal.refund.body": "Operator: Individual Entrepreneur Dmitrii Tunguskov\nEmail: info@rabbitmatch.pro\nEffective date: 01.01.2026\nLast updated: 28.05.2026\n\n1. General\n\n1.1. This Refund Policy sets out the conditions and procedure for refunds to RabbitMatch Application Users.\n\n1.2. Refunds are processed in accordance with Georgian law and applicable local consumer protection law based on the User's country of residence.\n\n1.3. The maximum refund amount shall not exceed the total amount actually paid by the User to the Operator in the preceding 12 months.\n\n2. Subscription Refunds\n\n2.1. Trial period. If a User subscribes with a free or discounted trial and cancels within the trial period, no charge is made.\n\n2.2. First payment. A full refund for the first payment is available within 14 days of the charge, provided the User has not accessed paid features.\n\n2.3. Subsequent payments. Refunds for completed billing periods are not provided, except:\n• technical failure preventing access to paid features for more than 72 hours continuously due to the Operator's fault;\n• discontinuation of the Service by the Operator — pro-rated refund for unused period.\n\n2.4. No refund for violations. Refunds are not issued if a subscription was cancelled due to User breach of the Agreement or other policies.\n\n2.5. App Store / Google Play purchases. For subscriptions purchased via Apple App Store or Google Play, refunds are governed by the respective platform's policies. The Operator does not directly manage the refund process for such purchases.\n\n3. Booking Refunds\n\n3.1. The refund conditions for a court reservation are determined by the policy of the court owners and are implemented by default on their side; in other cases:\n\n| Time Before Start       | Refund Condition             |\n| ----------------------- | ---------------------------- |\n| More than 48 hours      | Full refund (100%)           |\n| 24–48 hours             | Partial refund (50%)         |\n| Less than 24 hours      | No refund                    |\n| Confirmed force majeure | Individual return conditions |\n\n3.2. The initiator of the cancellation must be the User (not another person accepted for the game). The request is made through the Application or sent to info@rabbitmatch.pro with the subject line \"Refund\" and a full description of the reason for the refund and the details for the refund.\n\n3.3. If the court is cancelled due to the venue owner's fault or for technical reasons on the Operator's side, a full refund is issued.\n\n4. Refund Request Procedure\n\n4.1. To request a refund, Users email info@rabbitmatch.pro with:\n• username / account ID;\n• payment date and amount;\n• reason for the request;\n• proof of payment (screenshot, receipt);\n• payment details for the refund.\n\n4.2. The Operator reviews requests within 14 business days and notifies the User of the decision.\n\n4.3. Approved refunds are returned to the original payment method within 30 business days of the decision.\n\n4.4. The Operator is not responsible for refund delays caused by transaction processing times of payment systems or banks.\n\n5. Non-Refundable Cases\n\nRefunds are not issued in the following cases:\n• Breach of the Agreement or other policies of the Application;\n• Unauthorized advertising;\n• Match result manipulation or booking fraud;\n• Fraudulent use of the Application;\n• Disagreement with updated terms where functionality has not changed;\n• Change of the User's personal circumstances;\n• Account access loss due to the User's own fault (compromise of credentials).",
   "legal.booking.title": "Court Booking Rules",
   "legal.booking.body": "Operator: Individual Entrepreneur Dmitrii Tunguskov\nEmail: info@rabbitmatch.pro\nEffective date: 01.01.2026\nLast updated: 28.05.2026\n\n1. Subject Matter\n\n1.1. These Rules govern the booking of sports venues through the RabbitMatch Application.\n\n1.2. The Application acts as an intermediary platform between Users and venue owners. The Operator is not the owner or lessor of courts and is not liable for the physical condition, surface quality, availability of equipment, or other characteristics dependent on the venue owner.\n\n2. Booking Process\n\n2.1. The User selects a venue, date, time, and duration.\n\n2.2. The system checks the availability of the selected slot.\n\n2.3. The User confirms the booking and pays via the Application's payment service.\n\n2.4. After successful payment, the User receives a booking confirmation with a unique order number.\n\n2.5. The booking is confirmed only upon successful payment.\n\n3. Rights and Obligations\n\n3.1. The User must:\n• arrive at the court at the booked time;\n• comply with venue rules;\n• not transfer the booking to third parties without approval;\n• notify the Operator of cancellation in accordance with the Refund Policy.\n\n3.2. The Operator may:\n• cancel bookings for technical reasons with a full refund;\n• suspend booking access for Users who repeatedly violate rules or cancel bookings 2 times per month;\n• change booking prices with 12 hours' notice.\n\n3.3. The Operator is not liable for:\n• force majeure (weather, venue closure, health restrictions);\n• court quality and condition;\n• venue owner actions after confirmation;\n• injuries or health damage on the premises.\n\n4. Special Conditions\n\n4.1. Uncoordinated advertising at the venue. It is prohibited to use the reserved court for commercial events or promotions without prior approval from the Operator.\n\n4.2. Booking on behalf of an organization. If a User books a court for an event with a commercial component (paid tournaments, sponsored events), the User is obliged to notify the Operator and obtain written consent."
+=======
+  "nav.products": "Products",
+  "nav.organizers": "For Organizers",
+  "nav.playersNav": "For Players"
+>>>>>>> 992bb0c9d699590abedd0631a91add24a001b695
 }
