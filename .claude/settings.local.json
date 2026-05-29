@@ -32,7 +32,8 @@
       "Bash(node -e ' *)",
       "mcp__Claude_Preview__preview_start",
       "Bash(kill 45444)",
-      "Bash(xargs kill)"
+      "Bash(xargs kill)",
+      "Bash(grep -vE \"translate.js|require\\\\\\(\\\\\\)|no-require-imports|^\\\\s*$\")"
     ]
   }
 }

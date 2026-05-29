@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { LogIn, Menu, X } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
@@ -25,6 +26,8 @@ const LINKS: NavLink[] = [
 export function Header() {
   const t = useTranslations('nav');
   const { user } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
@@ -45,14 +48,24 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const scrollTo = useCallback((id: string) => {
-    tap();
-    setMenuOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, []);
+  const scrollTo = useCallback(
+    (id: string) => {
+      tap();
+      setMenuOpen(false);
+      // Sections only exist on the home page. From any other route (e.g. a
+      // /legal/* page) navigate home with the target hash and let the App
+      // Router scroll to it.
+      if (pathname !== '/') {
+        router.push(`/#${id}`);
+        return;
+      }
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    },
+    [pathname, router],
+  );
 
   return (
     <>

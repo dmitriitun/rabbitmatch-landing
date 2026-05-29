@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { EditableText } from '@/components/EditableText/EditableText';
@@ -49,6 +50,8 @@ const LEGAL: LegalLink[] = [
 export function Footer() {
   const tFooter = useTranslations('footer');
   const tNav = useTranslations('nav');
+  const router = useRouter();
+  const pathname = usePathname();
 
   const socials: SocialLink[] = [
     { key: 'instagram', href: process.env.NEXT_PUBLIC_INSTAGRAM_URL, Icon: InstagramIcon },
@@ -57,11 +60,20 @@ export function Footer() {
     { key: 'telegram', href: process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL, Icon: TelegramIcon },
   ];
 
-  const scrollTo = useCallback((id: string) => {
-    tap();
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+  const scrollTo = useCallback(
+    (id: string) => {
+      tap();
+      // Sections only exist on the home page; from elsewhere navigate home
+      // with the target hash.
+      if (pathname !== '/') {
+        router.push(`/#${id}`);
+        return;
+      }
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+    [pathname, router],
+  );
 
   const year = new Date().getFullYear();
 
