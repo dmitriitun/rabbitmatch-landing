@@ -1,6 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { Comparison } from '@/components/Comparison/Comparison';
 import { Contact } from '@/components/Contact/Contact';
+import { ForOrganizers } from '@/components/ForOrganizers/ForOrganizers';
+import { ForPlayers } from '@/components/ForPlayers/ForPlayers';
 import { Hero } from '@/components/Hero/Hero';
 import { Launch } from '@/components/Launch/Launch';
 import { Players } from '@/components/Players/Players';
@@ -27,6 +29,8 @@ export default async function Home() {
         <Hero />
         <Solution />
         <Players />
+        <ForOrganizers />
+        <ForPlayers />
         <Launch />
         <Comparison />
         <Pricing />
