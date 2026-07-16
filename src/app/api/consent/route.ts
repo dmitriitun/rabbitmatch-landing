@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies, headers } from 'next/headers';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
+import { enforceRateLimit } from '@/lib/rate-limit';
 import { isLocale, localeCookieName } from '@/i18n/config';
 
 export const VISITOR_COOKIE = 'rm_visitor_id';
@@ -15,6 +16,9 @@ function isChoice(value: unknown): value is Choice {
 }
 
 export async function POST(request: Request): Promise<Response> {
+  const limited = await enforceRateLimit('consent', 15, 60_000);
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();

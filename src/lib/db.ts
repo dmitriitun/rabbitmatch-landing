@@ -19,8 +19,11 @@ function createPool(): Pool {
   return new Pool({
     connectionString,
     ssl: useSsl ? { rejectUnauthorized: false } : undefined,
-    max: Number(process.env.PGPOOL_MAX ?? 10),
-    idleTimeoutMillis: 30_000,
+    // A landing page needs very few concurrent DB connections, especially with
+    // the content-overrides cache. Keep the pool small to reduce idle memory
+    // and load on the Postgres service.
+    max: Number(process.env.PGPOOL_MAX ?? 5),
+    idleTimeoutMillis: 10_000,
   });
 }
 

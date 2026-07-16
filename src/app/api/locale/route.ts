@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { enforceRateLimit } from '@/lib/rate-limit';
 import { isLocale, localeCookieName } from '@/i18n/config';
 
 const ONE_YEAR = 60 * 60 * 24 * 365;
 
 export async function POST(request: Request): Promise<Response> {
+  const limited = await enforceRateLimit('locale', 30, 60_000);
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();

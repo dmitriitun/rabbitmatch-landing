@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { setSessionCookie, signSession, verifyPassword } from '@/lib/auth';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 type UserRow = {
   id: number;
@@ -11,6 +12,10 @@ type UserRow = {
 };
 
 export async function POST(request: Request): Promise<Response> {
+  // Brute-force protection: cap login attempts per IP.
+  const limited = await enforceRateLimit('login', 10, 60_000);
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();

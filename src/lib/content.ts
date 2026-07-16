@@ -6,6 +6,53 @@ type OverrideRow = { key: string; value: string };
 
 type MessagesNode = Record<string, unknown>;
 
+type CacheEntry = { at: number; rows: OverrideRow[] };
+
+/**
+ * Cache DB content overrides per locale. Every page render reads overrides,
+ * including every bot/scanner hit — without this cache each one is a Postgres
+ * round-trip. TTL keeps admin edits reasonably fresh; the content PUT route
+ * also calls `invalidateContentCache` for immediate propagation.
+ */
+const OVERRIDES_TTL_MS = Number(process.env.CONTENT_CACHE_TTL_MS ?? 60_000);
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __rmContentCache: Map<string, CacheEntry> | undefined;
+}
+
+function contentCache(): Map<string, CacheEntry> {
+  if (!global.__rmContentCache) {
+    global.__rmContentCache = new Map();
+  }
+  return global.__rmContentCache;
+}
+
+/** Drop cached overrides so the next render re-reads from the DB. */
+export function invalidateContentCache(locale?: Locale): void {
+  const cache = contentCache();
+  if (locale) {
+    cache.delete(locale);
+  } else {
+    cache.clear();
+  }
+}
+
+async function loadOverrideRows(locale: Locale): Promise<OverrideRow[]> {
+  const cache = contentCache();
+  const now = Date.now();
+  const hit = cache.get(locale);
+  if (hit && now - hit.at < OVERRIDES_TTL_MS) {
+    return hit.rows;
+  }
+  const { rows } = await query<OverrideRow>(
+    'SELECT key, value FROM content_overrides WHERE locale = $1',
+    [locale],
+  );
+  cache.set(locale, { at: now, rows });
+  return rows;
+}
+
 /**
  * Apply a single override of the form { 'a.b.c': 'value' } onto a deep object.
  * Creates intermediate objects as needed. Skips application if a non-leaf
@@ -40,10 +87,7 @@ export async function loadOverridesAndMerge(
   base: MessagesNode,
 ): Promise<MessagesNode> {
   try {
-    const { rows } = await query<OverrideRow>(
-      'SELECT key, value FROM content_overrides WHERE locale = $1',
-      [locale],
-    );
+    const rows = await loadOverrideRows(locale);
     if (rows.length === 0) return base;
 
     const merged: MessagesNode = JSON.parse(JSON.stringify(base));

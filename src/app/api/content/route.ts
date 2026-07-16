@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
+import { invalidateContentCache } from '@/lib/content';
+import { enforceRateLimit } from '@/lib/rate-limit';
 import { isLocale } from '@/i18n/config';
 
 type OverrideRow = {
@@ -11,6 +13,9 @@ type OverrideRow = {
 };
 
 export async function GET(request: Request): Promise<Response> {
+  const limited = await enforceRateLimit('content-read', 20, 60_000);
+  if (limited) return limited;
+
   const url = new URL(request.url);
   const localeParam = url.searchParams.get('locale');
 
@@ -68,6 +73,8 @@ export async function PUT(request: Request): Promise<Response> {
     `,
     [locale, key.trim(), value, session.uid],
   );
+
+  invalidateContentCache(locale);
 
   return NextResponse.json({ ok: true });
 }

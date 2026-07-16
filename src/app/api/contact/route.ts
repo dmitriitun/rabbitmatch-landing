@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { query } from '@/lib/db';
+import { enforceRateLimit } from '@/lib/rate-limit';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(request: Request): Promise<Response> {
+  const limited = await enforceRateLimit('contact', 5, 60_000);
+  if (limited) return limited;
+
   let body: unknown;
   try {
     body = await request.json();
