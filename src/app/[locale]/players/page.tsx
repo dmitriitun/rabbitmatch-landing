@@ -64,7 +64,7 @@ export default async function PlayersPage({
           titleKey={`${NS}.match.title`}
           leadKey={`${NS}.match.lead`}
           headingId="players-match"
-          media={<AppShot name="best-match" />}
+          media={<AppShot name="set-match" />}
         />
         <div className={blockStyles.stack}>
           <FeatureGrid itemsKey={`${NS}.match.items`} />
@@ -83,6 +83,7 @@ export default async function PlayersPage({
             <ShotStack>
               <AppShot name="player-streak" />
               <AppShot name="player-stability" />
+              <AppShot name="win-by-format" />
             </ShotStack>
           }
         />

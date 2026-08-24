@@ -47,6 +47,7 @@
   display: block;
   width: 100%;
   height: auto;
+  margin-inline: auto;
   border-radius: var(--radius-lg);
   border: 1px solid var(--line);
   background: #f5f7fb;

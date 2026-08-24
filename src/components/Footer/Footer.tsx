@@ -46,7 +46,7 @@ export async function Footer() {
         <div className={styles.grid}>
           <div className={styles.brandCol}>
             <Link href="/" className={styles.brand} aria-label={tNav('logoAlt')}>
-              <Image src="/images/logo.webp" alt="" width={36} height={36} className={styles.logo} />
+              <Image src="/images/logo-mark.webp" alt="" width={36} height={36} className={styles.logo} />
               <span className={styles.brandText}>RabbitMatch</span>
             </Link>
 

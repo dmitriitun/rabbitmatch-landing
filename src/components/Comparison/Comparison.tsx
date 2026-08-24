@@ -110,16 +110,19 @@ function CellView({ cell }: { cell: Cell }) {
   );
 }
 
-export async function Comparison() {
+/**
+ * The comparison table.
+ *
+ * `bare` drops the section wrapper and the heading. Both pages that use this
+ * put a `SectionHead` above it, so without `bare` the block arrived as a
+ * second h2 on the same subject with two sections' worth of padding stacked
+ * in between.
+ */
+export async function Comparison({ bare = false }: { bare?: boolean } = {}) {
   const t = await getTranslations('comparison');
 
-  return (
-    <section id="comparison" className={styles.section} aria-labelledby="comparison-title">
-      <div className={styles.container}>
-        <h2 id="comparison-title" className={styles.title} data-rm-key="comparison.title">
-          {t('title')}
-        </h2>
-
+  const body = (
+    <>
         {/* Desktop table */}
         <div className={styles.tableScroll}>
           <table className={styles.table}>
@@ -182,6 +185,18 @@ export async function Comparison() {
             </li>
           ))}
         </ul>
+    </>
+  );
+
+  if (bare) return body;
+
+  return (
+    <section id="comparison" className={styles.section} aria-labelledby="comparison-title">
+      <div className={styles.container}>
+        <h2 id="comparison-title" className={styles.title} data-rm-key="comparison.title">
+          {t('title')}
+        </h2>
+        {body}
       </div>
     </section>
   );

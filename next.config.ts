@@ -60,15 +60,16 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/app/:path*',
+        /**
+         * Screenshots and the logo. These filenames are not fingerprinted, so
+         * the TTL stays short and leans on revalidation instead: a header rule
+         * applies to whatever the route returns, 404s included, and a month of
+         * `max-age` once left a broken deploy's 404s cached at the CDN long
+         * after the deploy itself was fixed.
+         */
+        source: '/:dir(app|images)/:path*',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
-        ],
-      },
-      {
-        source: '/images/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=2592000, stale-while-revalidate=86400' },
+          { key: 'Cache-Control', value: 'public, max-age=3600, stale-while-revalidate=604800' },
         ],
       },
     ];

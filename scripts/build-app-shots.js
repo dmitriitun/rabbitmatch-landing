@@ -3,8 +3,9 @@
 /**
  * Build the app screenshots used on the site.
  *
- * Reads the real captures, applies per-locale text patches, crops, and writes
- * optimised WebP into `public/app/`. Run after changing `app-shots.js`:
+ * Reads the real captures, cuts out the rectangle each shot asks for, and
+ * writes optimised WebP into `public/app/` along with a manifest of their
+ * dimensions. Run after changing `app-shots.js`:
  *
  *   npm run build:shots
  *
@@ -16,47 +17,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const sharp = require('sharp');
 
-const { SRC_DIR } = require('./app-shots.config');
+const { resolveSource } = require('./app-shots.config');
 const SHOTS = require('./app-shots');
 
 const OUT_DIR = path.join(__dirname, '..', 'public', 'app');
-const LOCALES = ['en', 'ru'];
-
-/** Render one patch to a PNG buffer sized exactly to its rectangle. */
-async function renderPatch(patch) {
-  const texts = (patch.texts || [])
-    .map((t) => {
-      const x = t.anchor === 'middle' ? t.x - patch.x : t.x - patch.x;
-      const escaped = String(t.text)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      return `<text x="${x}" y="${t.y}" text-anchor="${t.anchor || 'start'}" font-family="Segoe UI" font-size="${t.size}" font-weight="${t.weight ?? 400}" fill="${t.color || '#111111'}" letter-spacing="${t.spacing ?? 0}">${escaped}</text>`;
-    })
-    .join('');
-
-  const shapes = (patch.shapes || [])
-    .map((s) => {
-      if (s.type === 'circle') {
-        return `<circle cx="${s.x - patch.x}" cy="${s.y - patch.y}" r="${s.r}" fill="${s.fill}"/>`;
-      }
-      if (s.type === 'path') {
-        // `d` is authored in patch-local coordinates.
-        return `<path d="${s.d}" fill="${s.fill ?? 'none'}" stroke="${s.stroke ?? 'none'}" stroke-width="${s.width ?? 1}" stroke-linecap="round"/>`;
-      }
-      if (s.type === 'ellipse') {
-        return `<ellipse cx="${s.x - patch.x}" cy="${s.y - patch.y}" rx="${s.rx}" ry="${s.ry}" fill="${s.fill ?? 'none'}" stroke="${s.stroke ?? 'none'}" stroke-width="${s.width ?? 1}"${s.rotate ? ` transform="rotate(${s.rotate} ${s.x - patch.x} ${s.y - patch.y})"` : ''}/>`;
-      }
-      return `<rect x="${s.x - patch.x}" y="${s.y - patch.y}" width="${s.w}" height="${s.h}" rx="${s.rx ?? 0}" fill="${s.fill}"/>`;
-    })
-    .join('');
-
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${patch.w}" height="${patch.h}" viewBox="0 0 ${patch.w} ${patch.h}">${
-    patch.bg ? `<rect width="${patch.w}" height="${patch.h}" rx="${patch.rx ?? 0}" fill="${patch.bg}"/>` : ''
-  }${shapes}${texts}</svg>`;
-
-  return sharp(Buffer.from(svg)).png().toBuffer();
-}
 
 /**
  * iPhone status bar, baked into full-screen shots.
@@ -116,45 +80,19 @@ async function addStatusBar(buf) {
     .toBuffer();
 }
 
-async function buildShot(shot, locale) {
-  const src = path.join(SRC_DIR, shot.src);
-  if (!fs.existsSync(src)) throw new Error(`missing source: ${shot.src}`);
+async function buildShot(shot) {
+  const src = resolveSource(shot.src);
 
-  const patches = typeof shot.patches === 'function' ? shot.patches(locale) : shot.patches || [];
+  const whole = !shot.crop && !shot.card;
 
-  // Patches that sit on top of a photo blur the region first instead of
-  // filling it, so replacement text still reads as text over a photograph.
-  let base = await sharp(src).png().toBuffer();
-  for (const patch of patches.filter((p) => p && p.blur)) {
-    const region = await sharp(base)
-      .extract({ left: patch.x, top: patch.y, width: patch.w, height: patch.h })
-      .blur(patch.blur)
-      .png()
-      .toBuffer();
-    base = await sharp(base).composite([{ input: region, left: patch.x, top: patch.y }]).png().toBuffer();
-  }
+  let buf = await sharp(src).png().toBuffer();
+  if (shot.crop) buf = await sharp(buf).extract(shot.crop).png().toBuffer();
+  if (whole) buf = await addStatusBar(buf);
 
-  const composites = [];
-  for (const patch of patches.filter(Boolean)) {
-    composites.push({ input: await renderPatch(patch), left: Math.round(patch.x), top: Math.round(patch.y) });
-  }
-
-  // Composite first, then crop in a second pipeline: chaining `extract` after
-  // `composite` makes sharp reorder the operations.
-  let buf = await sharp(base).composite(composites).png().toBuffer();
-
-  if (shot.crop) {
-    buf = await sharp(buf).extract(shot.crop).png().toBuffer();
-  } else {
-    buf = await addStatusBar(buf);
-  }
-
-  const targetWidth = shot.width ?? (shot.crop ? Math.min(shot.crop.width, 900) : 780);
-
-  const file = path.join(OUT_DIR, `${shot.name}.${locale}.webp`);
+  const file = path.join(OUT_DIR, `${shot.name}.webp`);
   await sharp(buf)
-    .resize({ width: targetWidth, withoutEnlargement: true })
-    .webp({ quality: 82, effort: 6 })
+    .resize({ width: shot.width, withoutEnlargement: true })
+    .webp({ quality: 84, effort: 6 })
     .toFile(file);
 
   const { size } = fs.statSync(file);
@@ -173,22 +111,22 @@ async function main() {
   }
 
   const manifestPath = path.join(__dirname, '..', 'src', 'components', 'appshot', 'manifest.json');
-  const manifest = fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
+  const manifest = only && fs.existsSync(manifestPath) ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : {};
 
   let total = 0;
   for (const shot of shots) {
-    for (const locale of LOCALES) {
-      const r = await buildShot(shot, locale);
-      manifest[shot.name] = { w: r.w, h: r.h, frame: !shot.crop };
-      total += r.size;
-      console.log(`${r.file.padEnd(34)} ${String(r.w).padStart(4)}x${String(r.h).padEnd(5)} ${(r.size / 1024).toFixed(0).padStart(4)} KB`);
-    }
+    const r = await buildShot(shot);
+    manifest[shot.name] = { w: r.w, h: r.h, frame: !shot.crop && !shot.card };
+    total += r.size;
+    console.log(`${r.file.padEnd(26)} ${String(r.w).padStart(4)}x${String(r.h).padEnd(5)} ${(r.size / 1024).toFixed(0).padStart(4)} KB`);
   }
 
   const sorted = Object.fromEntries(Object.keys(manifest).sort().map((k) => [k, manifest[k]]));
-  fs.writeFileSync(manifestPath, `${JSON.stringify(sorted, null, 2)}\n`);
+  fs.writeFileSync(manifestPath, `${JSON.stringify(sorted, null, 2)}
+`);
 
-  console.log(`\n${shots.length * LOCALES.length} files, ${(total / 1024).toFixed(0)} KB total`);
+  console.log(`
+${shots.length} files, ${(total / 1024).toFixed(0)} KB total`);
 }
 
 main().catch((err) => {

@@ -12,18 +12,21 @@ const TIERS: ReadonlyArray<{ key: TierKey; featureCount: number; badge: 'popular
   { key: 'max', featureCount: 7, badge: 'ai' },
 ];
 
-export async function Pricing({ headingId }: { headingId?: string } = {}) {
+/**
+ * The plan cards.
+ *
+ * `bare` drops the section wrapper and the heading: on the pricing page the
+ * block already sits inside a `Section` with its own `SectionHead`, and two
+ * nested sections meant two h2 over one block and two lots of section padding
+ * stacked between them.
+ */
+export async function Pricing({
+  headingId,
+  bare = false,
+}: { headingId?: string; bare?: boolean } = {}) {
   const t = await getTranslations('pricing');
 
-  return (
-    <section id="pricing" className={styles.section} aria-labelledby={headingId}>
-      <div className={styles.container}>
-        <EditableText
-          tKey="pricing.title"
-          as="h2"
-          className={styles.title}
-        />
-
+  const grid = (
         <div className={styles.grid}>
           {TIERS.map((tier) => {
             const tg = (k: string) => t(`${tier.key}.${k}`);
@@ -96,6 +99,15 @@ export async function Pricing({ headingId }: { headingId?: string } = {}) {
             );
           })}
         </div>
+  );
+
+  if (bare) return grid;
+
+  return (
+    <section id="pricing" className={styles.section} aria-labelledby={headingId}>
+      <div className={styles.container}>
+        <EditableText tKey="pricing.title" as="h2" className={styles.title} />
+        {grid}
       </div>
     </section>
   );

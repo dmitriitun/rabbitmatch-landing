@@ -1,7 +1,7 @@
 {
   "best-match": {
     "w": 860,
-    "h": 235,
+    "h": 867,
     "frame": false
   },
   "coach-profile": {
@@ -14,14 +14,19 @@
     "h": 1167,
     "frame": false
   },
-  "community": {
-    "w": 860,
-    "h": 1148,
-    "frame": false
-  },
   "court-card": {
     "w": 860,
     "h": 494,
+    "frame": false
+  },
+  "courts": {
+    "w": 760,
+    "h": 1645,
+    "frame": true
+  },
+  "game-formats": {
+    "w": 860,
+    "h": 775,
     "frame": false
   },
   "games-list": {
@@ -54,14 +59,19 @@
     "h": 868,
     "frame": false
   },
-  "tournament-live": {
-    "w": 860,
-    "h": 681,
+  "set-match": {
+    "w": 760,
+    "h": 540,
     "frame": false
   },
   "venue-booking": {
     "w": 760,
     "h": 1645,
     "frame": true
+  },
+  "win-by-format": {
+    "w": 860,
+    "h": 558,
+    "frame": false
   }
 }

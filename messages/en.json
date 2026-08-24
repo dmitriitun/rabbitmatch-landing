@@ -745,7 +745,7 @@
     "schedule": {
       "eyebrow": "Schedule",
       "title": "Hours you actually have, not hours someone thinks you have",
-      "lead": "You open the hours you can teach and close the ones you can't. A student takes a free one and it disappears from the grid — no call, no administrator in the middle, no double booking to apologise for later."
+      "lead": "You open the hours you can teach and close the ones you cannot. A student takes a free one and it leaves the grid immediately, so the schedule everyone sees is always the current one."
     },
     "steps": {
       "eyebrow": "Getting started",
@@ -1127,20 +1127,20 @@
     },
     "hero": {
       "eyebrow": "Pricing",
-      "title": "Whoever makes money from it pays for it",
-      "lead": "The app does not help a player, an organizer or a coach earn — it helps them play. So the core is free, and the people paying are the clubs whose courts we fill.",
+      "title": "Everything you need to play is free",
+      "lead": "Find games, create matches and run tournaments at no cost. PRO and MAX add the deep read of your game and partner matching. Clubs plug in booking and a CRM — and get their courts filled.",
       "points": [
         "Playing, creating games and running tournaments — free",
-        "PRO and MAX open the deeper analytics and some extras",
+        "PRO and MAX add deep analytics and partner matching",
         "Venues from $39 a month billed annually",
-        "6.5% commission, and only on bookings that come through us"
+        "A 6.5% commission, and only on the bookings we bring you"
       ],
       "primary": "Talk to us",
       "secondary": "For venues"
     },
     "free": {
       "eyebrow": "Free",
-      "title": "What costs nothing",
+      "title": "Open to everyone",
       "items": [
         {
           "icon": "users",
@@ -1161,13 +1161,13 @@
     },
     "subs": {
       "eyebrow": "PRO and MAX",
-      "title": "What is worth paying for",
-      "lead": "A subscription does not take away anything that worked. It opens things that do not exist at all until you have played enough for them to mean something.",
+      "title": "What PRO and MAX add",
+      "lead": "A subscription adds depth on top of the free part: a fuller read of your game, partner matching, and alerts that save you an evening of chasing people.",
       "items": [
         {
           "icon": "chart",
           "title": "Deeper statistics",
-          "text": "The full breakdown of your game, and audience analytics if you organize. Until enough matches are on record there is nothing to show."
+          "text": "A full read of your game — streaks, steadiness, strengths, formats. For an organiser, the audience behind the tournaments: who comes back and what for."
         },
         {
           "icon": "target",
@@ -1177,7 +1177,7 @@
         {
           "icon": "sparkles",
           "title": "Card styling",
-          "text": "Some colours and patterns unlock through play, some through a subscription. The card itself everyone has."
+          "text": "Dozens of colours and patterns: some open up through results on court, some through a subscription."
         },
         {
           "icon": "bell",
@@ -1275,57 +1275,65 @@
     }
   },
   "appShots": {
-    "gamesList": {
-      "alt": "The list of games in the app: a match tonight and a Mexicano tomorrow, each with time, venue, entry fee and level.",
-      "caption": "Everything you need to decide is on the card. Level, fee, who is organising, how many spots are left."
-    },
-    "venueBooking": {
-      "alt": "A venue page in the app with a week of dates and the free slots on each court.",
-      "caption": "Free slots come from the club, not from a form you fill in and wait on."
-    },
-    "courtCard": {
-      "alt": "A court card with photo, price from, and the hours still free today.",
-      "caption": "Price and free hours before you tap. Not after three screens."
-    },
     "bestMatch": {
-      "alt": "A player in the list with the reasons the app put them there: level match, side of the court, shared interests.",
-      "caption": "The reason sits under the name. Not a badge that says “recommended”."
-    },
-    "community": {
-      "alt": "The community tab: players in the city sorted by how good a game you would have, each with the reason underneath.",
-      "caption": "Sorted by the game you would get, not by who is strongest. The reason sits under every name."
+      "alt": "Players in the city sorted by how good a game you would have, each with the reason underneath.",
+      "caption": "Sorted by the game you would get. The reason sits under every name."
     },
     "coachProfile": {
-      "alt": "A coach page in the app: price per lesson, what they teach, and where they work.",
-      "caption": "A student is not looking for lessons in general. They are looking for someone who fixes the thing that is broken."
+      "alt": "A coach page: price per lesson, what they teach and where they work.",
+      "caption": "A coach page answers the only question a student has: can you fix my backhand."
     },
     "coachSchedule": {
-      "alt": "A coach editing their own schedule: open hours, booked hours, and hours closed off.",
-      "caption": "The coach opens and closes hours themselves. No calls, no waiting on an administrator."
+      "alt": "A coach editing their own schedule: open hours, booked hours and hours closed off.",
+      "caption": "The coach opens and closes hours themselves, and the grid is always current."
     },
-    "playerStreak": {
-      "alt": "A player statistics card showing a run of recent results and the current streak.",
-      "caption": "Not just how many you won. When it started going well, and when it stopped."
+    "courtCard": {
+      "alt": "A court card with photo, price from and the hours still free today.",
+      "caption": "Price and free hours before you tap, not after three screens."
     },
-    "playerStability": {
-      "alt": "A player statistics card showing how steady results are and which side of the court works better.",
-      "caption": "Two players with the same rating play differently. This is where the difference shows."
+    "courts": {
+      "alt": "The courts tab: a week of dates and, on each venue, the hours still free today.",
+      "caption": "A week of courts at a glance, with the free hours already on the card."
     },
-    "playerTraits": {
-      "alt": "The strengths card: what partners and opponents name as a strength and what they name as a growth area.",
-      "caption": "Assessments come from people you actually played with, and they stay anonymous."
+    "gameFormats": {
+      "alt": "A donut chart of the formats a player plays most often, with the share of each.",
+      "caption": "Which formats you actually play, counted for you."
     },
-    "playerCard": {
-      "alt": "A player card in the app with a chosen background, win rate and rating.",
-      "caption": "The card is the first thing an organiser sees next to your name."
+    "gamesList": {
+      "alt": "The games list in the app: today and tomorrow, each card with time, venue, entry fee and level.",
+      "caption": "Open games near you, with everything you need to decide already on the card."
     },
     "organizerStats": {
       "alt": "Organiser statistics: how many players come back and which formats they come back for.",
-      "caption": "Which formats bring people back, and which quietly lose them."
+      "caption": "Which formats bring people back — with the numbers to prove it."
     },
-    "tournamentLive": {
-      "alt": "A round of a running tournament: court, both pairs, and the score being entered.",
-      "caption": "A score typed wrong is fixed in the round it happened. Nobody has to be called."
+    "playerCard": {
+      "alt": "A player card with a chosen background, win rate and rating.",
+      "caption": "The card is the first thing an organiser sees next to your name."
+    },
+    "playerStability": {
+      "alt": "A statistics card showing how steady results are and which side of the court works better.",
+      "caption": "Two players with the same rating play differently. Here you can see how."
+    },
+    "playerStreak": {
+      "alt": "A statistics card with the current run of results and the best streak.",
+      "caption": "Not just how many you won — when it started going well."
+    },
+    "playerTraits": {
+      "alt": "The strengths card: what partners and opponents name as a strength and as a growth area.",
+      "caption": "Assessments from the people you actually played with, and they stay anonymous."
+    },
+    "setMatch": {
+      "alt": "A finished match: both pairs, the score by sets and the rating change for each player.",
+      "caption": "The score goes in, and the rating of all four moves the same evening."
+    },
+    "venueBooking": {
+      "alt": "A venue page with a week of dates, a duration switch and the free slots on the courts.",
+      "caption": "Pick a day, a duration and an hour — the slots come straight from the club."
+    },
+    "winByFormat": {
+      "alt": "Win rate by format, one bar per format, with the number of games behind each.",
+      "caption": "The format you win most in is usually the one to build an evening around."
     }
   },
   "illustrationsMisc": {

@@ -50,7 +50,7 @@ export default async function OrganizersPage({
         ns={NS}
         primaryHref="/#download"
         secondaryHref="/organizers#formats"
-        aside={<AppShot name="tournament-live" priority />}
+        aside={<AppShot name="courts" priority />}
       />
 
       <Section tone="subtle">
@@ -76,7 +76,7 @@ export default async function OrganizersPage({
           titleKey={`${NS}.formats.title`}
           leadKey={`${NS}.formats.lead`}
           headingId="organizers-formats"
-          media={<AppShot name="games-list" />}
+          media={<AppShot name="game-formats" />}
         />
         <div className={blockStyles.stack}>
           <FeatureGrid itemsKey={`${NS}.formats.items`} />

@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import Image from 'next/image';
-import { getLocale } from 'next-intl/server';
 import { text } from '@/components/blocks/content';
 import manifest from './manifest.json';
 import styles from './appshot.module.css';
@@ -11,17 +10,16 @@ export type ShotName = keyof typeof manifest;
 const messageKey = (name: string) => name.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase());
 
 /**
- * A real screenshot of the app.
+ * A screenshot of the app, exactly as the app drew it.
  *
- * The files in `public/app/` are built by `npm run build:shots` from captures
- * of the running app — one file per locale, because the interface a visitor
- * sees on the site has to be in the language they picked on the site. Alt text
- * and the caption come from `appShots.*` in the message catalogue, so they are
- * translated and CMS-editable like every other string on the page.
+ * The files in `public/app/` are cut out of real captures by
+ * `npm run build:shots` — cropped and nothing else. Alt text and the caption
+ * come from `appShots.*` in the message catalogue, so the words around the
+ * picture are translated and CMS-editable even though the picture is not.
  *
- * Two shapes exist. A full screen goes inside a phone: real iPhone 19.5:9,
- * with the status bar and the island already in the pixels so nothing is drawn
- * over the app's own header. A crop is shown as a plain card — half a screen
+ * Two shapes exist. A whole screen goes inside a phone: real iPhone 19.5:9,
+ * with the status bar and the island in the pixels so nothing is drawn over
+ * the app's own header. A cut-out is shown as a plain card — half a screen
  * inside a phone reads as a broken phone.
  */
 export async function AppShot({
@@ -38,8 +36,7 @@ export async function AppShot({
   sizes?: string;
 }) {
   const key = messageKey(name);
-  const [locale, alt, caption] = await Promise.all([
-    getLocale(),
+  const [alt, caption] = await Promise.all([
     text(`appShots.${key}.alt`),
     captioned ? text(`appShots.${key}.caption`) : Promise.resolve(''),
   ]);
@@ -48,13 +45,15 @@ export async function AppShot({
 
   const image = (
     <Image
-      src={`/app/${name}.${locale}.webp`}
+      src={`/app/${name}.webp`}
       alt={alt}
       width={w}
       height={h}
       priority={priority}
       sizes={sizes ?? (frame ? '(max-width: 720px) 74vw, 300px' : '(max-width: 900px) 90vw, 520px')}
       className={frame ? styles.screen : styles.crop}
+      // Never blow a cut-out up past the pixels it actually has.
+      style={frame ? undefined : { maxWidth: `${w}px` }}
     />
   );
 

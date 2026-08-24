@@ -103,14 +103,17 @@ export default async function VenuesPage({
         <Steps itemsKey={`${NS}.steps.items`} />
       </Section>
 
-      <Comparison />
+      <Section labelledBy="venues-comparison">
+        <SectionHead titleKey="comparison.title" headingId="venues-comparison" />
+        <Comparison bare />
+      </Section>
 
-      <Section labelledBy="venues-faq">
+      <Section tone="subtle" labelledBy="venues-faq">
         <SectionHead titleKey={`${NS}.faq.title`} headingId="venues-faq" />
         <Faq itemsKey={`${NS}.faq.items`} />
       </Section>
 
-      <Section id="contact" tone="subtle" labelledBy="venues-contact">
+      <Section id="contact" labelledBy="venues-contact">
         <SectionHead
           eyebrowKey="contact.eyebrow"
           titleKey="contact.title"

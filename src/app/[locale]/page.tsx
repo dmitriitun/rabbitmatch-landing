@@ -83,7 +83,7 @@ export default async function Home({
           titleKey="players.match.title"
           leadKey="players.match.lead"
           headingId="home-match"
-          media={<AppShot name="community" />}
+          media={<AppShot name="best-match" />}
         />
       </Section>
 
@@ -94,9 +94,8 @@ export default async function Home({
           leadKey="home.why.lead"
           headingId="home-why"
         />
+        <Comparison bare />
       </Section>
-
-      <Comparison />
 
       <CtaBand
         titleKey="home.clubCta.title"

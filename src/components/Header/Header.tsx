@@ -61,7 +61,7 @@ export function Header() {
         <div className={styles.inner}>
           <Link href="/" className={styles.brand} aria-label={t('logoAlt')} onClick={() => tap()}>
             <Image
-              src="/images/logo.webp"
+              src="/images/logo-mark.webp"
               alt=""
               width={34}
               height={34}

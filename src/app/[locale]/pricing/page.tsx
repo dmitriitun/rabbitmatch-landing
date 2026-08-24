@@ -69,16 +69,15 @@ export default async function PricingPage({
         <FeatureGrid itemsKey={`${NS}.subs.items`} columns={4} />
       </Section>
 
-      <Section labelledBy="pricing-plans">
+      <Section id="pricing" labelledBy="pricing-plans">
         <SectionHead
           eyebrowKey={`${NS}.plans.eyebrow`}
           titleKey={`${NS}.plans.title`}
           leadKey={`${NS}.plans.lead`}
           headingId="pricing-plans"
         />
+        <Pricing bare />
       </Section>
-
-      <Pricing />
 
       <Section tone="subtle" labelledBy="pricing-commission">
         <SectionHead titleKey={`${NS}.commission.title`} headingId="pricing-commission" />
