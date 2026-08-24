@@ -55,7 +55,8 @@ cookie и `Accept-Language`.
 |---|---|
 | [`docs/infrastructure.md`](docs/infrastructure.md) | Стек, структура каталогов, БД, API, деплой |
 | [`docs/content.md`](docs/content.md) | Откуда взята каждая цифра на сайте и как править тексты |
-| [`docs/design-system.md`](docs/design-system.md) | Токены, примитивы, блоки страниц, иллюстрации |
+| [`docs/design-system.md`](docs/design-system.md) | Токены, примитивы, блоки страниц, скриншоты приложения, вертикальный ритм |
+| [`docs/screenshots-to-capture.md`](docs/screenshots-to-capture.md) | Какие экраны переснять, чтобы интерфейс на сайте стал русским |
 | [`docs/performance.md`](docs/performance.md) | Что ело память на Railway и что с этим сделано |
 | [`docs/seo.md`](docs/seo.md) | Локали, canonical/hreflang, JSON-LD, оптимизация под ИИ-поиск |
 | [`docs/telegram-chat.md`](docs/telegram-chat.md) | Чат на сайте ↔ Telegram: настройка бота и группы |
