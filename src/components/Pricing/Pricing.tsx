@@ -1,7 +1,6 @@
 import { Sparkles } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { EditableText } from '@/components/EditableText/EditableText';
-import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import { PricingCta } from './PricingCta';
 import styles from './Pricing.module.css';
 
@@ -13,90 +12,87 @@ const TIERS: ReadonlyArray<{ key: TierKey; featureCount: number; badge: 'popular
   { key: 'max', featureCount: 7, badge: 'ai' },
 ];
 
-export async function Pricing() {
+export async function Pricing({ headingId }: { headingId?: string } = {}) {
   const t = await getTranslations('pricing');
 
   return (
-    <section id="pricing" className={styles.section} aria-label={t('title')}>
-      <div className={styles.bgGlow} aria-hidden="true" />
-
+    <section id="pricing" className={styles.section} aria-labelledby={headingId}>
       <div className={styles.container}>
-        <ScrollReveal>
-          <EditableText tKey="pricing.title" as="h2" className={styles.title} />
-        </ScrollReveal>
+        <EditableText
+          tKey="pricing.title"
+          as="h2"
+          className={styles.title}
+        />
 
         <div className={styles.grid}>
-          {TIERS.map((tier, idx) => {
+          {TIERS.map((tier) => {
             const tg = (k: string) => t(`${tier.key}.${k}`);
-            const featureKeys = Array.from(
-              { length: tier.featureCount },
-              (_, i) => ({ key: `feature${i + 1}`, value: tg(`feature${i + 1}`) }),
-            ).filter((f) => Boolean(f.value));
+            const featureKeys = Array.from({ length: tier.featureCount }, (_, i) => ({
+              key: `feature${i + 1}`,
+              value: tg(`feature${i + 1}`),
+            })).filter((f) => Boolean(f.value));
 
             return (
-              <ScrollReveal
+              <article
                 key={tier.key}
-                delayMs={150 + idx * 120}
-                className={`${styles.cardWrap} ${tier.key === 'comfort' ? styles.cardWrapPopular : ''}`}
+                className={`${styles.card} ${tier.key === 'comfort' ? styles.cardPopular : ''}`}
               >
-                <article className={`${styles.card} ${styles[`card_${tier.key}`]}`}>
-                  {tier.badge === 'popular' ? (
-                    <EditableText
-                      tKey="pricing.badgePopular"
-                      as="span"
-                      className={styles.badgePopular}
-                    />
-                  ) : null}
-                  {tier.badge === 'ai' ? (
-                    <span className={styles.badgeAi}>
-                      <Sparkles size={12} aria-hidden="true" />
-                      <EditableText tKey="pricing.badgeAi" as="span" />
-                    </span>
-                  ) : null}
+                {tier.badge === 'popular' ? (
+                  <EditableText
+                    tKey="pricing.badgePopular"
+                    as="span"
+                    className={styles.badgePopular}
+                  />
+                ) : null}
+                {tier.badge === 'ai' ? (
+                  <span className={styles.badgeAi}>
+                    <Sparkles size={12} aria-hidden="true" />
+                    <EditableText tKey="pricing.badgeAi" as="span" />
+                  </span>
+                ) : null}
 
-                  <header className={styles.cardHead}>
-                    <EditableText
-                      tKey={`pricing.${tier.key}.name`}
-                      as="h3"
-                      className={`${styles.name} ${styles[`name_${tier.key}`]}`}
-                    />
-                    <EditableText
-                      tKey={`pricing.${tier.key}.tagline`}
-                      as="p"
-                      multiline
-                      className={styles.tagline}
-                    />
-                  </header>
+                <header className={styles.cardHead}>
+                  <EditableText
+                    tKey={`pricing.${tier.key}.name`}
+                    as="h3"
+                    className={styles.name}
+                  />
+                  <EditableText
+                    tKey={`pricing.${tier.key}.tagline`}
+                    as="p"
+                    multiline
+                    className={styles.tagline}
+                  />
+                </header>
 
-                  <ul className={styles.features}>
-                    {featureKeys.map((feature) => (
-                      <li key={feature.key} className={styles.feature}>
-                        <span className={styles.featureDot} aria-hidden="true" />
-                        <EditableText tKey={`pricing.${tier.key}.${feature.key}`} as="span" />
-                      </li>
-                    ))}
-                  </ul>
+                <div className={styles.prices}>
+                  <PricePill
+                    labelKey="pricing.monthly"
+                    oldKey={`pricing.${tier.key}.priceMonthlyOld`}
+                    newKey={`pricing.${tier.key}.priceMonthlyNew`}
+                    suffixKey="pricing.perMonth"
+                  />
+                  <PricePill
+                    labelKey="pricing.annual"
+                    oldKey={`pricing.${tier.key}.priceAnnualOld`}
+                    newKey={`pricing.${tier.key}.priceAnnualNew`}
+                    suffixKey="pricing.perMonth"
+                  />
+                </div>
 
-                  <div className={styles.prices}>
-                    <PricePill
-                      labelKey="pricing.monthly"
-                      oldKey={`pricing.${tier.key}.priceMonthlyOld`}
-                      newKey={`pricing.${tier.key}.priceMonthlyNew`}
-                      suffixKey="pricing.perMonth"
-                    />
-                    <PricePill
-                      labelKey="pricing.annual"
-                      oldKey={`pricing.${tier.key}.priceAnnualOld`}
-                      newKey={`pricing.${tier.key}.priceAnnualNew`}
-                      suffixKey="pricing.perMonth"
-                    />
-                  </div>
+                <ul className={styles.features}>
+                  {featureKeys.map((feature) => (
+                    <li key={feature.key} className={styles.feature}>
+                      <span className={styles.featureDot} aria-hidden="true" />
+                      <EditableText tKey={`pricing.${tier.key}.${feature.key}`} as="span" />
+                    </li>
+                  ))}
+                </ul>
 
-                  <div className={styles.ctaWrap}>
-                    <PricingCta label={t('cta')} variant={tier.key} />
-                  </div>
-                </article>
-              </ScrollReveal>
+                <div className={styles.ctaWrap}>
+                  <PricingCta label={t('cta')} variant={tier.key} />
+                </div>
+              </article>
             );
           })}
         </div>

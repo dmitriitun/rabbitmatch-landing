@@ -61,7 +61,7 @@ export function ContactModal({ onClose, source = 'modal' }: Props) {
           <p className={styles.subtitle}>{t('lead')}</p>
         </div>
 
-        <ContactForm source={source} variant="light" firstFieldRef={firstFieldRef} />
+        <ContactForm source={source} firstFieldRef={firstFieldRef} />
       </div>
     </div>
   );

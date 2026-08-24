@@ -1,0 +1,124 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(11, 11, 11, 0.4);
+}
+
+.panel {
+  width: 100%;
+  max-width: 720px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ink-3);
+}
+
+.key {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--fs-xs);
+  color: var(--ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.locale {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-tint);
+  color: var(--ink);
+}
+
+.close {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--ink-2);
+}
+.close:hover { background: var(--bg-subtle); }
+
+.textarea {
+  width: 100%;
+  resize: vertical;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: var(--bg-subtle);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+
+.textarea:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.error {
+  font-size: var(--fs-sm);
+  color: var(--danger);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hint {
+  margin-right: auto;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+.cancel,
+.save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.cancel { color: var(--ink-2); }
+.cancel:hover { background: var(--bg-subtle); }
+
+.save { background: var(--ink); color: var(--ink-inverse); }
+.save:hover { background: #262626; }
+.save:disabled { opacity: 0.6; cursor: default; }
+
+.spin { animation: rmSpin 800ms linear infinite; }
+
+@keyframes rmSpin {
+  to { transform: rotate(360deg); }
+}
+
+@media (min-width: 720px) {
+  .backdrop { align-items: center; }
+}

@@ -1,0 +1,525 @@
+/* Shared styles for the page-level building blocks (PageHero, FeatureGrid,
+   Steps, Faq, CtaBand, AppBadges). One module so every content page inherits
+   identical rhythm without each page re-declaring layout. */
+
+/* --- Section ------------------------------------------------------------ */
+
+.section {
+  padding-block: clamp(56px, 8vw, 112px);
+}
+
+.subtle { background: var(--bg-subtle); }
+.tint   { background: var(--bg-tint); }
+.dark   { background: var(--bg-dark); color: var(--ink-inverse); }
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+.head {
+  max-width: 780px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.headCentered {
+  margin-inline: auto;
+  text-align: center;
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.dark .eyebrow { color: var(--lime); }
+
+.title {
+  font-size: var(--fs-h2);
+}
+
+.lead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.dark .lead { color: rgba(255, 255, 255, 0.72); }
+
+/* --- PageHero ----------------------------------------------------------- */
+
+.hero {
+  padding-block: clamp(48px, 7vw, 96px) clamp(40px, 6vw, 80px);
+  border-bottom: 1px solid var(--line);
+}
+
+.heroInner {
+  display: grid;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.heroCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.heroBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-tint);
+  border: 1px solid rgba(11, 11, 11, 0.08);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  font-size: var(--fs-h1);
+}
+
+.heroLead {
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 56ch;
+}
+
+.heroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/* Bullet list used inside hero copy on audience pages */
+.heroPoints {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.heroPoint {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 15px;
+  color: var(--ink-2);
+}
+
+.heroPointMark {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: var(--radius-pill);
+  background: var(--lime);
+  color: var(--on-lime);
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+/* --- Stat strip --------------------------------------------------------- */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.statItem {
+  background: var(--bg);
+  padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dark .stats { background: rgba(255, 255, 255, 0.14); border-color: rgba(255, 255, 255, 0.14); }
+.dark .statItem { background: var(--bg-dark); }
+
+.statValue {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.dark .statLabel { color: rgba(255, 255, 255, 0.6); }
+
+/* --- Feature grid ------------------------------------------------------- */
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.feature {
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: border-color var(--duration-base) var(--ease-out);
+}
+
+.feature:hover { border-color: var(--ink); }
+
+.dark .feature {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.dark .feature:hover { border-color: var(--lime); }
+
+.featureIcon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  background: var(--bg-tint);
+  color: var(--ink);
+}
+
+.dark .featureIcon { background: var(--lime); color: var(--on-lime); }
+
+.featureTitle {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.featureText {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.dark .featureText { color: rgba(255, 255, 255, 0.68); }
+
+/* --- Split: copy on one side, an illustration on the other --------------- */
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(32px, 5vw, 64px);
+  align-items: center;
+}
+
+.splitCopy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.splitMedia {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .split { grid-template-columns: 1fr 1fr; }
+  /* Media first on the page, copy second — reads better when the picture is
+     the argument and the text is the caption. */
+  .splitReversed .splitCopy { order: 2; }
+  .splitReversed .splitMedia { order: 1; }
+}
+
+/* --- Audience card ------------------------------------------------------ */
+
+.audienceCard {
+  height: 100%;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition:
+    border-color var(--duration-base) var(--ease-out),
+    background var(--duration-base) var(--ease-out);
+}
+
+.audienceCard:hover {
+  border-color: var(--ink);
+  background: var(--bg-tint);
+}
+
+.audienceCta {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+/* --- Steps -------------------------------------------------------------- */
+
+.steps {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  counter-reset: rmstep;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: var(--space-4);
+  padding-block: var(--space-6);
+  border-top: 1px solid var(--line);
+  align-items: start;
+}
+
+.step:last-child { border-bottom: 1px solid var(--line); }
+
+.dark .step { border-color: rgba(255, 255, 255, 0.14); }
+
+.stepNum {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  padding-top: 4px;
+}
+
+.dark .stepNum { color: var(--lime); }
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.stepTitle {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.stepText {
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  max-width: 62ch;
+}
+
+.dark .stepText { color: rgba(255, 255, 255, 0.68); }
+
+/* --- FAQ ---------------------------------------------------------------- */
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  max-width: 860px;
+}
+
+.faqItem {
+  border-top: 1px solid var(--line);
+}
+
+.faqItem:last-child { border-bottom: 1px solid var(--line); }
+
+.faqSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-block: var(--space-5);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  cursor: pointer;
+  list-style: none;
+}
+
+.faqSummary::-webkit-details-marker { display: none; }
+
+.faqSummary::after {
+  content: '';
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+  transform: rotate(45deg) translate(-3px, -3px);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.faqItem[open] .faqSummary::after {
+  transform: rotate(225deg) translate(-3px, -3px);
+}
+
+.faqAnswer {
+  padding-bottom: var(--space-6);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  max-width: 72ch;
+  white-space: pre-wrap;
+}
+
+/* --- CTA band ----------------------------------------------------------- */
+
+.cta {
+  background: var(--ink);
+  color: var(--ink-inverse);
+  padding-block: clamp(56px, 8vw, 104px);
+}
+
+.ctaInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.ctaTitle {
+  font-size: var(--fs-h2);
+  max-width: 20ch;
+}
+
+.ctaLead {
+  margin-top: var(--space-3);
+  font-size: var(--fs-lead);
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 56ch;
+}
+
+/* Centres a block inside a section — used by the download band. */
+.center {
+  display: flex;
+  justify-content: center;
+}
+
+/* Separates a second block inside one section (e.g. a Split followed by a
+   FeatureGrid) without opening a new section band. */
+.stack {
+  margin-top: clamp(32px, 5vw, 56px);
+}
+
+/* Two illustrations side by side. */
+.pairWide {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(28px, 4vw, 48px);
+  margin-top: clamp(32px, 5vw, 56px);
+  align-items: start;
+}
+
+@media (min-width: 900px) {
+  .pairWide { grid-template-columns: 1fr 1fr; }
+}
+
+/* --- App badges --------------------------------------------------------- */
+
+.badges {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 560px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 56px;
+  padding: 0 18px;
+  border-radius: var(--radius-md);
+  background: var(--ink);
+  color: var(--ink-inverse);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.badge:hover { background: #262626; }
+
+.dark .badge {
+  background: var(--ink-inverse);
+  color: var(--ink);
+}
+.dark .badge:hover { background: #E9E9E6; }
+
+.badgeDisabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.badgeText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.15;
+}
+
+.badgeSmall {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.badgeLabel {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* --- Breakpoints -------------------------------------------------------- */
+
+@media (min-width: 560px) {
+  .badges { grid-template-columns: repeat(2, 1fr); }
+  .features { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 900px) {
+  .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .features { grid-template-columns: repeat(3, 1fr); }
+  .badges { grid-template-columns: repeat(4, 1fr); max-width: 900px; }
+  .step { grid-template-columns: 72px 1fr; gap: var(--space-6); }
+  .ctaInner {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-10);
+  }
+  .heroInner.heroWithAside {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+/* Two-column variant for grids that read better with wider cards */
+@media (min-width: 900px) {
+  .featuresTwo { grid-template-columns: repeat(2, 1fr); }
+  .featuresFour { grid-template-columns: repeat(4, 1fr); }
+}

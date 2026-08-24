@@ -1,25 +1,61 @@
-# Auth + inline content editing
+# Auth + правка контента на месте
 
-Лендинг приобретает админский режим: после входа кнопка справа сверху превращается в email-меню, а все обёрнутые тексты — в клик-редактируемые. Изменения хранятся в Postgres и приоритетнее текстов из `messages/*.json`.
+После входа админ может кликнуть по любому тексту на сайте и отредактировать
+его. Правки лежат в Postgres и имеют приоритет над `messages/*.json`.
 
 ## Жизненный цикл
 
 ```
-visitor → sees: t(key) merged with content_overrides
-admin   → sees: same text, but on hover лайм-рамка; click → edit; save → PUT /api/content
-              ↓
-        content_overrides upsert (locale, key, value)
-              ↓
-        router.refresh() → getRequestConfig() → loadOverridesAndMerge() → new messages
-              ↓
-        NextIntlClientProvider re-renders → useTranslations consumers update
+посетитель → видит: t(key), смёрженный с content_overrides
+админ      → тот же текст, но с пунктирной рамкой на hover;
+             клик → панель редактора → PUT /api/content
+                 ↓
+             upsert content_overrides (locale, key, value)
+                 ↓
+             invalidateContentCache() + router.refresh()
+                 ↓
+             getRequestConfig() → loadOverridesAndMerge() → новый каталог
 ```
 
-## БД и миграция
+## Как это устроено сейчас
 
-Миграция `0002_is_admin` добавляет в `users` колонку `is_admin BOOLEAN NOT NULL DEFAULT FALSE` (idempotent через `ADD COLUMN IF NOT EXISTS`). Существующие пользователи с `role = 'admin'` получают `is_admin = TRUE`.
+Раньше `EditableText` был **клиентским** компонентом: каждый заголовок, подпись
+и пункт списка открывал собственную клиентскую границу. Их на странице сотни, и
+все они сериализовались в RSC-payload и гидрировались в браузере — ради функции,
+которой пользуются несколько админ-сессий.
 
-Таблица `content_overrides (locale, key, value, updated_by, updated_at)` уже существовала из миграции 0001.
+Теперь роли разделены:
+
+- **`EditableText`** (`src/components/EditableText/`) — **серверный**
+  компонент. Резолвит строку через `getTranslations` и рендерит обычный HTML с
+  атрибутом `data-rm-key="hero.title"`. Публичный посетитель не получает ни
+  байта JavaScript из-за этого компонента.
+- **`AdminEditLayer`** (`src/components/AdminEditLayer/`) — **один** клиентский
+  компонент на всю страницу. Если сессия админская, он вешает `.rm-editable-mode`
+  на `<html>` (это включает CSS-подсветку) и один делегированный обработчик
+  кликов на `document`. Клик по элементу с `data-rm-key` открывает панель
+  редактора. Не админ — компонент возвращает `null`, ничего не вешая.
+
+Alt+клик проходит насквозь: так админ может пользоваться ссылками и кнопками,
+внутри которых лежит редактируемый текст.
+
+## Резолв сессии
+
+`AuthProvider` больше **не** получает сессию с сервера. Чтение `cookies()` в
+layout делало каждую страницу динамической и стоило полного рендера React на
+каждый запрос — при том, что трафик почти целиком анонимный (см.
+`docs/performance.md`).
+
+Вместо этого роут логина ставит рядом с httpOnly-cookie `rm_session` читаемую
+cookie-подсказку `rm_signed_in`. Она не несёт никаких прав, сервер её не читает
+и никому не доверяет — она лишь говорит браузеру «имеет смысл спросить
+`/api/auth/me`». Браузер без подсказки не делает ни одного auth-запроса и
+получает статический HTML.
+
+Обе cookie ставятся в `setSessionCookie()` и снимаются в `clearSessionCookie()` —
+рассинхронизироваться они не могут. Имена вынесены в `src/lib/auth-shared.ts`,
+потому что `lib/auth.ts` помечен `server-only` и клиентом импортироваться не
+может.
 
 ## Создание админа
 
@@ -27,103 +63,61 @@ admin   → sees: same text, but on hover лайм-рамка; click → edit; s
 DATABASE_URL=postgres://... npm run create-admin -- you@example.com 'super-secret-pass'
 ```
 
-Под капотом — `tsx scripts/create-admin.ts`. Скрипт идемпотентный: если email уже существует, обновляет пароль и форсит `is_admin = TRUE`.
-
-Регистрации через сайт нет.
+Скрипт идемпотентный: если email уже есть, обновляет пароль и выставляет
+`is_admin = TRUE`. Регистрации через сайт нет.
 
 ## API
 
 | Метод | Путь | Доступ | Что делает |
 |---|---|---|---|
-| `POST` | `/api/auth/login` | публичный | Проверяет email/пароль, ставит JWT-куки `rm_session`. Тело ответа содержит `{ user: { email, isAdmin } }`. |
-| `POST` | `/api/auth/logout` | публичный | Чистит куки. |
-| `GET`  | `/api/auth/me` | публичный | Возвращает текущую сессию (`{ user: null }` если не залогинен). |
-| `GET`  | `/api/content` | публичный | Все overrides; опциональный `?locale=` для фильтра. |
-| `PUT`  | `/api/content` | **только admin** | Upsert `(locale, key, value)`. Возвращает 401 без сессии, 403 если не админ. |
+| `POST` | `/api/auth/login` | публичный | Проверяет email/пароль, ставит `rm_session` + `rm_signed_in`. Отдаёт `{ user: { email, isAdmin } }`. |
+| `POST` | `/api/auth/logout` | публичный | Снимает обе cookie. |
+| `GET` | `/api/auth/me` | публичный | Текущая сессия или `{ user: null }`. |
+| `GET` | `/api/content` | публичный | Все переопределения; фильтр `?locale=`. |
+| `PUT` | `/api/content` | **только админ** | Upsert `(locale, key, value)`. 401 без сессии, 403 не админу. |
 
-JWT-payload теперь включает `isAdmin: boolean`. `getSession()` восстанавливает его в `SessionPayload.isAdmin`.
+## Слияние с каталогом
 
-## i18n merge
+`src/i18n/request.ts` → `loadMessages()` → `loadOverridesAndMerge(locale, base)`:
 
-`src/i18n/request.ts` после загрузки JSON-каталога вызывает `loadOverridesAndMerge(locale, base)`:
+1. Проверяет кэш смёрженного каталога (TTL `CONTENT_CACHE_TTL_MS`, по умолчанию
+   60 с). Попадание — возврат без запроса к БД.
+2. Иначе `SELECT key, value FROM content_overrides WHERE locale = $1`.
+3. Ноль строк — базовый объект возвращается как есть, без клонирования.
+4. Иначе — клон базы и `applyOverride()` на каждую строку: ключ
+   `'pricing.classic.priceMonthlyNew'` расщепляется на путь, промежуточные узлы
+   создаются при необходимости.
+5. Ошибка БД (например, сборка без живого DSN) — warning в dev и возврат базы.
+   Сборка остаётся зелёной без БД.
 
-1. `SELECT key, value FROM content_overrides WHERE locale = $1`.
-2. Если ноль строк — возвращает базу как есть (быстрый путь).
-3. Иначе делает глубокий clone базы и применяет `applyOverride()` для каждой строки — расщепляет `'pricing.classic.priceMonthlyNew'` на путь и записывает значение в нужный лист, создавая промежуточные узлы при необходимости.
-4. При ошибке БД (например, во время `next build` со стабом DSN) — логирует warning в dev и возвращает базу. Это держит сборку зелёной даже без живой БД.
+Кэшируется именно **результат**, а не строки: раньше клон полного каталога
+делался на каждый рендер и был основным источником мусора в куче.
 
-Время вызова — один SELECT за запрос. На страничку с десятками EditableText это всё равно один запрос.
+## Что редактируемо
 
-## AuthProvider
+Любой текст, отрендеренный через `EditableText`, плюс всё, что блоки в
+`src/components/blocks/` помечают атрибутом `data-rm-key` — а это заголовки
+секций, карточки, шаги, статистика и вопросы FAQ, включая элементы массивов
+(`players.features.2.title`).
 
-`src/components/Providers/AuthProvider.tsx` — клиентский провайдер.
+Не редактируемо намеренно:
 
-- Получает `initialUser` со стороны `RootLayout` (sync с server `getSession()`), чтобы первый рендер уже знал про админа без мерцания.
-- Экспонирует `useAuth()` (бросает, если вне провайдера) и `useAuthOptional()` (возвращает `null`).
-- `setUser` — для апдейта после login.
-- `logout` — POST `/api/auth/logout`, чистит локальное состояние и делает `router.refresh()`.
+- названия сторов (`App Store`, `Google Play`) — бренды;
+- лейблы и плейсхолдеры форм, тексты ошибок — служебный UI, а не контент;
+- надписи на кнопках с собственным `onClick` — правятся через JSON-каталог.
 
-`RootLayout` оборачивает `<Header />`, `{children}` и `<Footer />` в `<AuthProvider initialUser={...}>`.
+## Проверка полного цикла
 
-## EditableText
-
-Универсальная обёртка над любым переводимым текстом:
-
-```tsx
-<EditableText tKey="hero.title" as="h1" className={styles.title} />
-<EditableText tKey="hero.subtitle" as="p" multiline className={styles.subtitle} />
-```
-
-Поведение:
-
-- **Не-админ** (`auth.user?.isAdmin !== true`) — рендерит чистый `<Tag>{t(key)}</Tag>`, без дополнительного DOM и без обработчиков. Нулевой вес для публики.
-- **Админ, idle** — `role="button"`, лайм-точка-пунктир-рамка на hover/focus, пиктограмма карандаша слева, `title="Click to edit (hero.title)"`. `onClick` / `Enter` / Space → режим редактирования. `e.preventDefault()` + `e.stopPropagation()` — клик не активирует родительские `<a>` / `<button>`.
-- **Админ, editing** — рендерит подсвеченный input (или textarea при `multiline`), показывает ключ для ориентира, кнопки Save / Cancel. `Esc` отменяет, `Enter` (не-multiline) или `Cmd/Ctrl+Enter` (multiline) сохраняет.
-- **Save** → `PUT /api/content` с `{ key, locale, value }`. Если значение не изменилось — просто закрывает редактор. После успешного ответа `router.refresh()` — RSC перерисовываются с новыми сообщениями.
-- **Ошибка сохранения** — inline-метка "Save failed", повтор возможен.
-
-Использует `useTranslations(namespace)` внутри, где namespace — всё до последней точки в `tKey`. Это даёт корректное поведение и в server, и в client дереве (next-intl поддерживает useTranslations в обоих).
-
-## Header / LoginModal
-
-- Заголовок модалки сменён с `Admin sign in / Вход для админов` → `Sign in / Войти` (и подзаголовок — нейтральный `Welcome back`). Снаружи нет упоминаний что вход админский.
-- `LoginModal` после успеха зовёт `setUser({ email, isAdmin })` из `AuthProvider` и `router.refresh()` — нет дёрганья окна.
-- В Header при `user !== null` вместо «Log in» рендерится `<UserMenu>`: лайм-pill с иконкой `User` и email (обрезается до 22 символов с `…`). Клик открывает дропдаун с полным email и кнопкой Logout. Дропдаун закрывается по Esc и клику вне.
-
-## Где обёрнуто EditableText
-
-Все основные видимые тексты:
-
-| Секция | Ключи |
-|---|---|
-| Hero | `hero.eyebrow`, `hero.title`, `hero.subtitle`, `hero.stats.*Label` |
-| Solution | `solution.eyebrow`, `solution.lead`, `solution.platform`, `solution.items.*`, `solution.aiHighlight` |
-| Players | `players.eyebrow`, `players.title`, `players.tournamentsTitle/Body/Highlight`, `players.bookingTitle/Body/Highlight`, `players.controlTitle/Body/Highlight` |
-| Launch | `launch.eyebrow`, `launch.title`, `launch.intro1Highlight/Body`, `launch.intro2Highlight/Body`, `launch.step*Title/Body` |
-| Comparison | `comparison.title`, `comparison.col*`, `comparison.rows.*`, `comparison.values.*` |
-| Pricing | `pricing.title`, `pricing.badgePopular/Ai`, `pricing.monthly/annual/perMonth`, `pricing.{tier}.name/tagline/feature1..7/priceMonthlyOld/New/priceAnnualOld/New` |
-| Contact | `contact.eyebrow`, `contact.title`, `contact.lead` |
-| Footer | `footer.tagline`, `footer.navTitle/legalTitle`, `footer.privacy/terms` |
-
-Что **не** обёрнуто и почему:
-
-- Названия app-стора (`App Store`, `Google Play`) — это бренды, их менять нельзя.
-- Лейблы и плейсхолдеры форм (Name, Email, Message…) — это служебные тексты UI, редактирование пока выглядит как переусложнение. Можно добавить позже одним проходом.
-- CTA-кнопки (`Get Started`, `Choose this plan`, `Connect your club for free`) — кнопки имеют собственный onClick (открыть модалку, скроллнуть). Вставить EditableText внутрь сломало бы их основное действие. Их редактирование оставлено через JSON-каталог.
-- Текст ошибок/успеха формы — то же, не пользовательский контент.
-
-## Тест полного цикла
-
-Локально (с настоящей `DATABASE_URL`):
+С живой `DATABASE_URL`:
 
 1. `npm run create-admin -- me@example.com s3cret-password-please`
-2. `npm run dev`
-3. Открыть `http://localhost:3000`, кликнуть «Log in», ввести email/пароль. Кнопка превращается в `me@example.com`.
-4. Навести курсор на любой обёрнутый текст — пунктирная лайм-рамка + карандаш.
-5. Клик → input. Изменить значение → Save. Через ~0.5s текст обновлён.
-6. Открыть DevTools → Network: видно `PUT /api/content` (200) и `RSC` payload на refresh с обновлёнными messages.
-7. В БД: `SELECT locale, key, value FROM content_overrides WHERE key = 'hero.title';` — строка есть.
-8. Открыть страницу в incognito (нет cookie) — текст уже обновлён (override применяется ко всем).
-9. Кликнуть на email в Header → Logout → кнопка снова `Log in`, тексты больше не редактируемые.
-
-Без живой БД (как в текущем build-окружении со `DATABASE_URL=stub`) — `loadOverridesAndMerge` ловит ошибку и возвращает базовый JSON, страница рендерится корректно без overrides.
+2. `npm run dev`, открыть `http://localhost:3000`
+3. «Войти», ввести email/пароль. Кнопка превращается в меню с email.
+4. Навести на любой текст — пунктирная рамка. Клик — панель редактора.
+5. Изменить значение, `Cmd/Ctrl+Enter` или Save.
+6. DevTools → Network: `PUT /api/content` (200), затем RSC-payload с новым
+   текстом.
+7. `SELECT locale, key, value FROM content_overrides WHERE key = 'hero.title';`
+   — строка на месте.
+8. Открыть в инкогнито: правка видна всем (с задержкой до TTL кэша).
+9. Logout — рамки исчезают, `rm_signed_in` снята.

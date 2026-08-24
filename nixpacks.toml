@@ -1,0 +1,22 @@
+# Railway build for the standalone Next.js output.
+#
+# `output: 'standalone'` emits `.next/standalone/server.js` plus only the
+# traced node_modules. It deliberately does *not* copy `public/` or
+# `.next/static/` — those are expected to sit behind a CDN — so the build
+# copies them in, which lets the standalone server serve them directly.
+
+[phases.setup]
+nixPkgs = ['nodejs_22']
+
+[phases.install]
+cmds = ['npm ci']
+
+[phases.build]
+cmds = [
+  'npm run build',
+  'cp -r public .next/standalone/public',
+  'cp -r .next/static .next/standalone/.next/static',
+]
+
+[start]
+cmd = 'node .next/standalone/server.js'

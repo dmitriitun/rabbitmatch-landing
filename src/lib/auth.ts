@@ -2,8 +2,10 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
 import bcrypt from 'bcryptjs';
+import { AUTH_COOKIE, AUTH_HINT_COOKIE } from './auth-shared';
 
-export const AUTH_COOKIE = 'rm_session';
+export { AUTH_COOKIE, AUTH_HINT_COOKIE };
+
 const TOKEN_TTL_SECONDS = 60 * 60 * 24 * 7;
 
 export type SessionPayload = {
@@ -66,11 +68,24 @@ export async function setSessionCookie(token: string): Promise<void> {
     path: '/',
     maxAge: TOKEN_TTL_SECONDS,
   });
+  // Readable companion so the browser knows it is worth asking who it is.
+  // It carries no identity and the server never reads it — the httpOnly
+  // session cookie remains the only source of authority.
+  jar.set({
+    name: AUTH_HINT_COOKIE,
+    value: '1',
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: TOKEN_TTL_SECONDS,
+  });
 }
 
 export async function clearSessionCookie(): Promise<void> {
   const jar = await cookies();
   jar.delete(AUTH_COOKIE);
+  jar.delete(AUTH_HINT_COOKIE);
 }
 
 export async function getSession(): Promise<SessionPayload | null> {

@@ -2,30 +2,30 @@
 
 import { useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/navigation';
+import { locales, type Locale } from '@/i18n/config';
 import { tap } from '@/lib/haptics';
 import styles from './LanguageSwitcher.module.css';
 
-type LangCode = 'en' | 'ru';
-
-const ORDER: LangCode[] = ['en', 'ru'];
-
+/**
+ * Switching language is now a navigation, not a cookie write plus a refresh:
+ * `/en/players` ↔ `/ru/players`. `usePathname` from `@/i18n/navigation`
+ * returns the path *without* the locale prefix, so the same call works from
+ * any page. next-intl still persists the choice in `NEXT_LOCALE` so a later
+ * visit to `/` lands on the right side.
+ */
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
-  const locale = useLocale() as LangCode;
+  const locale = useLocale() as Locale;
   const t = useTranslations('nav');
+  const pathname = usePathname();
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  const setLang = (next: LangCode) => {
+  const setLang = (next: Locale) => {
     if (next === locale) return;
     tap();
-    startTransition(async () => {
-      await fetch('/api/locale', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ locale: next }),
-      });
-      router.refresh();
+    startTransition(() => {
+      router.replace(pathname, { locale: next });
     });
   };
 
@@ -35,7 +35,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       role="group"
       aria-label={t('switchLanguage')}
     >
-      {ORDER.map((code) => {
+      {locales.map((code) => {
         const active = code === locale;
         return (
           <button

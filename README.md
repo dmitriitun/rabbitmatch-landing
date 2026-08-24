@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# rabbitmatch-landing
 
-## Getting Started
+Маркетинговый сайт [rabbitmatch.pro](https://rabbitmatch.pro) — платформы для
+падела и других ракеточных видов спорта.
 
-First, run the development server:
+Next.js 16 (App Router) · React 19 · TypeScript · CSS Modules · PostgreSQL ·
+next-intl. Разворачивается на Railway.
+
+## Быстрый старт
 
 ```bash
+npm ci
+cp .env.example .env.local   # заполнить DATABASE_URL и JWT_SECRET
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+`http://localhost:3000` редиректит на `/en` или `/ru` — локаль определяется по
+cookie и `Accept-Language`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Без живой базы сайт тоже поднимется: слой переопределений контента ловит ошибку
+подключения и отдаёт тексты из `messages/*.json`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Скрипты
 
-## Learn More
+| Команда | Что делает |
+|---|---|
+| `npm run dev` | Дев-сервер |
+| `npm run build` | Продакшен-сборка (`output: 'standalone'`) |
+| `npm run lint` | ESLint |
+| `npm run create-admin -- email пароль` | Создать/обновить админа CMS |
+| `npm run translate` | Доперевести EN → RU через Azure Translator |
+| `npm run telegram:webhook set\|info\|delete` | Управление вебхуком бота поддержки |
 
-To learn more about Next.js, take a look at the following resources:
+## Структура сайта
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+/{locale}            обзор и маршрутизация по аудиториям
+/{locale}/players    игрокам
+/{locale}/organizers организаторам турниров
+/{locale}/coaches    тренерам
+/{locale}/venues     клубам и владельцам кортов
+/{locale}/padel      справочник: что такое падел
+/{locale}/pricing    тарифы
+/{locale}/faq        сводный FAQ
+/{locale}/legal/*    юридические документы
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Добавление страницы: создать `src/app/[locale]/<путь>/page.tsx` и дописать
+маршрут в `routes` в `src/lib/site.ts` — этого достаточно, чтобы страница попала
+в `sitemap.xml`, в hreflang-кластер и в `/llms.txt`.
 
-## Deploy on Vercel
+## Документация
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Файл | О чём |
+|---|---|
+| [`docs/infrastructure.md`](docs/infrastructure.md) | Стек, структура каталогов, БД, API, деплой |
+| [`docs/content.md`](docs/content.md) | Откуда взята каждая цифра на сайте и как править тексты |
+| [`docs/design-system.md`](docs/design-system.md) | Токены, примитивы, блоки страниц, иллюстрации |
+| [`docs/performance.md`](docs/performance.md) | Что ело память на Railway и что с этим сделано |
+| [`docs/seo.md`](docs/seo.md) | Локали, canonical/hreflang, JSON-LD, оптимизация под ИИ-поиск |
+| [`docs/telegram-chat.md`](docs/telegram-chat.md) | Чат на сайте ↔ Telegram: настройка бота и группы |
+| [`docs/auth-and-editing.md`](docs/auth-and-editing.md) | Админ-сессии и правка контента на месте |
+| [`docs/i18n-auto-translation.md`](docs/i18n-auto-translation.md) | CI-перевод EN → RU |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Контент
+
+Все тексты — в `messages/en.json` (источник) и `messages/ru.json`. Русская
+версия написана вручную, а не переведена машинно; `messages/.translation-cache.json`
+хранит английский оригинал каждого ключа, чтобы ночной джоб не перезаписал
+курированный перевод.
+
+Факты на сайте взяты из репозитория приложения
+[`dmitriitun/rabbitMatch`](https://github.com/dmitriitun/rabbitMatch). Что откуда
+— в [`docs/content.md`](docs/content.md); туда же стоит заглянуть перед тем, как
+менять любую цифру.
+
+Любой ключ можно поправить прямо на сайте, войдя админом — правка ложится в
+таблицу `content_overrides` и переопределяет JSON без деплоя.

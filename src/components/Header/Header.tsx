@@ -2,35 +2,42 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { LogIn, Menu, X } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { LoginModal } from '@/components/LoginModal/LoginModal';
 import { useAuth } from '@/components/Providers/AuthProvider';
+import { Link, usePathname } from '@/i18n/navigation';
 import { tap } from '@/lib/haptics';
 import styles from './Header.module.css';
 import { UserMenu } from './UserMenu';
 
-type NavLinkId = 'products' | 'clubs' | 'organizers' | 'playersNav' | 'contact';
-type NavLink = { id: NavLinkId; target: string };
-
-const LINKS: NavLink[] = [
-  { id: 'products', target: 'features' },
-  { id: 'clubs', target: 'crm' },
-  { id: 'organizers', target: 'organizers' },
-  { id: 'playersNav', target: 'players' },
-  { id: 'contact', target: 'contact' },
-];
+/**
+ * Audience-first navigation. The site now has a real page per audience, so
+ * these are `Link`s to indexable URLs rather than scroll anchors on a single
+ * page — crawlers follow them, visitors can bookmark them, and each one has
+ * its own title and description.
+ */
+const NAV = [
+  { id: 'players', href: '/players' },
+  { id: 'organizers', href: '/organizers' },
+  { id: 'coaches', href: '/coaches' },
+  { id: 'venues', href: '/venues' },
+  { id: 'pricing', href: '/pricing' },
+] as const;
 
 export function Header() {
   const t = useTranslations('nav');
   const { user } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+
+  const closeMenu = useCallback(() => {
+    tap();
+    setMenuOpen(false);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -48,59 +55,32 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const scrollTo = useCallback(
-    (id: string) => {
-      tap();
-      setMenuOpen(false);
-      // Sections only exist on the home page. From any other route (e.g. a
-      // /legal/* page) navigate home with the target hash and let the App
-      // Router scroll to it.
-      if (pathname !== '/') {
-        router.push(`/#${id}`);
-        return;
-      }
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    },
-    [pathname, router],
-  );
-
   return (
     <>
       <header className={`${styles.header} ${scrolled ? styles.scrolled : ''}`}>
         <div className={styles.inner}>
-          <a
-            href="#hero"
-            className={styles.brand}
-            onClick={(e) => {
-              e.preventDefault();
-              scrollTo('hero');
-            }}
-            aria-label={t('logoAlt')}
-          >
+          <Link href="/" className={styles.brand} aria-label={t('logoAlt')} onClick={() => tap()}>
             <Image
-              src="/images/logo.png"
-              alt={t('logoAlt')}
-              width={36}
-              height={36}
+              src="/images/logo.webp"
+              alt=""
+              width={34}
+              height={34}
               priority
               className={styles.logo}
             />
             <span className={styles.brandText}>RabbitMatch</span>
-          </a>
+          </Link>
 
-          <nav className={styles.nav} aria-label="primary">
-            {LINKS.map((link) => (
-              <button
+          <nav className={styles.nav} aria-label={t('primaryNav')}>
+            {NAV.map((link) => (
+              <Link
                 key={link.id}
-                type="button"
-                onClick={() => scrollTo(link.target)}
-                className={styles.navLink}
+                href={link.href}
+                className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
+                aria-current={pathname === link.href ? 'page' : undefined}
               >
                 {t(link.id)}
-              </button>
+              </Link>
             ))}
           </nav>
 
@@ -120,17 +100,12 @@ export function Header() {
                 aria-label={t('login')}
               >
                 <LogIn size={16} aria-hidden="true" />
-                <span className={styles.loginLabel}>{t('login')}</span>
               </button>
             )}
 
-            <button
-              type="button"
-              onClick={() => scrollTo('contact')}
-              className={styles.cta}
-            >
+            <Link href="/#download" className={styles.cta} onClick={() => tap()}>
               {t('getStarted')}
-            </button>
+            </Link>
 
             <button
               type="button"
@@ -152,20 +127,27 @@ export function Header() {
       <div
         id="mobile-menu"
         className={`${styles.mobile} ${menuOpen ? styles.mobileOpen : ''}`}
-        aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
-        <nav className={styles.mobileNav} aria-label="mobile primary">
-          {LINKS.map((link) => (
-            <button
+        <nav className={styles.mobileNav} aria-label={t('mobileNav')}>
+          {NAV.map((link) => (
+            <Link
               key={link.id}
-              type="button"
-              onClick={() => scrollTo(link.target)}
+              href={link.href}
               className={styles.mobileLink}
+              onClick={closeMenu}
             >
               {t(link.id)}
-            </button>
+            </Link>
           ))}
+          <Link href="/padel" className={styles.mobileLink} onClick={closeMenu}>
+            {t('padel')}
+          </Link>
+          <Link href="/faq" className={styles.mobileLink} onClick={closeMenu}>
+            {t('faq')}
+          </Link>
         </nav>
+
         <div className={styles.mobileFooter}>
           <LanguageSwitcher />
           {user ? (
@@ -184,13 +166,9 @@ export function Header() {
               {t('login')}
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => scrollTo('contact')}
-            className={styles.mobileCta}
-          >
+          <Link href="/#download" className={styles.mobileCta} onClick={closeMenu}>
             {t('getStarted')}
-          </button>
+          </Link>
         </div>
       </div>
 

@@ -1,0 +1,67 @@
+{
+  "best-match": {
+    "w": 860,
+    "h": 235,
+    "frame": false
+  },
+  "coach-profile": {
+    "w": 760,
+    "h": 1645,
+    "frame": true
+  },
+  "coach-schedule": {
+    "w": 860,
+    "h": 1167,
+    "frame": false
+  },
+  "community": {
+    "w": 860,
+    "h": 1148,
+    "frame": false
+  },
+  "court-card": {
+    "w": 860,
+    "h": 494,
+    "frame": false
+  },
+  "games-list": {
+    "w": 760,
+    "h": 1645,
+    "frame": true
+  },
+  "organizer-stats": {
+    "w": 860,
+    "h": 494,
+    "frame": false
+  },
+  "player-card": {
+    "w": 460,
+    "h": 748,
+    "frame": false
+  },
+  "player-stability": {
+    "w": 860,
+    "h": 649,
+    "frame": false
+  },
+  "player-streak": {
+    "w": 860,
+    "h": 495,
+    "frame": false
+  },
+  "player-traits": {
+    "w": 860,
+    "h": 868,
+    "frame": false
+  },
+  "tournament-live": {
+    "w": 860,
+    "h": 681,
+    "frame": false
+  },
+  "venue-booking": {
+    "w": 760,
+    "h": 1645,
+    "frame": true
+  }
+}

@@ -15,7 +15,6 @@ import { NextResponse } from 'next/server';
 type Bucket = { count: number; resetAt: number };
 
 declare global {
-  // eslint-disable-next-line no-var
   var __rmRateBuckets: Map<string, Bucket> | undefined;
 }
 

@@ -1,0 +1,22 @@
+.page {
+  padding: clamp(40px, 6vw, 80px) var(--container-pad) clamp(56px, 8vw, 112px);
+}
+
+.article {
+  width: 100%;
+  max-width: 820px;
+  margin-inline: auto;
+}
+
+.title {
+  font-size: var(--fs-h1);
+  margin-bottom: var(--space-8);
+}
+
+.body {
+  white-space: pre-wrap;
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}

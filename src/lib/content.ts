@@ -6,18 +6,20 @@ type OverrideRow = { key: string; value: string };
 
 type MessagesNode = Record<string, unknown>;
 
-type CacheEntry = { at: number; rows: OverrideRow[] };
+type CacheEntry = { at: number; merged: MessagesNode };
 
 /**
- * Cache DB content overrides per locale. Every page render reads overrides,
- * including every bot/scanner hit — without this cache each one is a Postgres
- * round-trip. TTL keeps admin edits reasonably fresh; the content PUT route
- * also calls `invalidateContentCache` for immediate propagation.
+ * Cache the *merged* catalogue per locale, not the raw override rows.
+ *
+ * The previous version cached rows and then ran
+ * `JSON.parse(JSON.stringify(base))` on the full ~115 KB catalogue for every
+ * render — the single largest source of short-lived garbage in the process,
+ * and the main reason resident memory sat around 370 MB. Now the clone happens
+ * at most once per TTL per locale.
  */
 const OVERRIDES_TTL_MS = Number(process.env.CONTENT_CACHE_TTL_MS ?? 60_000);
 
 declare global {
-  // eslint-disable-next-line no-var
   var __rmContentCache: Map<string, CacheEntry> | undefined;
 }
 
@@ -28,7 +30,7 @@ function contentCache(): Map<string, CacheEntry> {
   return global.__rmContentCache;
 }
 
-/** Drop cached overrides so the next render re-reads from the DB. */
+/** Drop cached content so the next render re-reads from the DB. */
 export function invalidateContentCache(locale?: Locale): void {
   const cache = contentCache();
   if (locale) {
@@ -36,21 +38,6 @@ export function invalidateContentCache(locale?: Locale): void {
   } else {
     cache.clear();
   }
-}
-
-async function loadOverrideRows(locale: Locale): Promise<OverrideRow[]> {
-  const cache = contentCache();
-  const now = Date.now();
-  const hit = cache.get(locale);
-  if (hit && now - hit.at < OVERRIDES_TTL_MS) {
-    return hit.rows;
-  }
-  const { rows } = await query<OverrideRow>(
-    'SELECT key, value FROM content_overrides WHERE locale = $1',
-    [locale],
-  );
-  cache.set(locale, { at: now, rows });
-  return rows;
 }
 
 /**
@@ -86,14 +73,27 @@ export async function loadOverridesAndMerge(
   locale: Locale,
   base: MessagesNode,
 ): Promise<MessagesNode> {
-  try {
-    const rows = await loadOverrideRows(locale);
-    if (rows.length === 0) return base;
+  const cache = contentCache();
+  const now = Date.now();
+  const hit = cache.get(locale);
+  if (hit && now - hit.at < OVERRIDES_TTL_MS) {
+    return hit.merged;
+  }
 
-    const merged: MessagesNode = JSON.parse(JSON.stringify(base));
+  try {
+    const { rows } = await query<OverrideRow>(
+      'SELECT key, value FROM content_overrides WHERE locale = $1',
+      [locale],
+    );
+
+    // No overrides is the common case — hand back the base object untouched
+    // so there is nothing to clone and nothing extra to retain.
+    const merged = rows.length === 0 ? base : (JSON.parse(JSON.stringify(base)) as MessagesNode);
     for (const row of rows) {
       applyOverride(merged, row.key, row.value);
     }
+
+    cache.set(locale, { at: now, merged });
     return merged;
   } catch (err) {
     if (process.env.NODE_ENV !== 'production') {

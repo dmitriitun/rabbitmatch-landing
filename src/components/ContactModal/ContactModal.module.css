@@ -1,15 +1,12 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: 100;
+  z-index: 180;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   padding: var(--space-4);
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  animation: fadeIn var(--duration-base) var(--ease-out);
+  background: rgba(11, 11, 11, 0.45);
   overflow-y: auto;
 }
 
@@ -17,61 +14,49 @@
   position: relative;
   width: 100%;
   max-width: 560px;
-  background: #ffffff;
-  color: #111827;
+  margin-block: auto;
+  background: var(--bg);
   border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
   padding: var(--space-8) var(--space-6) var(--space-6);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
-  animation: pop var(--duration-base) var(--ease-out);
-  margin: auto;
 }
 
 .close {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  top: var(--space-3);
+  right: var(--space-3);
+  display: grid;
+  place-items: center;
   width: 36px;
   height: 36px;
-  color: #6b7280;
   border-radius: var(--radius-pill);
-  transition: background var(--duration-fast) var(--ease-out),
-    color var(--duration-fast) var(--ease-out);
+  color: var(--ink-3);
 }
 
 .close:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--bg-subtle);
+  color: var(--ink);
 }
 
 .head {
   margin-bottom: var(--space-6);
-  padding-right: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
 .title {
-  font-size: 24px;
-  font-weight: 800;
-  letter-spacing: -0.01em;
-  margin: 0 0 6px;
-  color: #0a0a0a;
+  font-size: 26px;
 }
 
 .subtitle {
-  font-size: 14px;
-  color: #6b7280;
-  margin: 0;
-  line-height: 1.5;
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+  color: var(--ink-2);
+  white-space: pre-wrap;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes pop {
-  from { opacity: 0; transform: translateY(8px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+@media (min-width: 560px) {
+  .backdrop { align-items: center; }
+  .dialog { padding: var(--space-10) var(--space-8) var(--space-8); }
 }

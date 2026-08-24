@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "create-admin": "tsx scripts/create-admin.ts",
-    "translate": "node scripts/translate.js"
+    "translate": "node scripts/translate.js",
+    "telegram:webhook": "node scripts/telegram-webhook.js",
+    "build:shots": "node scripts/build-app-shots.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

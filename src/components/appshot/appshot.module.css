@@ -1,0 +1,65 @@
+/* Screenshots of the app.
+
+   The phone is deliberately plain: a dark bezel, real iPhone proportions, and
+   nothing else. The previous version of this file drew a notch and a rounded
+   square, which read as an illustration of a phone rather than a phone. */
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.caption {
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--ink-3);
+  max-width: 52ch;
+}
+
+/* Bezel width scales with the frame so it stays a bezel on a phone and does
+   not become a picture frame on a wide screen. */
+.phone {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  margin-inline: auto;
+  padding: 1.9%;
+  border-radius: 13.5%/6.2%;
+  background: linear-gradient(160deg, #2c2c30 0%, #0d0d10 42%, #26262b 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.18) inset,
+    var(--shadow-lg);
+}
+
+.screen {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1170 / 2532;
+  object-fit: cover;
+  border-radius: 11.6%/5.4%;
+  background: #f5f7fb;
+}
+
+.crop {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+  background: #f5f7fb;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+@media (min-width: 900px) {
+  .phone {
+    max-width: 300px;
+  }
+}

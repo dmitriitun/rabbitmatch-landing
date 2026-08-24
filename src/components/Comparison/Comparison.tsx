@@ -1,7 +1,6 @@
 import { Check, X } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { EditableText } from '@/components/EditableText/EditableText';
-import { ScrollReveal } from '@/components/ScrollReveal/ScrollReveal';
 import styles from './Comparison.module.css';
 
 type Tone = 'lime' | 'red' | 'neutral';
@@ -115,17 +114,15 @@ export async function Comparison() {
   const t = await getTranslations('comparison');
 
   return (
-    <section id="comparison" className={styles.section} aria-label={t('title')}>
-      <div className={styles.bgGlow} aria-hidden="true" />
-
+    <section id="comparison" className={styles.section} aria-labelledby="comparison-title">
       <div className={styles.container}>
-        <ScrollReveal>
-          <EditableText tKey="comparison.title" as="h2" className={styles.title} />
-        </ScrollReveal>
+        <h2 id="comparison-title" className={styles.title} data-rm-key="comparison.title">
+          {t('title')}
+        </h2>
 
         {/* Desktop table */}
         <div className={styles.tableScroll}>
-          <table className={styles.table} aria-describedby="comparison-title">
+          <table className={styles.table}>
             <thead>
               <tr>
                 <th scope="col" className={`${styles.colOpportunity} ${styles.thead}`}>
@@ -143,8 +140,8 @@ export async function Comparison() {
               </tr>
             </thead>
             <tbody>
-              {ROWS.map((row, idx) => (
-                <ScrollReveal key={row.id} as="tr" delayMs={120 + idx * 70} className={styles.row}>
+              {ROWS.map((row) => (
+                <tr key={row.id} className={styles.row}>
                   <th scope="row" className={`${styles.opportunity} ${styles.cell}`}>
                     <EditableText tKey={`comparison.${row.labelKey}`} as="span" />
                   </th>
@@ -157,7 +154,7 @@ export async function Comparison() {
                   <td className={`${styles.cell} ${styles.colCenter} ${styles.cellRabbit}`}>
                     <CellView cell={row.rabbit} />
                   </td>
-                </ScrollReveal>
+                </tr>
               ))}
             </tbody>
           </table>
@@ -165,8 +162,8 @@ export async function Comparison() {
 
         {/* Mobile card stack */}
         <ul className={styles.cards}>
-          {ROWS.map((row, idx) => (
-            <ScrollReveal key={row.id} as="li" delayMs={80 + idx * 70} className={styles.card}>
+          {ROWS.map((row) => (
+            <li key={row.id} className={styles.card}>
               <EditableText tKey={`comparison.${row.labelKey}`} as="h3" className={styles.cardTitle} />
               <dl className={styles.cardList}>
                 <div className={styles.cardRow}>
@@ -182,7 +179,7 @@ export async function Comparison() {
                   <dd><CellView cell={row.rabbit} /></dd>
                 </div>
               </dl>
-            </ScrollReveal>
+            </li>
           ))}
         </ul>
       </div>

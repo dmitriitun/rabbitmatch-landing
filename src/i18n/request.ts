@@ -1,42 +1,26 @@
-import { cookies, headers } from 'next/headers';
 import { getRequestConfig } from 'next-intl/server';
-import { loadOverridesAndMerge } from '@/lib/content';
-import { defaultLocale, isLocale, localeCookieName, locales, type Locale } from './config';
+import { loadMessages } from '@/lib/messages';
+import { routing } from './routing';
+import { defaultLocale, isLocale, type Locale } from './config';
 
-function pickFromAcceptLanguage(header: string | null): Locale | null {
-  if (!header) return null;
-  const ordered = header
-    .split(',')
-    .map((part) => {
-      const [tag, qPart] = part.trim().split(';');
-      const q = qPart && qPart.startsWith('q=') ? parseFloat(qPart.slice(2)) : 1;
-      return { tag: tag.toLowerCase(), q };
-    })
-    .sort((a, b) => b.q - a.q);
+/**
+ * Locale is resolved from the URL segment only. Nothing here touches
+ * `cookies()` or `headers()` — that is deliberate: a single dynamic Request
+ * API call in the render path opts every page out of static/ISR rendering and
+ * forces a full React render on every hit, bots included.
+ */
+export default getRequestConfig(async ({ requestLocale }) => {
+  const requested = await requestLocale;
+  const locale: Locale = isLocale(requested) ? requested : defaultLocale;
 
-  for (const { tag } of ordered) {
-    const base = tag.split('-')[0];
-    if (isLocale(base)) return base;
-  }
-  return null;
-}
-
-export default getRequestConfig(async () => {
-  const cookieStore = await cookies();
-  const cookieLocale = cookieStore.get(localeCookieName)?.value;
-
-  let locale: Locale;
-  if (isLocale(cookieLocale)) {
-    locale = cookieLocale;
-  } else {
-    const headerStore = await headers();
-    locale = pickFromAcceptLanguage(headerStore.get('accept-language')) ?? defaultLocale;
-  }
-
-  const base = (await import(`../../messages/${locale}.json`)).default as Record<string, unknown>;
-  const messages = await loadOverridesAndMerge(locale, base);
-
-  return { locale, messages };
+  return {
+    locale,
+    messages: await loadMessages(locale),
+    // Timezone is fixed so server and client formatting agree without the
+    // client having to report one.
+    timeZone: 'Europe/Moscow',
+    now: undefined,
+  };
 });
 
-export { locales, defaultLocale };
+export { routing };

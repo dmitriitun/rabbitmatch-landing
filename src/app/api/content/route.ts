@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { invalidateContentCache } from '@/lib/content';
@@ -75,6 +76,12 @@ export async function PUT(request: Request): Promise<Response> {
   );
 
   invalidateContentCache(locale);
+
+  // Content pages are prerendered, so dropping the in-memory cache is not
+  // enough on its own — the stored HTML has to be marked stale too or the edit
+  // would only ever appear after the next deploy. A key can be rendered by any
+  // page, so the whole tree under the root layout is revalidated.
+  revalidatePath('/', 'layout');
 
   return NextResponse.json({ ok: true });
 }

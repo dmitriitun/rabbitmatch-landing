@@ -1,24 +1,35 @@
 {
   "meta": {
-    "title": "RabbitMatch — Match & tournament platform for racket sports",
-    "description": "Organize matches and tournaments for padel, tennis, table tennis, badminton and squash. CRM for sports clubs."
+    "title": "RabbitMatch — padel, tennis and other racket sports",
+    "description": "Open games at your level, court schedules, tournaments in a dozen formats and a rating recalculated after every match. Padel, tennis, table tennis, badminton, squash, pickleball. iOS, Android, web and Telegram."
   },
   "nav": {
-    "features": "Features",
-    "products": "Products",
-    "clubs": "For Clubs",
-    "organizers": "For Organizers",
-    "playersNav": "For Players",
+    "logoAlt": "RabbitMatch",
+    "players": "For players",
+    "organizers": "For organizers",
+    "coaches": "For coaches",
+    "venues": "For venues",
     "pricing": "Pricing",
-    "contact": "Contact",
+    "padel": "What is padel",
+    "faq": "FAQ",
     "login": "Log in",
-    "getStarted": "Get Started",
+    "getStarted": "Get the app",
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "languageEn": "EN",
     "languageRu": "RU",
     "switchLanguage": "Switch language",
-    "logoAlt": "RabbitMatch"
+    "primaryNav": "Main navigation",
+    "mobileNav": "Mobile navigation"
+  },
+  "common": {
+    "learnMore": "Learn more",
+    "getStarted": "Get started",
+    "downloadApp": "Get the app",
+    "openApp": "Open the app",
+    "talkToUs": "Talk to us",
+    "seeAll": "See all",
+    "free": "Free"
   },
   "login": {
     "title": "Sign in",
@@ -33,33 +44,1314 @@
     "passwordPlaceholder": "••••••••"
   },
   "hero": {
-    "eyebrow": "Racket sports, organized",
-    "title": "Sports without the chaos",
-    "subtitle": "RabbitMatch is the unified platform for racket sports: tournament and match organization, an international-grade rating system, deep analytics, easy booking and a CRM for clubs.",
-    "ctaPrimary": "Open the app",
-    "ctaSecondary": "For clubs",
+    "eyebrow": "Padel · Tennis · Table tennis · Badminton · Squash · Pickleball",
+    "title": "Finding a fourth takes longer than the game",
+    "subtitle": "That is padel's real problem. Not technique, not courts — three other people free on the same evening and roughly your level. RabbitMatch does that part. It also keeps your rating, runs your tournaments, and shows which hours are still free at the courts near you.",
     "downloadOn": "Download on",
     "getItOn": "Get it on",
     "openIn": "Open in",
     "appStore": "App Store",
     "googlePlay": "Google Play",
-    "webApp": "Web App",
+    "webApp": "the browser",
     "telegram": "Telegram",
-    "stats": {
-      "sportsValue": "5+",
-      "sportsLabel": "Sports",
-      "languagesValue": "13+",
-      "languagesLabel": "Languages",
-      "aiValue": "Smart AI",
-      "aiLabel": "for analytics",
-      "platformsValue": "3 in 1",
-      "platformsLabel": "Mobile + Web + Telegram"
+    "stats": [
+      {
+        "value": "6",
+        "label": "racket sports"
+      },
+      {
+        "value": "10+",
+        "label": "tournament formats"
+      },
+      {
+        "value": "13+",
+        "label": "interface languages"
+      },
+      {
+        "value": "4",
+        "label": "ways in: iOS, Android, web, Telegram"
+      }
+    ]
+  },
+  "home": {
+    "audiences": {
+      "eyebrow": "Who it is for",
+      "title": "Four different people, one app",
+      "lead": "A player looking for a game. An organizer running a tournament. A coach filling a schedule. A club watching occupancy. Until now that was four group chats, two spreadsheets and one administrator who answers in the evenings.",
+      "items": [
+        {
+          "icon": "users",
+          "title": "Players",
+          "text": "Open games nearby, already filtered to your level. A rating that moves after every match. And a real breakdown of your own game: which side of the court you are stronger on, when you win more often, how you hold up in deciding sets."
+        },
+        {
+          "icon": "trophy",
+          "title": "Organizers",
+          "text": "From an Americano to a month-long championship. Draws and standings compute themselves, and anything that goes wrong you fix yourself, mid-event, without waiting on support."
+        },
+        {
+          "icon": "target",
+          "title": "Coaches",
+          "text": "A profile with prices and specialisations, a schedule students book directly, reviews. The reputation stays yours even if you change clubs."
+        },
+        {
+          "icon": "grid",
+          "title": "Venues",
+          "text": "Your free hours reach people looking for somewhere to play tonight. Plus a CRM and occupancy analytics."
+        }
+      ],
+      "cta": "Open the page"
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "Five steps and you are on court",
+      "lead": "Not one phone call to an administrator.",
+      "items": [
+        {
+          "title": "Install the app",
+          "text": "iOS, Android, browser or Telegram. Same account everywhere. Through Telegram it takes about thirty seconds — you do not even invent a password."
+        },
+        {
+          "title": "Say what you play and where",
+          "text": "Sport, city, rough level. Guess the level: the rating corrects it over your first few matches."
+        },
+        {
+          "title": "Take a spot, or create your own game",
+          "text": "The feed shows who is short of people: format, time, venue, spots left. Creating your own takes a minute and puts it in front of everyone who fits the level."
+        },
+        {
+          "title": "Book the court",
+          "text": "The clubs in your city in one list, with the hours still free on the day you picked and what they cost. Pick an hour and go play."
+        },
+        {
+          "title": "Play, then enter the score",
+          "text": "Everything else follows: rating, history, leaderboard, statistics."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "What is inside",
+      "title": "The parts nobody else builds",
+      "lead": "Half the padel apps out there are a calendar with a Join button. Past that point is the reason we built this.",
+      "items": [
+        {
+          "icon": "target",
+          "title": "Matching that explains itself",
+          "text": "Level, interests, court side, age. Under each name it says why this person suits you — instead of just \"recommended\"."
+        },
+        {
+          "icon": "chart",
+          "title": "Your game, analysed",
+          "text": "Which side of the court you are stronger on. Which day and hour you win more often. What happens at one set all. Who you actually play well with. We have not seen this in any other racket-sport app."
+        },
+        {
+          "icon": "trophy",
+          "title": "Tournaments at any size",
+          "text": "An evening for four, a draw for thirty-two, a championship that runs for a month. Rotations, seeding and the table are the app's problem."
+        },
+        {
+          "icon": "star",
+          "title": "A rating you can trust",
+          "text": "Recalculated after every match and adjusted for the level of everyone on court. Next to it you can see how many games stand behind the number, so nobody inflates one with a couple of lucky evenings."
+        },
+        {
+          "icon": "badge",
+          "title": "Marks from the people you played with",
+          "text": "Anonymous and specific: not a score out of five but \"strong serve, stamina drops off\". They build the chart of your strengths."
+        },
+        {
+          "icon": "calendarCheck",
+          "title": "The city's courts in one list",
+          "text": "Free hours, prices, a filter by time of day. Plus an alert when an evening opens up at the venue you wanted."
+        }
+      ]
+    },
+    "why": {
+      "eyebrow": "Why RabbitMatch",
+      "title": "The comparison, without false modesty",
+      "lead": "Clubs are usually choosing between us, an international booking app, and a spreadsheet."
+    },
+    "faq": {
+      "eyebrow": "Questions",
+      "title": "Frequently asked",
+      "items": [
+        {
+          "question": "What does it cost a player?",
+          "answer": "Playing, finding games, creating them, keeping a rating and entering tournaments is free. There are PRO and MAX subscriptions that open up the deeper analytics and some extras. The court itself you pay for at the venue, and that money is theirs."
+        },
+        {
+          "question": "Which sports?",
+          "answer": "Padel, tennis, table tennis, badminton, squash and pickleball. Padel is where most of the play is and the tournament formats were built around it. Rating, player matching and statistics work across all six."
+        },
+        {
+          "question": "Do I have to install anything?",
+          "answer": "No. There is a full web version and a Telegram Mini App with the same account and the same data. The native app is only more convenient for notifications."
+        },
+        {
+          "question": "I am a beginner. Will I be put in with people who wipe the floor with me?",
+          "answer": "Every game carries a level range and you only see the ones you fit. Beginners are visible to each other. If you have never held a padel racket, read our guide first — it covers the rules and why there are walls."
+        },
+        {
+          "question": "Which cities does it work in?",
+          "answer": "Games, tournaments, rating and coaches work anywhere there is somebody to play with. Live court availability is connected in Tbilisi so far, and we add cities as clubs come on board."
+        },
+        {
+          "question": "How does a club connect?",
+          "answer": "Through the form at the bottom of this page. Setup takes about two days: courts, schedule, prices, staff training. The first two months are free."
+        }
+      ]
+    },
+    "download": {
+      "eyebrow": "Get started",
+      "title": "There is probably a game tonight",
+      "lead": "Install it, set your level, look at the feed."
+    },
+    "clubCta": {
+      "title": "Run a club or a court?",
+      "lead": "CRM, online booking, and players who are looking for a court right now. First two months free.",
+      "primary": "Talk to us",
+      "secondary": "What venues get"
+    }
+  },
+  "players": {
+    "meta": {
+      "title": "For players: games at your level, rating, and your game analysed",
+      "description": "Open games nearby, partner matching on level and interests, a rating from every match, a real breakdown of your own play, and anonymous marks from the people you played with. Free."
+    },
+    "hero": {
+      "eyebrow": "For players",
+      "title": "Play, don't negotiate",
+      "lead": "The average padel evening starts three days early and runs to a hundred messages in a group chat. We removed that part.",
+      "points": [
+        "A feed of open games already filtered to your level",
+        "Partner matching on level, interests and court side",
+        "A rating from every match — and how well confirmed it is",
+        "A breakdown of your game you will not find anywhere else"
+      ],
+      "primary": "Get the app",
+      "secondary": "How it works"
+    },
+    "stats": [
+      {
+        "value": "6",
+        "label": "racket sports"
+      },
+      {
+        "value": "$0",
+        "label": "to play, create games and run tournaments"
+      },
+      {
+        "value": "100+",
+        "label": "interests used in matching"
+      },
+      {
+        "value": "30 sec",
+        "label": "to sign up via Telegram"
+      }
+    ],
+    "match": {
+      "eyebrow": "Matching",
+      "title": "Not \"recommended\" — here is why",
+      "lead": "A list of people in your city, sorted by how good a game the two of you would have. Everyone gets their own: a high rating on the other side is not an advantage here, closeness to yours is.",
+      "items": [
+        {
+          "icon": "target",
+          "title": "Level first",
+          "text": "You cannot play with someone from another league however many interests you share. So level weighs more than everything else put together."
+        },
+        {
+          "icon": "repeat",
+          "title": "Left looks for right",
+          "text": "Two people used to the same half of the court rarely make a pair. The app takes that into account — and tells you which side each person plays."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Interests off the court",
+          "text": "A hundred-odd tags from football to board games. Padel is the game you go for coffee after, and shared subjects work about as well as a shared level."
+        },
+        {
+          "icon": "message",
+          "title": "The line under the name",
+          "text": "\"87% level match, plays the left side, shared interests: football, business, board games.\" Without that line any match list reads as a random order."
+        },
+        {
+          "icon": "bell",
+          "title": "And a nudge once a week",
+          "text": "Only when the match is genuinely strong and you have never played together. Nothing good found, nothing sent."
+        },
+        {
+          "icon": "users",
+          "title": "Likes and messages",
+          "text": "Like someone's profile. If it is mutual you both hear about it, and you take it to direct messages from there."
+        }
+      ]
+    },
+    "stats2": {
+      "eyebrow": "Statistics",
+      "title": "A breakdown, not one win rate",
+      "lead": "All of it visible only to you: this is an analysis of your own play, not a public shop window.",
+      "items": [
+        {
+          "icon": "grid",
+          "title": "Court side",
+          "text": "Win rate on the left and on the right. Half of all players have stood on the same side for years without once checking it is the right one."
+        },
+        {
+          "icon": "calendar",
+          "title": "When you play better",
+          "text": "Weekday against time of day. For some people it really is Tuesday evening."
+        },
+        {
+          "icon": "trophy",
+          "title": "Formats",
+          "text": "Different people win Americanos and group-plus-playoff draws. This shows which one you are."
+        },
+        {
+          "icon": "shield",
+          "title": "Consistency and deciding sets",
+          "text": "How evenly you play, and what happens at one set all. It is immediately obvious whether you fall apart in the closing stages or come alive."
+        },
+        {
+          "icon": "users",
+          "title": "Partners and opponents",
+          "text": "Who you win with and who you do not. Sometimes it is not the person you invite most often."
+        },
+        {
+          "icon": "chart",
+          "title": "Who you play against",
+          "text": "Your opponents by level. If you have spent years beating weaker players your rating will not move, and here you can see why."
+        }
+      ]
+    },
+    "traits": {
+      "eyebrow": "Peer marks",
+      "title": "Where you are strong, according to the people who played with you",
+      "lead": "After a game you can anonymously mark what your partners and opponents are good at. Not a score from one to five — actual attributes: consistency, tactics, serve, the lob, playing off the glass. Those marks build a chart in your profile.",
+      "items": [
+        {
+          "icon": "badge",
+          "title": "Anonymous",
+          "text": "Otherwise marks like these either never get given, or get given out of politeness."
+        },
+        {
+          "icon": "target",
+          "title": "Every sport has its own attributes",
+          "text": "Padel has the lob and playing off the glass, tennis has the return and topspin, squash has length control. You mark what that game actually contains."
+        },
+        {
+          "icon": "chart",
+          "title": "Contested parts show up immediately",
+          "text": "If some people called an attribute a strength and others called it a growth area, it lands right in the middle. That is the part of your game worth thinking about."
+        }
+      ]
+    },
+    "profile": {
+      "eyebrow": "Profile",
+      "title": "A card worth showing",
+      "lead": "The profile avatar is not a round photo but a card in the style of sports trading cards: gradient, pattern, a big rating, your place in the city. You pick the colour and the pattern, and some of them unlock through play.",
+      "items": [
+        {
+          "icon": "star",
+          "title": "Your place in the city",
+          "text": "Computed from games, win rate and rating together. Rating alone will not get you into the top."
+        },
+        {
+          "icon": "badge",
+          "title": "Medals and achievements",
+          "text": "Some are awarded automatically from results, some by hand for something particular. Some are permanent, some seasonal."
+        },
+        {
+          "icon": "users",
+          "title": "Character and profile fields",
+          "text": "Gender, age, city, experience, playing hand, court side. These are also what partner matching is built from, so they are worth filling in."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "Getting started",
+      "title": "Your first game, step by step",
+      "items": [
+        {
+          "title": "Sign up",
+          "text": "Telegram, Apple, Google or email. Through Telegram it takes about thirty seconds and you never invent a password."
+        },
+        {
+          "title": "Set sport, city and level",
+          "text": "Guess the level. The rating corrects it over your first matches — early on it moves faster, so a newcomer reaches their real place sooner."
+        },
+        {
+          "title": "Fill in the profile",
+          "text": "Court side, playing hand, age, interests. Dull, but this is exactly what partner matching is built from."
+        },
+        {
+          "title": "Take a spot, or create a game",
+          "text": "The feed shows who is short of players. Creating your own takes a minute and puts it in front of everyone at the right level."
+        },
+        {
+          "title": "Play and enter the score",
+          "text": "Rating, history and statistics take care of themselves."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Player questions",
+      "items": [
+        {
+          "question": "Is it really free?",
+          "answer": "Playing, finding games, creating them, keeping a rating and entering tournaments — yes. There are PRO and MAX subscriptions that open the deeper analytics and some extras. The court you pay for at the venue."
+        },
+        {
+          "question": "I do not have three friends who play.",
+          "answer": "That is the normal case and the app was built for it. Most games in the feed are posted by people short of one or two players. You join theirs, or post yours and let it fill."
+        },
+        {
+          "question": "Where does my level come from?",
+          "answer": "It starts from your own guess at sign-up. After that the rating is recalculated after every game, adjusted for the level of everyone on court: beat stronger players and you gain more, lose to weaker ones and you drop further. The first matches move it faster so a newcomer reaches their real level sooner."
+        },
+        {
+          "question": "How much can I trust the rating?",
+          "answer": "Next to the number you can see how many games stand behind it and whether it has been confirmed by play. A rating someone set for themselves and has not yet backed up is flagged as such and does not enter the city top list. That way the top of the table is people who actually played, not people who typed a seven at sign-up."
+        },
+        {
+          "question": "Who marks my attributes?",
+          "answer": "Only people you actually played with. Anonymously: you will not see who marked you, and your partner will not know you marked them."
+        },
+        {
+          "question": "What does it run on?",
+          "answer": "iPhone, Android, any browser, and Telegram as a Mini App. One account, one set of data."
+        }
+      ]
+    },
+    "cta": {
+      "title": "There is probably a game tonight",
+      "lead": "Install it, set your level, look at the feed.",
+      "primary": "Get the app",
+      "secondary": "Read the padel guide"
+    }
+  },
+  "organizers": {
+    "meta": {
+      "title": "For organizers: tournaments in a dozen formats, and audience analytics",
+      "description": "Americano, Mexicano, divisions, groups and playoffs, court ladders, Swiss, a multi-week championship. Draws and standings compute themselves and mistakes are fixed mid-event. Plus analytics on your audience."
+    },
+    "hero": {
+      "eyebrow": "For organizers",
+      "title": "Arithmetic is not your job",
+      "lead": "Pairings, rotations, who has not played whom, the running table, who owes what for the court. It is arithmetic, and arithmetic is exactly where amateur tournaments fall apart. Set the format and stop counting.",
+      "points": [
+        "A dozen formats, from a four-player Americano to a month-long championship",
+        "Draws, rotations and seeding generated automatically",
+        "The table recomputes as scores come in",
+        "Made a mistake or lost a player? You fix it yourself, not through support"
+      ],
+      "primary": "Create a tournament",
+      "secondary": "See the formats"
+    },
+    "stats": [
+      {
+        "value": "10+",
+        "label": "tournament formats"
+      },
+      {
+        "value": "4–32+",
+        "label": "players per tournament"
+      },
+      {
+        "value": "$0",
+        "label": "cost to the organizer"
+      },
+      {
+        "value": "13+",
+        "label": "languages for participants"
+      }
+    ],
+    "control": {
+      "eyebrow": "Control",
+      "title": "The tournament runs, and life keeps happening",
+      "lead": "Somebody pulls a back in round three. The wrong score gets entered. The event gets marked finished a round early. In most services that is a support ticket and a ruined evening. Here it is three taps and you have fixed it yourself.",
+      "items": [
+        {
+          "icon": "repeat",
+          "title": "Swap a player mid-tournament",
+          "text": "Who replaces them and for how many rounds is your call. The rounds the departing player already played stay in the record rather than vanishing with them."
+        },
+        {
+          "icon": "users",
+          "title": "Drop somebody into an empty slot",
+          "text": "Arrived five minutes after the start — not a problem. The free place is filled straight from the roster."
+        },
+        {
+          "icon": "zap",
+          "title": "Correct a score already entered",
+          "text": "Typed the wrong number, fix it. The table recomputes immediately for everyone."
+        },
+        {
+          "icon": "shield",
+          "title": "Roll a result back",
+          "text": "Delete a result and every player's rating returns to what it was before that match, and the standings rebuild. Nothing is left miscounted."
+        },
+        {
+          "icon": "timer",
+          "title": "Undo a start or a finish",
+          "text": "Hit \"Finish\" too early — put the tournament back in play and carry on. Started with the wrong line-up — undo the start."
+        },
+        {
+          "icon": "handshake",
+          "title": "All of it without a support ticket",
+          "text": "The organizer owns the tournament. Nobody waits on a chat reply while twelve people stand on court."
+        }
+      ]
+    },
+    "formats": {
+      "eyebrow": "Formats",
+      "title": "Plenty to choose from",
+      "lead": "Americano and Mexicano turn up in every app. What follows is what almost nobody has.",
+      "items": [
+        {
+          "icon": "repeat",
+          "title": "Americano and Mexicano",
+          "text": "In Americano the partner changes every round on a fixed schedule, so everyone plays with everyone. In Mexicano the next round is drawn from the current table, which keeps games level all evening. Both come in individual and team versions."
+        },
+        {
+          "icon": "trophy",
+          "title": "Divisions",
+          "text": "A ladder of championships. The first division is the strongest; at the end of a cycle the best move up and the worst move down. It fits a club that plays with the same crowd every week."
+        },
+        {
+          "icon": "grid",
+          "title": "Groups + playoffs",
+          "text": "The classic. Groups are seeded in a snake by rating so they come out even in strength, then it is knockout."
+        },
+        {
+          "icon": "target",
+          "title": "Court ladders",
+          "text": "Courts stacked top to bottom, the first one called the Throne. Winners climb, losers drop, and a win on a higher court is worth more. There are versions in fixed pairs and a version where one player leaves the court rather than a pair — there everyone answers for themselves."
+        },
+        {
+          "icon": "chart",
+          "title": "Swiss system",
+          "text": "Each round the opponents are picked to make the match as even as possible while keeping your partners across the event as varied as possible. On equal points whoever drew the stronger opponents ranks higher."
+        },
+        {
+          "icon": "calendar",
+          "title": "A championship over several weeks",
+          "text": "A group of four to six pairs, everyone plays everyone, then playoffs. Times are not scheduled: opponents agree between themselves and set the match. The stages have deadlines, and it runs itself from there."
+        }
+      ]
+    },
+    "features": {
+      "eyebrow": "What the app takes over",
+      "title": "The work you stop doing",
+      "items": [
+        {
+          "icon": "zap",
+          "title": "Draws and rotations",
+          "text": "Built from the format and the entry list. Change the number of courts mid-event and the schedule rebuilds around it."
+        },
+        {
+          "icon": "chart",
+          "title": "A live table",
+          "text": "Scores go in from any phone and the table updates for everyone at once. There is nothing left to argue about."
+        },
+        {
+          "icon": "users",
+          "title": "A reserve list of its own",
+          "text": "People who did not get a spot wait in the reserve. Somebody drops out, you move a reserve player into the roster with one tap."
+        },
+        {
+          "icon": "wallet",
+          "title": "Entry fee as a real field",
+          "text": "An amount and a currency, not a line in the description. It shows on the card, works in filters, and payment details attach to the game."
+        },
+        {
+          "icon": "shield",
+          "title": "Private games",
+          "text": "You decide who gets into the roster and who sees the join code. The game still shows in the feed — hiding it from everyone is rarely what you want."
+        },
+        {
+          "icon": "bell",
+          "title": "Notifications instead of your messages",
+          "text": "Round starts, court assignments, changes, results. Plus game alerts: a player sets their conditions once and hears about every game that fits."
+        }
+      ]
+    },
+    "audience": {
+      "eyebrow": "Audience",
+      "title": "Who comes to your games, in numbers",
+      "lead": "A separate tab in your profile: not \"how many events you ran\" but who turns up to them and whether they come back. Plus an anonymous rating from participants.",
+      "items": [
+        {
+          "icon": "repeat",
+          "title": "Repeat attendance",
+          "text": "The organizer's number. Everyone comes once; the second time is only the people who enjoyed it."
+        },
+        {
+          "icon": "chart",
+          "title": "Popular formats",
+          "text": "Which formats actually fill up, and which ones you keep running out of habit."
+        },
+        {
+          "icon": "star",
+          "title": "Average player level",
+          "text": "What level shows up to you. It tells you whether to announce the next one for beginners or the opposite."
+        },
+        {
+          "icon": "users",
+          "title": "Gender, age and interests",
+          "text": "A portrait of your audience. It hints at what conditions and what times to pick."
+        },
+        {
+          "icon": "timer",
+          "title": "Activity by time of day",
+          "text": "When people actually go out to play. It usually disagrees with when you schedule games."
+        },
+        {
+          "icon": "handshake",
+          "title": "Your core players",
+          "text": "The people who come most often. The whole event rests on them, and theirs is the opinion to ask first."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "How to run one",
+      "title": "From idea to final in four steps",
+      "items": [
+        {
+          "title": "Create the tournament",
+          "text": "Format, date, venue, courts, player limit, level range. Two minutes and the draw structure exists. If the format is unfamiliar, there is a \"how do you play this\" button right next to its name."
+        },
+        {
+          "title": "Fill the field",
+          "text": "Send the link to your regulars, or publish it to the feed so players in your city at the right level register themselves. Anyone who does not fit goes to the reserve."
+        },
+        {
+          "title": "Run it from your phone",
+          "text": "Start rounds, enter scores, watch the table. Anything that goes wrong is fixed on the spot."
+        },
+        {
+          "title": "See how it went",
+          "text": "Final table, every match on record, updated ratings for everyone, and anonymous feedback from the players."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Organizer questions",
+      "items": [
+        {
+          "question": "What does running a tournament cost?",
+          "answer": "Creating and running them is free, with no cap on how many. Some of the heavier formats and the deeper audience analytics can sit behind a subscription."
+        },
+        {
+          "question": "What is the difference between Americano and Mexicano?",
+          "answer": "In Americano the rotation is fixed in advance: everyone plays with everyone regardless of results. In Mexicano each round is built from the current table, so people near each other in the standings end up on the same court. Americano is the more social one and suits a mixed group; Mexicano keeps games close to the last round and suits a regular club night."
+        },
+        {
+          "question": "How many players fit?",
+          "answer": "From four up to a large draw, depending on the format and how many courts you have. The app checks in advance whether your field fits the schedule given your courts and round length."
+        },
+        {
+          "question": "A player left in the middle. What now?",
+          "answer": "Replace them mid-event — you choose who steps in and for how many rounds. The rounds the departing player already played stay in the record. No support ticket needed."
+        },
+        {
+          "question": "We entered the wrong score. Can it be fixed?",
+          "answer": "Yes. Scores can be corrected, and a result can be deleted outright — every player's rating then returns to what it was before that match and the standings rebuild. A mistakenly pressed \"Finish tournament\" is undone the same way."
+        },
+        {
+          "question": "Do participants need the app?",
+          "answer": "They need an account, which they can create in a browser or in Telegram without installing anything. Without it there is no live table and no result in their rating."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Your first tournament takes two minutes to set up",
+      "lead": "Pick a format, set a date, share the link.",
+      "primary": "Get the app",
+      "secondary": "For venues"
+    }
+  },
+  "coaches": {
+    "meta": {
+      "title": "For coaches: profile, schedule and lesson bookings",
+      "description": "A public coach profile with prices and specialisations, a schedule students book online, group and private lessons. The reviews stay with you."
+    },
+    "hero": {
+      "eyebrow": "For coaches",
+      "title": "A schedule in your head is a bad schedule",
+      "lead": "Four messengers, a calendar that exists only in your memory, and a client base living in your phone contacts. Arranging lessons eats more hours than teaching them.",
+      "points": [
+        "A profile with prices, specialisations and venues — findable and bookable",
+        "A schedule you fill in once that then runs itself",
+        "Holidays and one-off slots marked separately, your normal week untouched",
+        "Reviews attach to you, not to the club"
+      ],
+      "primary": "Get the app",
+      "secondary": "Talk to us"
+    },
+    "stats": [
+      {
+        "value": "$0",
+        "label": "profile and schedule"
+      },
+      {
+        "value": "6",
+        "label": "racket sports"
+      },
+      {
+        "value": "24/7",
+        "label": "online booking"
+      },
+      {
+        "value": "13+",
+        "label": "languages for foreign students"
+      }
+    ],
+    "features": {
+      "eyebrow": "What you get",
+      "title": "The part of coaching that is not coaching",
+      "items": [
+        {
+          "icon": "badge",
+          "title": "A profile that answers for you",
+          "text": "Background and career, how you work, prices for private and group lessons, languages, venues, contacts. A student decides before writing to you rather than after three messages."
+        },
+        {
+          "icon": "target",
+          "title": "Specialisation",
+          "text": "Who you work with and what you fix — from beginners to competitive level, from stroke technique to tactics. These tags are how the right students find you."
+        },
+        {
+          "icon": "calendar",
+          "title": "A bookable schedule",
+          "text": "Mark the hours you are willing to give to lessons. The student picks a time, the slot closes. No more agreeing times by message."
+        },
+        {
+          "icon": "timer",
+          "title": "Holidays and one-off slots",
+          "text": "Away for a week — close those days. Happy to teach on a Saturday outside your usual hours — add it. Your normal week stays where it was."
+        },
+        {
+          "icon": "users",
+          "title": "Groups and clinics",
+          "text": "A session for four or a beginner clinic for twelve. Places fill themselves and reminders go to everyone."
+        },
+        {
+          "icon": "star",
+          "title": "Reviews and rating",
+          "text": "They accumulate on your profile. Change club and the reputation moves with you."
+        }
+      ]
+    },
+    "schedule": {
+      "eyebrow": "Schedule",
+      "title": "Hours you actually have, not hours someone thinks you have",
+      "lead": "You open the hours you can teach and close the ones you can't. A student takes a free one and it disappears from the grid — no call, no administrator in the middle, no double booking to apologise for later."
+    },
+    "steps": {
+      "eyebrow": "Getting started",
+      "title": "Four steps to your first booking",
+      "items": [
+        {
+          "title": "Create the profile",
+          "text": "\"Take from profile\" fills in your name, photo, city and contacts. Edit anything by hand afterwards."
+        },
+        {
+          "title": "Add venues and specialisation",
+          "text": "The clubs where you teach and what you work on. This is what the filter searches."
+        },
+        {
+          "title": "Fill in your schedule",
+          "text": "The hours you are willing to give to lessons, and the lengths — an hour, ninety minutes. Two different offers, and the student picks at booking."
+        },
+        {
+          "title": "Take bookings",
+          "text": "The student picks a time. All that is left is turning up."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Coach questions",
+      "items": [
+        {
+          "question": "What does it cost?",
+          "answer": "The profile, the schedule and taking bookings are free. Some features can sit behind a subscription. Whatever you have agreed with a club stays between you and the club — we do not sit in the middle."
+        },
+        {
+          "question": "Do I need an app account?",
+          "answer": "The profile works without one — half of all coaches hear about the app from their students. But without a linked account nobody can book a lesson with you, so linking is worth it."
+        },
+        {
+          "question": "Group sessions and clinics?",
+          "answer": "Yes. A group session has a capacity, places fill themselves, and reminders go to everyone signed up."
+        },
+        {
+          "question": "Whose client base is it?",
+          "answer": "Yours. The history attaches to the profile and travels with it between venues."
+        },
+        {
+          "question": "What about holidays?",
+          "answer": "Mark those days closed. Your normal week is not broken by it: come back and it carries on as before."
+        }
+      ]
+    },
+    "cta": {
+      "title": "The profile takes about ten minutes",
+      "lead": "Probably the best-paid ten minutes in your schedule.",
+      "primary": "Get the app",
+      "secondary": "Talk to us"
+    }
+  },
+  "venues": {
+    "meta": {
+      "title": "For clubs and courts: booking, CRM and a stream of players",
+      "description": "Online booking, a CRM with full client history, occupancy and revenue analytics, and players arriving from the app. Live in 48 hours, two months free."
+    },
+    "hero": {
+      "eyebrow": "For clubs and court owners",
+      "title": "Dead weekdays and a phone that never stops",
+      "lead": "Two problems, and they are the same at every racket venue on earth. Tuesday at 14:00 never sells, and the administrator spends the day answering \"is court three free at seven?\".",
+      "points": [
+        "Online booking at your prices and under your rules — the calls stop",
+        "A CRM with the full client history: visits, cancellations, memberships, preferences",
+        "Occupancy, revenue and client analytics on one dashboard",
+        "Players find you in the app while looking for a court tonight"
+      ],
+      "primary": "Talk to us",
+      "secondary": "See pricing"
+    },
+    "stats": [
+      {
+        "value": "48 h",
+        "label": "typical time to go live"
+      },
+      {
+        "value": "2 months",
+        "label": "free to start"
+      },
+      {
+        "value": "6.5%",
+        "label": "commission on bookings through us"
+      },
+      {
+        "value": "24/7",
+        "label": "support in Russian and English"
+      }
+    ],
+    "features": {
+      "eyebrow": "What you get",
+      "title": "Booking and CRM on one database",
+      "lead": "A booking that does not update the client record is a phone call with extra steps.",
+      "items": [
+        {
+          "icon": "calendarCheck",
+          "title": "Online booking",
+          "text": "Players book themselves, at your prices and under your rules, at any hour. Nobody waits until morning."
+        },
+        {
+          "icon": "grid",
+          "title": "A live court schedule",
+          "text": "One screen with every court, booking and session. Your administrators work in the same schedule players are booking into."
+        },
+        {
+          "icon": "users",
+          "title": "A CRM with real history",
+          "text": "Every visit, booking, cancellation, membership and preference on one record. That is what makes a targeted offer possible instead of a mass mailing."
+        },
+        {
+          "icon": "chart",
+          "title": "Occupancy and revenue",
+          "text": "Which hours are dead, which courts earn, which clients have stopped coming. On the top plan, AI recommendations on top."
+        },
+        {
+          "icon": "percent",
+          "title": "Prices, memberships, promotions",
+          "text": "Different rates by hour and by day, packages, campaigns. Configured once, applied everywhere."
+        },
+        {
+          "icon": "handshake",
+          "title": "A stream of players",
+          "text": "Your free hours land in the feed where people are looking for an evening game. They have no court, yours is empty — the rest follows."
+        }
+      ]
+    },
+    "integration": {
+      "eyebrow": "Getting connected",
+      "title": "The city's clubs in one list",
+      "lead": "A player opens Courts and sees the venues near them with the hours still free today, the prices, and a filter by time of day. Your venue lands there regardless of what you use now.",
+      "items": [
+        {
+          "icon": "handshake",
+          "title": "We work with your current system",
+          "text": "We already integrate with the common booking systems. Tell us what you run and connecting will most likely take a day."
+        },
+        {
+          "icon": "repeat",
+          "title": "The schedule stays current",
+          "text": "Free hours refresh within minutes. Sold time shows as sold, so nobody drives across town to a booked court."
+        },
+        {
+          "icon": "bell",
+          "title": "A queue for your evenings",
+          "text": "A player subscribes to conditions — a weekday evening, one hour — and hears when such a slot appears. An evening freed by a cancellation goes to a new client instead of going to waste."
+        },
+        {
+          "icon": "pin",
+          "title": "Your venue page",
+          "text": "Photos, courts with surface and type, amenities, prices, reviews. For a lot of players this is their first look at your club."
+        }
+      ]
+    },
+    "steps": {
+      "eyebrow": "How we connect you",
+      "title": "Live in 48 hours",
+      "items": [
+        {
+          "title": "We set the system up",
+          "text": "Branding, courts, rates, schedule, rules. With you, not as a manual emailed over."
+        },
+        {
+          "title": "We move your base across",
+          "text": "Contacts, booking history, active memberships. From Excel or from an export of whatever you run now."
+        },
+        {
+          "title": "We train your administrators",
+          "text": "Online, in Russian or English, on the workflows they will use every day."
+        },
+        {
+          "title": "You go live",
+          "text": "Bookings start arriving through the app and the dashboard shows occupancy and revenue from day one. Two weeks in, you can see what changed."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Venue questions",
+      "items": [
+        {
+          "question": "What does it cost?",
+          "answer": "Three plans — Classic, Comfort and Max — from $39 a month billed annually, plus 6.5% on bookings that come through the platform. The first two months are free. Detail on the pricing page."
+        },
+        {
+          "question": "How long does it take?",
+          "answer": "Usually about two days from the first call to the first live booking, including moving your client base and training your staff."
+        },
+        {
+          "question": "We already have a booking system. Do we have to drop it?",
+          "answer": "No. We work alongside the common booking systems — your venue appears in the app with its current schedule. Tell us what you run and we will say what it takes."
+        },
+        {
+          "question": "What is the commission charged on?",
+          "answer": "Only on bookings made through RabbitMatch. Anything your administrator enters for walk-ins carries no commission. You pay for demand we bring."
+        },
+        {
+          "question": "Do we lose control of pricing?",
+          "answer": "No. Prices, cancellation rules, peak and off-peak rates, memberships and promotions are yours. We apply them."
+        },
+        {
+          "question": "And our data, if we leave?",
+          "answer": "The client base, booking history and memberships export. Leave and you leave with them."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Two free months is enough to see the difference",
+      "lead": "Tell us about the club and we will set it up with you.",
+      "primary": "Talk to us",
+      "secondary": "See pricing"
+    }
+  },
+  "padel": {
+    "meta": {
+      "title": "What is padel — rules, court, scoring and how to start",
+      "description": "A plain guide to padel: how the game works, what the court and walls do, how scoring runs, what equipment you need, and how to play your first game."
+    },
+    "hero": {
+      "eyebrow": "Guide",
+      "title": "What padel is, and why it took over",
+      "lead": "Padel is a doubles racket sport played on an enclosed court roughly a third the size of a tennis court, where the walls are part of the game. It is the fastest-growing racket sport in the world, and the reason is simple: a complete beginner can play a real rally in their first hour.",
+      "points": [
+        "Always doubles — four players, two per side",
+        "Enclosed court, 20 × 10 metres, glass and mesh walls in play",
+        "Solid stringless racket, underarm serve",
+        "Tennis scoring: 15, 30, 40, game, set"
+      ],
+      "primary": "Find a beginner game",
+      "secondary": "Read the FAQ"
+    },
+    "basics": {
+      "eyebrow": "The basics",
+      "title": "Six things that make padel padel",
+      "items": [
+        {
+          "icon": "users",
+          "title": "It is always doubles",
+          "text": "Four players, two a side. Singles padel exists on a narrower court but is rare. This is the single biggest reason padel is social: you never play it alone, and you rarely play it with the same three people twice."
+        },
+        {
+          "icon": "grid",
+          "title": "The court is enclosed and small",
+          "text": "20 metres by 10, surrounded by glass and metal mesh, with a net across the middle. About a third of a tennis court, which means far less running and far more time near your partner."
+        },
+        {
+          "icon": "repeat",
+          "title": "The walls are in play",
+          "text": "After the ball bounces on your side, it may come off the back or side wall and you can still return it. This is what keeps rallies alive and why points last much longer than in tennis."
+        },
+        {
+          "icon": "zap",
+          "title": "The serve is underarm",
+          "text": "You bounce the ball and hit it below waist height, diagonally into the opposite service box. There is no serving power advantage, which removes the barrier that keeps beginners out of tennis."
+        },
+        {
+          "icon": "target",
+          "title": "The racket is solid",
+          "text": "No strings — a perforated composite blade, shorter than a tennis racket. Less power, more control, and much more forgiving on mishits."
+        },
+        {
+          "icon": "star",
+          "title": "Scoring is borrowed from tennis",
+          "text": "15, 30, 40, game; six games with a two-game margin takes the set; best of three sets takes the match. If you know tennis scoring, you already know padel scoring."
+        }
+      ]
+    },
+    "start": {
+      "eyebrow": "Getting on court",
+      "title": "How to play your first game",
+      "items": [
+        {
+          "title": "Do not buy anything yet",
+          "text": "Almost every club rents rackets, and balls are usually included in the court fee. Wear trainers with a decent grip and sports clothes. Buy a racket after five or six games, when you know whether you actually like it."
+        },
+        {
+          "title": "Find a beginner game, not a beginner court",
+          "text": "Padel is only fun when the four players are roughly matched. Look for games explicitly marked for beginners rather than booking a court and hoping. In RabbitMatch these are filtered by level by default."
+        },
+        {
+          "title": "Learn three rules and ignore the rest",
+          "text": "Serve underarm and diagonally. The ball must bounce on your side before it hits a wall. You lose the point if the ball hits the wall on your opponents' side before bouncing on the floor. Everything else you will pick up from the game."
+        },
+        {
+          "title": "Play from the back at first",
+          "text": "Beginners tend to hug the net and get lobbed. Start further back, let the ball come off the wall, and hit it after it drops. The wall is your friend before it is your problem."
+        },
+        {
+          "title": "Book the next one before you leave",
+          "text": "The single biggest predictor of whether someone keeps playing padel is whether the second game is already in the calendar. Take a spot in the feed while you are still on court."
+        }
+      ]
+    },
+    "vs": {
+      "eyebrow": "Padel vs tennis",
+      "title": "How it differs from the game everyone compares it to",
+      "lead": "Both use a net, a court and tennis scoring. Almost everything else is different, and the differences all point the same way — padel is easier to start and harder to dominate.",
+      "items": [
+        {
+          "icon": "grid",
+          "title": "Court size",
+          "text": "Padel: 20 × 10 m, enclosed. Tennis: 23.77 × 10.97 m for doubles, open. Less ground to cover, shorter distances, far kinder on knees."
+        },
+        {
+          "icon": "target",
+          "title": "Racket",
+          "text": "Padel uses a solid perforated blade with no strings and no handle length to speak of. Tennis uses a strung frame. The padel racket generates less power and demands less technique to make clean contact."
+        },
+        {
+          "icon": "zap",
+          "title": "Serve",
+          "text": "Underarm and below the waist in padel — nobody serves aces past you. In tennis the serve is often the whole point. This is the difference that makes a padel beginner competitive on day one."
+        },
+        {
+          "icon": "repeat",
+          "title": "Walls",
+          "text": "Padel balls stay in play off the glass. Tennis balls are out. Rallies in padel run far longer, which is more exercise and more fun for the same hour of court time."
+        },
+        {
+          "icon": "users",
+          "title": "Format",
+          "text": "Padel is doubles by default; tennis is commonly singles. Four people per booking splits the court cost and makes the sport inherently social."
+        },
+        {
+          "icon": "timer",
+          "title": "Learning curve",
+          "text": "Most people can hold a rally in padel within an hour. Tennis usually takes weeks of lessons before a rally is possible at all. Padel's ceiling is still very high — the entry is just much lower."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Padel questions",
+      "items": [
+        {
+          "question": "What is padel, in one sentence?",
+          "answer": "Padel is a doubles racket sport played on a 20 × 10 metre enclosed court where the glass and mesh walls are part of play, using a solid stringless racket, an underarm serve and tennis scoring."
+        },
+        {
+          "question": "Is padel the same as pickleball or paddle tennis?",
+          "answer": "No. Pickleball is played on a badminton-sized court with a perforated plastic ball and no walls. Paddle tennis is a different American game. Padel is the enclosed-court, glass-walled sport that originated in Mexico in 1969 and spread through Spain and Argentina."
+        },
+        {
+          "question": "Do I need to be fit or have played tennis before?",
+          "answer": "Neither. The court is small, the serve is underarm and the racket is forgiving, so beginners can rally in their first session. Tennis experience helps slightly with timing and hurts slightly with technique — padel rewards placement over power."
+        },
+        {
+          "question": "How many people do I need?",
+          "answer": "Four. That is the main practical barrier to playing padel, and it is why apps that match players by level exist — most games are formed from people who did not previously know each other."
+        },
+        {
+          "question": "What equipment do I need to start?",
+          "answer": "Trainers with grip and sports clothing. Rackets are rented at nearly every club and balls are usually included in the court fee. Wait until you have played several times before buying a racket."
+        },
+        {
+          "question": "How long does a game last?",
+          "answer": "Courts are typically booked in 60 or 90 minute slots. A full best-of-three-sets match takes roughly 90 minutes; a social session usually plays as many games as fit the booking."
+        },
+        {
+          "question": "How is padel scored?",
+          "answer": "Exactly like tennis: points run 15, 30, 40, game. Six games with a margin of two wins a set, and a tie-break is played at 6-6. Matches are best of three sets."
+        },
+        {
+          "question": "Can the ball hit the wall on the serve?",
+          "answer": "The serve must bounce in the diagonal service box first. After that it may touch the side or back wall and remain in play — but if it hits the metal mesh before bouncing on the floor, the serve is a fault."
+        }
+      ]
+    },
+    "cta": {
+      "title": "The rules make more sense on a court",
+      "lead": "Find a beginner game near you and learn the rest in an hour.",
+      "primary": "Get the app",
+      "secondary": "For players"
+    }
+  },
+  "pricingPage": {
+    "meta": {
+      "title": "Pricing: free for players, from $39 a month for clubs",
+      "description": "Playing, creating games and running tournaments is free. PRO and MAX open the deeper analytics. Clubs get three plans plus 6.5% on bookings, first two months free."
+    },
+    "hero": {
+      "eyebrow": "Pricing",
+      "title": "Whoever makes money from it pays for it",
+      "lead": "The app does not help a player, an organizer or a coach earn — it helps them play. So the core is free, and the people paying are the clubs whose courts we fill.",
+      "points": [
+        "Playing, creating games and running tournaments — free",
+        "PRO and MAX open the deeper analytics and some extras",
+        "Venues from $39 a month billed annually",
+        "6.5% commission, and only on bookings that come through us"
+      ],
+      "primary": "Talk to us",
+      "secondary": "For venues"
+    },
+    "free": {
+      "eyebrow": "Free",
+      "title": "What costs nothing",
+      "items": [
+        {
+          "icon": "users",
+          "title": "Playing",
+          "text": "Finding games, joining, creating, rating, history, profile, player card. The court you pay for at the venue."
+        },
+        {
+          "icon": "trophy",
+          "title": "Organizing",
+          "text": "Creating and running tournaments, with no cap on how many or how large."
+        },
+        {
+          "icon": "target",
+          "title": "Coaching",
+          "text": "A coach profile, a bookable schedule, group sessions, reviews."
+        }
+      ]
+    },
+    "subs": {
+      "eyebrow": "PRO and MAX",
+      "title": "What is worth paying for",
+      "lead": "A subscription does not take away anything that worked. It opens things that do not exist at all until you have played enough for them to mean something.",
+      "items": [
+        {
+          "icon": "chart",
+          "title": "Deeper statistics",
+          "text": "The full breakdown of your game, and audience analytics if you organize. Until enough matches are on record there is nothing to show."
+        },
+        {
+          "icon": "target",
+          "title": "Partner matching",
+          "text": "People in your city ranked by compatibility, with the reasoning under each name."
+        },
+        {
+          "icon": "sparkles",
+          "title": "Card styling",
+          "text": "Some colours and patterns unlock through play, some through a subscription. The card itself everyone has."
+        },
+        {
+          "icon": "bell",
+          "title": "Game and court alerts",
+          "text": "A notification for every game that fits your conditions, and for every hour that frees up at your venue."
+        }
+      ]
+    },
+    "plans": {
+      "eyebrow": "For venues",
+      "title": "Three plans",
+      "lead": "They differ in how far back the analytics reach, how configurable the CRM is, and how fast support answers."
+    },
+    "commission": {
+      "title": "About the commission",
+      "items": [
+        {
+          "icon": "percent",
+          "title": "6.5% on platform bookings",
+          "text": "For comparison: international booking apps usually take 8–10%, and bank acquiring alone runs up to 5%."
+        },
+        {
+          "icon": "wallet",
+          "title": "Nothing on direct ones",
+          "text": "A client walked in or phoned — your administrator enters the booking, no commission."
+        },
+        {
+          "icon": "shield",
+          "title": "Your data is not hostage",
+          "text": "The base, booking history and memberships export whenever you want."
+        }
+      ]
+    },
+    "faq": {
+      "title": "Pricing questions",
+      "items": [
+        {
+          "question": "Free for players, really?",
+          "answer": "Yes, and it is not a trial. Playing, creating games and running tournaments stays free. PRO and MAX cover the deeper analytics and some extras — the things that only make sense after a few dozen recorded matches."
+        },
+        {
+          "question": "What does PRO cost?",
+          "answer": "Around $5 a month or $45 a year, with a trial period. Exact prices and what each tier includes are shown in the app on the subscription screen."
+        },
+        {
+          "question": "What happens after a club's two free months?",
+          "answer": "You move to Classic, Comfort or Max. Nothing is charged until you have picked a plan."
+        },
+        {
+          "question": "Monthly or annual?",
+          "answer": "Either. Annual works out roughly 20% cheaper per month."
+        },
+        {
+          "question": "Setup fees?",
+          "answer": "None. Configuration, data migration and staff training are included."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Start with two free months",
+      "lead": "No card, no setup fee.",
+      "primary": "Talk to us",
+      "secondary": "For venues"
+    }
+  },
+  "faqPage": {
+    "meta": {
+      "title": "FAQ — padel, courts, tournaments and clubs",
+      "description": "Answers about playing on RabbitMatch, running tournaments, coaching, connecting a club, pricing and how padel itself works."
+    },
+    "hero": {
+      "eyebrow": "FAQ",
+      "title": "Questions, answered",
+      "lead": "Grouped by who is asking. If yours is not here, the contact form at the bottom reaches a human.",
+      "points": [
+        "For players: how the level works, what costs money, where to start",
+        "For organizers and coaches: formats, fixing things mid-event, taking bookings",
+        "And a separate section on padel itself — rules, court, scoring"
+      ],
+      "primary": "Get the app",
+      "secondary": "Talk to us"
+    },
+    "groups": {
+      "players": "For players",
+      "organizers": "For organizers",
+      "coaches": "For coaches",
+      "venues": "For clubs and venues",
+      "padel": "About padel"
+    },
+    "cta": {
+      "title": "Still stuck?",
+      "lead": "Message us in the chat, in Telegram or through the form — a person answers.",
+      "primary": "Get the app",
+      "secondary": "Talk to us"
+    }
+  },
+  "appShots": {
+    "gamesList": {
+      "alt": "The list of games in the app: a match tonight and a Mexicano tomorrow, each with time, venue, entry fee and level.",
+      "caption": "Everything you need to decide is on the card. Level, fee, who is organising, how many spots are left."
+    },
+    "venueBooking": {
+      "alt": "A venue page in the app with a week of dates and the free slots on each court.",
+      "caption": "Free slots come from the club, not from a form you fill in and wait on."
+    },
+    "courtCard": {
+      "alt": "A court card with photo, price from, and the hours still free today.",
+      "caption": "Price and free hours before you tap. Not after three screens."
+    },
+    "bestMatch": {
+      "alt": "A player in the list with the reasons the app put them there: level match, side of the court, shared interests.",
+      "caption": "The reason sits under the name. Not a badge that says “recommended”."
+    },
+    "community": {
+      "alt": "The community tab: players in the city sorted by how good a game you would have, each with the reason underneath.",
+      "caption": "Sorted by the game you would get, not by who is strongest. The reason sits under every name."
+    },
+    "coachProfile": {
+      "alt": "A coach page in the app: price per lesson, what they teach, and where they work.",
+      "caption": "A student is not looking for lessons in general. They are looking for someone who fixes the thing that is broken."
+    },
+    "coachSchedule": {
+      "alt": "A coach editing their own schedule: open hours, booked hours, and hours closed off.",
+      "caption": "The coach opens and closes hours themselves. No calls, no waiting on an administrator."
+    },
+    "playerStreak": {
+      "alt": "A player statistics card showing a run of recent results and the current streak.",
+      "caption": "Not just how many you won. When it started going well, and when it stopped."
+    },
+    "playerStability": {
+      "alt": "A player statistics card showing how steady results are and which side of the court works better.",
+      "caption": "Two players with the same rating play differently. This is where the difference shows."
+    },
+    "playerTraits": {
+      "alt": "The strengths card: what partners and opponents name as a strength and what they name as a growth area.",
+      "caption": "Assessments come from people you actually played with, and they stay anonymous."
+    },
+    "playerCard": {
+      "alt": "A player card in the app with a chosen background, win rate and rating.",
+      "caption": "The card is the first thing an organiser sees next to your name."
+    },
+    "organizerStats": {
+      "alt": "Organiser statistics: how many players come back and which formats they come back for.",
+      "caption": "Which formats bring people back, and which quietly lose them."
+    },
+    "tournamentLive": {
+      "alt": "A round of a running tournament: court, both pairs, and the score being entered.",
+      "caption": "A score typed wrong is fixed in the round it happened. Nobody has to be called."
+    }
+  },
+  "illustrationsMisc": {
+    "hierarchy": {
+      "caption": "A court ladder: win and you climb, lose and you drop. A win on a higher court is worth more, so the top of the ladder is where the real fight is.",
+      "up": "Winners climb",
+      "down": "Losers drop",
+      "courts": [
+        "Court 1 · Throne",
+        "Court 2",
+        "Court 3",
+        "Court 4"
+      ]
+    },
+    "card": {
+      "name": "David",
+      "surname": "VARDANYAN",
+      "ratingLabel": "RATING",
+      "top": "TOP 12",
+      "caption": "The player card in your profile: you pick the colour, the pattern and the cut-out photo mode. Some options unlock through play."
     }
   },
   "solution": {
-    "eyebrow": "Our Solution",
-    "lead": "Legacy CRMs are outdated. We're building an ecosystem for businesses and players.",
-    "platform": "The RabbitMatch Platform",
+    "eyebrow": "The administrator's workspace",
+    "lead": "Every court's schedule, the bookings, the sessions and the client records in one place. Your administrator sees the whole day at once and stops switching between a notebook, a spreadsheet and the phone.",
+    "platform": "One screen instead of three windows and a phone",
     "aiHighlight": "AI that helps you earn money",
     "items": {
       "01title": "The RabbitMatch app for players",
@@ -70,7 +1362,7 @@
       "03body": "Use artificial intelligence to analyze financial KPIs and recommendations, monitor court utilization, revenue and player communication — all in one place."
     },
     "mockupPhoneAlt": "RabbitMatch mobile app — courts feed",
-    "mockupCrmAlt": "RabbitMatch CRM dashboard",
+    "mockupCrmAlt": "The RabbitMatch CRM dashboard: court schedule, bookings and the day's revenue",
     "crm": {
       "title": "RABBITMATCH",
       "subtitle": "CLUBS CRM",
@@ -93,121 +1385,6 @@
       "newBooking": "+ New Booking",
       "search": "Search bookings, players, courts…"
     }
-  },
-  "players": {
-    "eyebrow": "For clubs",
-    "title": "The players find you themselves",
-    "tournamentsTitle": "Tournaments and games",
-    "tournamentsBody": "An interface for organizing and managing tournaments with 5+ formats and 20+ individual settings. A pro rating system that simplifies finding the right players for every game. A growing player base, ratings and profiles — your club inside a live venue.",
-    "tournamentsHighlight": "On average +30% in customers for bookings",
-    "bookingTitle": "Court booking",
-    "bookingBody": "Pick the date, time and court in two clicks — no phone calls or messengers. Direct integration with the CRM for club owners.",
-    "bookingHighlight": "On average +40% in bookings",
-    "controlTitle": "Full control",
-    "controlBody": "Manage prices, subscriptions, schedules, promotions and news for your customers — from one place.",
-    "controlHighlight": "Your schedule is always at hand",
-    "cta": "Connect your club for free",
-    "phoneAlt": {
-      "courts": "Courts feed in the RabbitMatch app",
-      "profile": "Player profile with rating",
-      "matchMap": "Pick a club on the map",
-      "matchForm": "Create a match form"
-    }
-  },
-  "organizers": {
-    "eyebrow": "For Organizers",
-    "title": "Run tournaments,\nnot spreadsheets",
-    "subtitle": "Everything you need to create, manage and run racket sport tournaments — from 4 to 32 players, in any format, on any court.",
-    "feat1Title": "5+ Tournament Formats",
-    "feat1Body": "Americano, Mexicano, Groups + Playoffs, Round Robin and more. Pick the format that fits your group.",
-    "feat2Title": "20+ Custom Settings",
-    "feat2Body": "Points to win, match duration, court numbers, player levels, private games — full control at your fingertips.",
-    "feat3Title": "Real-time Scorekeeping",
-    "feat3Body": "Update scores live. Standings recalculate instantly. Every participant follows the action from their pocket.",
-    "feat4Title": "Smart Player Matching",
-    "feat4Body": "Filter by rating and skill level. Build balanced brackets. The app handles the math.",
-    "feat5Title": "Multi-day Events",
-    "feat5Body": "Span your tournament across multiple days and venues. Add courts and time slots on the fly.",
-    "feat6Title": "Deep Analytics",
-    "feat6Body": "Player stats, match history, international rating system. Every game counts toward the leaderboard.",
-    "stepsTitle": "From idea to final whistle",
-    "step1Title": "Create in 2 minutes",
-    "step1Body": "Set format, date, court and player limit. The app generates your brackets automatically.",
-    "step2Title": "Players join themselves",
-    "step2Body": "Share the link or let players find your game in the feed. No WhatsApp coordination needed.",
-    "step3Title": "Manage in real time",
-    "step3Body": "Track scores, update standings and view results live — from any device.",
-    "highlight": "Free for organizers",
-    "cta": "Create your first tournament",
-    "phoneAlt": "Tournament creation interface in RabbitMatch"
-  },
-  "forPlayers": {
-    "eyebrow": "For Players",
-    "title": "Play more. Grow faster.\nFind your match.",
-    "subtitle": "Join the RabbitMatch community — a platform built for players who take their game seriously and want to compete, improve and connect.",
-    "benefit1Title": "Quick Start",
-    "benefit1Body": "Sign up via Telegram or Email in under 30 seconds. No forms, no friction.",
-    "benefit2Title": "International Rating",
-    "benefit2Body": "A pro-grade rating system that tracks your level across every match you play.",
-    "benefit3Title": "Achievements",
-    "benefit3Body": "Unlock dozens of badges: first win, winning streaks, special formats and more.",
-    "benefit4Title": "Find Players",
-    "benefit4Body": "Search by sport, level and location. Find the right partner or fill your open spots fast.",
-    "profileTitle": "Your game, on record",
-    "profileSubtitle": "Every match, score and victory logged in your profile.",
-    "profileFeat1": "Player ratings and reviews",
-    "profileFeat2": "Full match history",
-    "profileFeat3": "Stats by sport and format",
-    "profileFeat4": "Achievement system",
-    "profileFeat5": "Win / loss analytics",
-    "profileFeat6": "Public profile with rating",
-    "bookingTitle": "Book a court in 2 clicks",
-    "bookingBody": "Browse nearby venues, check real-time availability and book your court — without phone calls or group chats.",
-    "platformsTitle": "Available everywhere",
-    "platformsWeb": "Web App",
-    "platformsTelegram": "Telegram",
-    "platformsIos": "App Store",
-    "platformsAndroid": "Google Play",
-    "platformsSoon": "soon",
-    "cta": "Start playing now",
-    "ctaSub": "Free to join. No commitment.",
-    "profilePhoneAlt": "Player profile with rating in RabbitMatch",
-    "courtsPhoneAlt": "Court booking in RabbitMatch"
-  },
-  "contactModal": {
-    "title": "Connect your club",
-    "subtitle": "Tell us a bit about you and we'll get back within one business day.",
-    "name": "Name",
-    "namePlaceholder": "Your name",
-    "email": "Email",
-    "emailPlaceholder": "you@example.com",
-    "club": "Club name",
-    "clubPlaceholder": "RabbitMatch Padel Club",
-    "message": "Message",
-    "messagePlaceholder": "What would you like to discuss?",
-    "submit": "Send request",
-    "submitting": "Sending…",
-    "success": "Thank you! We'll be in touch within one business day.",
-    "error": "Something went wrong. Please try again.",
-    "close": "Close",
-    "directTitle": "Or reach us directly",
-    "directTelegram": "Telegram",
-    "directEmail": "Email"
-  },
-  "launch": {
-    "eyebrow": "Onboarding",
-    "title": "Launch in 3 steps",
-    "intro1Highlight": "Full localization in your language,",
-    "intro1Body": "English and Russian. The interface, notifications and reports are clear to your customers and staff. Round-the-clock support in Russian and English from our team.",
-    "intro2Highlight": "A quick start in 48 hours.",
-    "intro2Body": "We set up RabbitMatch CRM for your club: courts, schedule, prices and promotions. A personal manager runs onboarding for your team.",
-    "step1Title": "Set up the system",
-    "step1Body": "Branding, courts, rates, schedule.",
-    "step2Title": "Import the customer base",
-    "step2Body": "Move contacts, booking history and subscriptions from Excel or any other system.",
-    "step3Title": "Train your team",
-    "step3Body": "Online training for administrators and coaches. 24/7 support in Russian and English.",
-    "runnerAlt": "Stylized lime line drawing of a runner climbing steps"
   },
   "comparison": {
     "title": "RabbitMatch vs alternatives",
@@ -293,14 +1470,6 @@
       "priceAnnualNew": "$129"
     }
   },
-  "sections": {
-    "features": "Features",
-    "sports": "Sports we cover",
-    "crm": "CRM for clubs",
-    "social": "Community",
-    "download": "Get the app",
-    "contact": "Get in touch"
-  },
   "contact": {
     "eyebrow": "Contact us",
     "title": "Ready to grow your club?",
@@ -323,12 +1492,56 @@
     "directTelegram": "Telegram",
     "directEmail": "Email"
   },
+  "contactModal": {
+    "title": "Connect your club",
+    "subtitle": "Tell us a bit about you and we'll get back within one business day.",
+    "name": "Name",
+    "namePlaceholder": "Your name",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "club": "Club name",
+    "clubPlaceholder": "RabbitMatch Padel Club",
+    "message": "Message",
+    "messagePlaceholder": "What would you like to discuss?",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "success": "Thank you! We'll be in touch within one business day.",
+    "error": "Something went wrong. Please try again.",
+    "close": "Close",
+    "directTitle": "Or reach us directly",
+    "directTelegram": "Telegram",
+    "directEmail": "Email"
+  },
+  "chat": {
+    "openLabel": "Open chat",
+    "closeLabel": "Close chat",
+    "title": "RabbitMatch support",
+    "subtitle": "We usually reply within a few minutes",
+    "placeholder": "Write a message…",
+    "send": "Send",
+    "namePlaceholder": "Your name",
+    "nameLabel": "How should we call you?",
+    "contactPlaceholder": "Email or @telegram (optional)",
+    "start": "Start chat",
+    "intro": "Ask anything about the app, a booking, a tournament or connecting your club.",
+    "telegramCta": "Continue in Telegram",
+    "telegramHint": "Prefer Telegram? Continue the same conversation there.",
+    "sending": "Sending…",
+    "error": "Message not sent. Try again.",
+    "offline": "We are offline right now, but the message will reach us.",
+    "you": "You",
+    "team": "RabbitMatch",
+    "consent": "By sending a message you agree to our privacy policy.",
+    "connectionLost": "Connection lost. Reconnecting…"
+  },
   "footer": {
-    "tagline": "The all-in-one platform for racket sports clubs.",
+    "tagline": "Padel, tennis and every racket sport in one app:\ngames, courts, tournaments and a CRM for clubs.",
     "rights": "All rights reserved.",
-    "navTitle": "Navigation",
+    "audiencesTitle": "Who it is for",
+    "resourcesTitle": "Resources",
     "legalTitle": "Legal",
     "socialTitle": "Follow us",
+    "contact": "Contact",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "tiktok": "TikTok",
@@ -346,6 +1559,12 @@
     "accept": "Accept all",
     "reject": "Reject all",
     "policyLink": "Cookie Policy"
+  },
+  "notFound": {
+    "title": "This page does not exist",
+    "lead": "The link may be out of date, or the address may have a typo. The pages below are all still where they were.",
+    "home": "Go to the home page",
+    "faq": "Read the FAQ"
   },
   "legal": {
     "terms": {

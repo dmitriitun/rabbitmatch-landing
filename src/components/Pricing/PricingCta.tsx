@@ -10,13 +10,13 @@ type Variant = 'classic' | 'comfort' | 'max';
 
 export function PricingCta({ label, variant }: { label: string; variant: Variant }) {
   const [open, setOpen] = useState(false);
-  const className = `${styles.cta} ${styles[`cta_${variant}`]}`;
 
   return (
     <>
       <button
         type="button"
-        className={className}
+        className={styles.cta}
+        data-tier={variant}
         onClick={() => {
           tap();
           setOpen(true);

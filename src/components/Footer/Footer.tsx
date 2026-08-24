@@ -1,79 +1,42 @@
-'use client';
-
 import Image from 'next/image';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { useCallback } from 'react';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { EditableText } from '@/components/EditableText/EditableText';
 import { FacebookIcon } from '@/components/icons/FacebookIcon';
 import { InstagramIcon } from '@/components/icons/InstagramIcon';
 import { TelegramIcon } from '@/components/icons/TelegramIcon';
 import { TikTokIcon } from '@/components/icons/TikTokIcon';
-import { tap } from '@/lib/haptics';
+import { Link } from '@/i18n/navigation';
+import { legalSlugs, links } from '@/lib/site';
 import styles from './Footer.module.css';
 
-type SocialLink = {
-  key: 'instagram' | 'tiktok' | 'facebook' | 'telegram';
-  href: string | undefined;
-  Icon: React.ComponentType<{ size?: number; className?: string }>;
-};
+const AUDIENCES = [
+  { id: 'players', href: '/players' },
+  { id: 'organizers', href: '/organizers' },
+  { id: 'coaches', href: '/coaches' },
+  { id: 'venues', href: '/venues' },
+] as const;
 
-type NavLink = {
-  id: 'products' | 'clubs' | 'organizers' | 'playersNav' | 'contact';
-  target: string;
-};
+const RESOURCES = [
+  { id: 'padel', href: '/padel' },
+  { id: 'pricing', href: '/pricing' },
+  { id: 'faq', href: '/faq' },
+] as const;
 
-const NAV: NavLink[] = [
-  { id: 'products', target: 'features' },
-  { id: 'clubs', target: 'crm' },
-  { id: 'organizers', target: 'organizers' },
-  { id: 'playersNav', target: 'players' },
-  { id: 'contact', target: 'contact' },
-];
+/**
+ * The footer is a server component — it renders the site's full internal link
+ * graph, which is what lets crawlers reach every audience page from any page
+ * on the site. None of it needs interactivity, so none of it ships JS.
+ */
+export async function Footer() {
+  const tFooter = await getTranslations('footer');
+  const tNav = await getTranslations('nav');
 
-type LegalLink = {
-  key: 'terms' | 'privacy' | 'cookies' | 'eula' | 'subscription' | 'refund' | 'booking';
-  slug: string;
-};
-
-const LEGAL: LegalLink[] = [
-  { key: 'terms', slug: 'terms' },
-  { key: 'privacy', slug: 'privacy' },
-  { key: 'cookies', slug: 'cookies' },
-  { key: 'eula', slug: 'eula' },
-  { key: 'subscription', slug: 'subscription' },
-  { key: 'refund', slug: 'refund' },
-  { key: 'booking', slug: 'booking' },
-];
-
-export function Footer() {
-  const tFooter = useTranslations('footer');
-  const tNav = useTranslations('nav');
-  const router = useRouter();
-  const pathname = usePathname();
-
-  const socials: SocialLink[] = [
-    { key: 'instagram', href: process.env.NEXT_PUBLIC_INSTAGRAM_URL, Icon: InstagramIcon },
-    { key: 'tiktok', href: process.env.NEXT_PUBLIC_TIKTOK_URL, Icon: TikTokIcon },
-    { key: 'facebook', href: process.env.NEXT_PUBLIC_FACEBOOK_URL, Icon: FacebookIcon },
-    { key: 'telegram', href: process.env.NEXT_PUBLIC_TELEGRAM_CHANNEL_URL, Icon: TelegramIcon },
-  ];
-
-  const scrollTo = useCallback(
-    (id: string) => {
-      tap();
-      // Sections only exist on the home page; from elsewhere navigate home
-      // with the target hash.
-      if (pathname !== '/') {
-        router.push(`/#${id}`);
-        return;
-      }
-      const el = document.getElementById(id);
-      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    },
-    [pathname, router],
-  );
+  const socials = [
+    { key: 'instagram' as const, href: links.instagram, Icon: InstagramIcon },
+    { key: 'tiktok' as const, href: links.tiktok, Icon: TikTokIcon },
+    { key: 'facebook' as const, href: links.facebook, Icon: FacebookIcon },
+    { key: 'telegram' as const, href: links.telegramChannel, Icon: TelegramIcon },
+  ].filter((s) => Boolean(s.href));
 
   const year = new Date().getFullYear();
 
@@ -82,29 +45,16 @@ export function Footer() {
       <div className={styles.inner}>
         <div className={styles.grid}>
           <div className={styles.brandCol}>
-            <a
-              href="#hero"
-              className={styles.brand}
-              onClick={(e) => {
-                e.preventDefault();
-                scrollTo('hero');
-              }}
-              aria-label={tNav('logoAlt')}
-            >
-              <Image
-                src="/images/logo.png"
-                alt={tNav('logoAlt')}
-                width={36}
-                height={36}
-                className={styles.logo}
-              />
+            <Link href="/" className={styles.brand} aria-label={tNav('logoAlt')}>
+              <Image src="/images/logo.webp" alt="" width={36} height={36} className={styles.logo} />
               <span className={styles.brandText}>RabbitMatch</span>
-            </a>
+            </Link>
+
             <EditableText tKey="footer.tagline" as="p" multiline className={styles.tagline} />
 
-            <ul className={styles.socials} aria-label={tFooter('socialTitle')}>
-              {socials.map(({ key, href, Icon }) =>
-                href ? (
+            {socials.length ? (
+              <ul className={styles.socials} aria-label={tFooter('socialTitle')}>
+                {socials.map(({ key, href, Icon }) => (
                   <li key={key}>
                     <a
                       href={href}
@@ -112,49 +62,75 @@ export function Footer() {
                       rel="noopener noreferrer"
                       className={styles.social}
                       aria-label={tFooter(key)}
-                      onClick={() => tap()}
                     >
                       <Icon size={18} />
                     </a>
                   </li>
-                ) : null,
-              )}
-            </ul>
+                ))}
+              </ul>
+            ) : null}
           </div>
 
-          <div className={styles.linksCol}>
-            <EditableText tKey="footer.navTitle" as="h3" className={styles.colTitle} />
+          <nav className={styles.linksCol} aria-labelledby="footer-audiences">
+            <h3 id="footer-audiences" className={styles.colTitle}>
+              {tFooter('audiencesTitle')}
+            </h3>
             <ul className={styles.linkList}>
-              {NAV.map((link) => (
+              {AUDIENCES.map((link) => (
                 <li key={link.id}>
-                  <button
-                    type="button"
-                    onClick={() => scrollTo(link.target)}
-                    className={styles.linkBtn}
-                  >
+                  <Link href={link.href} className={styles.link}>
                     {tNav(link.id)}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className={styles.linksCol}>
-            <EditableText tKey="footer.legalTitle" as="h3" className={styles.colTitle} />
-            <ul className={styles.linkList}>
-              {LEGAL.map((link) => (
-                <li key={link.key}>
-                  <Link href={`/legal/${link.slug}`} className={styles.linkBtn} onClick={() => tap()}>
-                    <EditableText tKey={`footer.${link.key}`} as="span" />
                   </Link>
                 </li>
               ))}
             </ul>
-          </div>
+          </nav>
+
+          <nav className={styles.linksCol} aria-labelledby="footer-resources">
+            <h3 id="footer-resources" className={styles.colTitle}>
+              {tFooter('resourcesTitle')}
+            </h3>
+            <ul className={styles.linkList}>
+              {RESOURCES.map((link) => (
+                <li key={link.id}>
+                  <Link href={link.href} className={styles.link}>
+                    {tNav(link.id)}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link href="/#contact" className={styles.link}>
+                  {tFooter('contact')}
+                </Link>
+              </li>
+            </ul>
+          </nav>
+
+          <nav className={styles.linksCol} aria-labelledby="footer-legal">
+            <h3 id="footer-legal" className={styles.colTitle}>
+              {tFooter('legalTitle')}
+            </h3>
+            <ul className={styles.linkList}>
+              {legalSlugs.map((slug) => (
+                <li key={slug}>
+                  <Link href={`/legal/${slug}`} className={styles.link}>
+                    {tFooter(slug)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </div>
 
         <div className={styles.bottom}>
-          <p className={styles.copy}>© {year} RabbitMatch. {tFooter('rights')}</p>
+          <p className={styles.copy}>
+            © {year} RabbitMatch. {tFooter('rights')}
+          </p>
+          {links.contactEmail ? (
+            <a href={`mailto:${links.contactEmail}`} className={styles.contactLink}>
+              {links.contactEmail}
+            </a>
+          ) : null}
         </div>
       </div>
     </footer>

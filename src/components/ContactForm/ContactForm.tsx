@@ -14,7 +14,6 @@ type Status = 'idle' | 'submitting' | 'success' | 'error';
 type Props = {
   source: string;
   autoFocusFirst?: boolean;
-  variant?: 'light' | 'dark';
   firstFieldRef?: React.Ref<HTMLInputElement>;
   showDirect?: boolean;
 };
@@ -81,7 +80,6 @@ const Field = forwardRef<HTMLInputElement, FieldProps>(function Field(
 
 export function ContactForm({
   source,
-  variant = 'dark',
   firstFieldRef,
   showDirect = true,
 }: Props) {
@@ -151,7 +149,7 @@ export function ContactForm({
 
   if (status === 'success') {
     return (
-      <div className={`${styles.shell} ${styles[`shell_${variant}`]}`}>
+      <div className={styles.shell}>
         <div className={styles.successBox} role="status" aria-live="polite">
           <span className={styles.successIconRing}>
             <CheckCircle2 size={32} className={styles.successIcon} />
@@ -163,7 +161,7 @@ export function ContactForm({
   }
 
   return (
-    <div className={`${styles.shell} ${styles[`shell_${variant}`]}`}>
+    <div className={styles.shell}>
       <form className={styles.form} onSubmit={submit} noValidate>
         <div className={styles.row}>
           <Field

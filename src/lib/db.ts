@@ -122,6 +122,53 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
         ON cookie_consents (created_at DESC);
     `,
   },
+  {
+    // Site chat bridged to Telegram. One thread per visitor; each thread maps
+    // to a forum topic in the support supergroup so several moderators can
+    // work in parallel without the conversations interleaving.
+    id: '0004_chat',
+    sql: `
+      CREATE TABLE IF NOT EXISTS chat_threads (
+        id BIGSERIAL PRIMARY KEY,
+        -- Server-issued opaque token. The browser presents it to read and
+        -- append to its own thread, so it must never be guessable.
+        token TEXT UNIQUE NOT NULL,
+        name TEXT,
+        contact TEXT,
+        locale TEXT,
+        page TEXT,
+        ip TEXT,
+        user_agent TEXT,
+        telegram_chat_id TEXT,
+        telegram_topic_id BIGINT,
+        status TEXT NOT NULL DEFAULT 'open',
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        last_message_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS chat_threads_topic_idx
+        ON chat_threads (telegram_chat_id, telegram_topic_id);
+      CREATE INDEX IF NOT EXISTS chat_threads_last_message_idx
+        ON chat_threads (last_message_at DESC);
+
+      CREATE TABLE IF NOT EXISTS chat_messages (
+        id BIGSERIAL PRIMARY KEY,
+        thread_id BIGINT NOT NULL REFERENCES chat_threads(id) ON DELETE CASCADE,
+        -- 'in'  = written by the site visitor
+        -- 'out' = written by a moderator in Telegram
+        direction TEXT NOT NULL,
+        body TEXT NOT NULL,
+        author_name TEXT,
+        telegram_message_id BIGINT,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS chat_messages_thread_idx
+        ON chat_messages (thread_id, id);
+      CREATE INDEX IF NOT EXISTS chat_messages_tg_msg_idx
+        ON chat_messages (telegram_message_id);
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {

@@ -1,33 +1,20 @@
 .frame {
+  /* The mockup is a product screenshot with its own UI palette, kept decoupled
+     from the site design tokens so restyling the site never distorts it. */
+  --color-lime: #B9E901;
+  --color-danger: #EF4444;
+  --color-warning: #FF7300;
+
   position: relative;
   width: 100%;
   border-radius: var(--radius-xl);
   isolation: isolate;
-}
 
-.glowA,
-.glowB {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(60px);
-  pointer-events: none;
-  z-index: 0;
-}
-
-.glowA {
-  top: -40px;
-  right: -30px;
-  width: 240px;
-  height: 240px;
-  background: radial-gradient(circle, rgba(185, 233, 1, 0.35), rgba(185, 233, 1, 0) 70%);
-}
-
-.glowB {
-  bottom: -40px;
-  left: -30px;
-  width: 260px;
-  height: 260px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 70%);
+  /* On a narrow screen the dashboard is scrolled rather than squeezed: a
+     compressed CRM grid is unreadable, and the point of showing it at all is
+     that a venue owner can see the schedule screen. */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .window {
@@ -35,10 +22,13 @@
   z-index: 1;
   display: grid;
   grid-template-columns: 140px 1fr;
+  min-width: 720px;
   border-radius: 14px;
   background: #f7f8fa;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  /* A hairline and a restrained shadow — the previous 80px black bloom was
+     tuned for a dark page and reads as a glow on a white one. */
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   font-size: 11px;
   color: #1f2937;

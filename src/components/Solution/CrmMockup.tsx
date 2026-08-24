@@ -80,9 +80,6 @@ export function CrmMockup({ ariaLabel }: { ariaLabel: string }) {
 
   return (
     <div className={styles.frame} role="img" aria-label={ariaLabel}>
-      <div className={styles.glowA} aria-hidden="true" />
-      <div className={styles.glowB} aria-hidden="true" />
-
       <div className={styles.window}>
         <aside className={styles.sidebar}>
           <div className={styles.brand}>
