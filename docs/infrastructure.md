@@ -131,8 +131,19 @@ docs/
 ## Деплой
 
 `output: 'standalone'`. `nixpacks.toml` собирает, докладывает в вывод `public/`
-и `.next/static/` и запускает `node .next/standalone/server.js`; `railway.json`
-дублирует команду запуска и указывает healthcheck на `/api/health`.
+и `.next/static/` и запускает сервер; `railway.json` дублирует команду запуска
+(его `startCommand` имеет приоритет) и указывает healthcheck на `/api/health`.
+
+**`HOSTNAME=0.0.0.0` в команде запуска обязателен.** Сгенерированный
+`server.js` делает `process.env.HOSTNAME || '0.0.0.0'`, а контейнерный рантайм
+— Railway в том числе — выставляет `HOSTNAME` в id контейнера. Next тогда
+слушает это имя вместо всех интерфейсов, healthcheck до порта не достучится, и
+деплой падает с «service unavailable», а затем «1/1 replicas never became
+healthy». Симптом выглядит как проблема приложения, но приложение при этом
+исправно.
+
+`healthcheckTimeout` — 300 секунд. Тридцати не хватает: отсчёт идёт от старта
+контейнера, а образ около полугигабайта.
 
 Подробности и что выставить в переменных окружения — в `docs/performance.md`.
 

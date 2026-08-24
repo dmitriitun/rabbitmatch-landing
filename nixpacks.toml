@@ -18,5 +18,13 @@ cmds = [
   'cp -r .next/static .next/standalone/.next/static',
 ]
 
+# HOSTNAME must be forced.
+#
+# The generated server does `process.env.HOSTNAME || '0.0.0.0'`, and every
+# container runtime — Railway included — sets HOSTNAME to the container id.
+# Next then binds to that name instead of every interface, and the platform
+# health check cannot reach the port: "service unavailable", then "1/1 replicas
+# never became healthy". Keep this in step with `railway.json`, whose
+# startCommand takes precedence over this one.
 [start]
-cmd = 'node .next/standalone/server.js'
+cmd = 'HOSTNAME=0.0.0.0 node .next/standalone/server.js'
