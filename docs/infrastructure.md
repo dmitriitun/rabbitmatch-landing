@@ -130,9 +130,19 @@ docs/
 
 ## Деплой
 
-`output: 'standalone'`. `nixpacks.toml` собирает, докладывает в вывод `public/`
-и `.next/static/` и запускает сервер; `railway.json` дублирует команду запуска
-(его `startCommand` имеет приоритет) и указывает healthcheck на `/api/health`.
+`output: 'standalone'`. `nixpacks.toml` собирает и запускает сервер;
+`railway.json` дублирует команду запуска (его `startCommand` имеет приоритет)
+и указывает healthcheck на `/api/health`.
+
+**`public/` и `.next/static/` докладывает в вывод `postbuild`**
+(`scripts/copy-standalone-assets.js`). Standalone-вывод их не содержит: Next
+исходит из того, что статику отдаёт CDN. Если их не положить рядом с сервером,
+страницы отдаются с кодом 200, а все `/_next/static/*` и `/images/*` — 404, и
+сайт приезжает голым текстом без стилей.
+
+Копирование висит именно на `postbuild`, а не отдельным шагом в
+`nixpacks.toml`, потому что build-команда, заданная в дашборде Railway,
+заменяет фазу сборки из конфига целиком — и шаг молча перестаёт выполняться.
 
 **`HOSTNAME=0.0.0.0` в команде запуска обязателен.** Сгенерированный
 `server.js` делает `process.env.HOSTNAME || '0.0.0.0'`, а контейнерный рантайм
