@@ -13,7 +13,10 @@
  * Only the two directories that can go stale are cleared:
  *
  * - `server/` holds the prerendered HTML, which names the chunks;
- * - `static/` holds the chunks themselves.
+ * - `static/` holds the chunks themselves;
+ * - `types/` and `dev/types/` hold generated route types, and tsconfig picks
+ *   them up — a type for a route that no longer exists fails the type check
+ *   with an error in a file nobody wrote.
  *
  * `cache/` is the compiler's incremental state, not output — keeping it is the
  * difference between a 15-second rebuild and a cold one. `standalone/` is left
@@ -26,7 +29,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const next = path.join(__dirname, '..', '.next');
-const STALE = ['server', 'static'];
+const STALE = ['server', 'static', 'types', 'dev'];
 
 if (!fs.existsSync(next)) {
   process.exit(0);

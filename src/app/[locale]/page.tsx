@@ -16,6 +16,7 @@ import {
 } from '@/components/blocks';
 import { AppShot } from '@/components/appshot';
 import { BuilderSlot } from '@/components/Builder/BuilderSlot';
+import { PageBody } from '@/components/Builder/PageBody';
 import { isLocale, locales } from '@/i18n/config';
 import styles from './page.module.css';
 
@@ -38,6 +39,7 @@ export default async function Home({
 
   return (
     <main>
+      <PageBody page={PATH} locale={locale}>
       <BuilderSlot page={PATH} slot="top" locale={locale} />
 
       <Hero />
@@ -135,6 +137,7 @@ export default async function Home({
 
       <Contact />
       <BuilderSlot page={PATH} slot="bottom" locale={locale} />
+      </PageBody>
     </main>
   );
 }

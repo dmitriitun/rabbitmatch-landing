@@ -17,6 +17,7 @@ import {
   type BuilderNode,
   type BuilderSection,
   type MediaNode,
+  type NodeBoxStyle,
   type SectionWidth,
   type Sides,
 } from '@/lib/builder/types';
@@ -148,6 +149,8 @@ function NodeInspector({
           </div>
         </Group>
       ) : null}
+
+      <BoxStyleFields node={node} patch={patch} />
 
       <Group title="Позиция на десктопе">
         <div className={styles.row}>
@@ -337,6 +340,61 @@ function MediaFields({
   );
 }
 
+const NO_PAD: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
+
+/**
+ * Decoration on the element's own box.
+ *
+ * This is what carries an imported card across: the fill, the hairline and the
+ * inner padding it had in the original markup. It doubles as ordinary design
+ * control for anything built by hand.
+ */
+function BoxStyleFields({
+  node,
+  patch,
+}: {
+  node: BuilderNode;
+  patch: (value: Partial<BuilderNode>) => void;
+}) {
+  const box = node.boxStyle ?? {};
+  const set = (value: Partial<NodeBoxStyle>) => patch({ boxStyle: { ...box, ...value } });
+
+  return (
+    <Group title="Оформление блока">
+      <div className={styles.row}>
+        <ColorInput value={box.background} allowClear onChange={(background) => set({ background })} />
+        <span className={styles.hint}>Заливка</span>
+      </div>
+      <div className={styles.row}>
+        <ColorInput value={box.border} allowClear onChange={(border) => set({ border })} />
+        <Field label="Толщина рамки">
+          <NumberInput value={box.borderWidth ?? 0} min={0} max={12} onChange={(borderWidth) => set({ borderWidth })} />
+        </Field>
+        <Field label="Скругление">
+          <NumberInput value={box.radius ?? 0} min={0} max={64} onChange={(radius) => set({ radius })} />
+        </Field>
+      </div>
+      <Field label="Тень">
+        <Segmented
+          value={box.shadow ?? 'none'}
+          options={[
+            { value: 'none', label: 'Нет' },
+            { value: 'sm', label: 'S' },
+            { value: 'md', label: 'M' },
+            { value: 'lg', label: 'L' },
+          ]}
+          onChange={(shadow) => set({ shadow })}
+        />
+      </Field>
+      <SidesFields
+        title="Внутренние отступы, px"
+        value={box.padding ?? NO_PAD}
+        onChange={(padding) => set({ padding })}
+      />
+    </Group>
+  );
+}
+
 function ButtonFields({
   node,
   patch,
@@ -436,16 +494,20 @@ function SectionInspector({ section, api }: { section: BuilderSection; api: Canv
         />
       </Field>
 
-      <Field label="Место на странице">
-        <Segmented
-          value={section.slot}
-          options={[
-            { value: 'top', label: 'Сверху' },
-            { value: 'bottom', label: 'Снизу' },
-          ]}
-          onChange={(slot) => patch({ slot })}
-        />
-      </Field>
+      {/* Once the document is the page there is no hand-written body to sit
+          above or below, so the choice would mean nothing. */}
+      {api.takeover ? null : (
+        <Field label="Место на странице">
+          <Segmented
+            value={section.slot === 'page' ? 'bottom' : section.slot}
+            options={[
+              { value: 'top', label: 'Сверху' },
+              { value: 'bottom', label: 'Снизу' },
+            ]}
+            onChange={(slot) => patch({ slot })}
+          />
+        </Field>
+      )}
 
       <Field label="Ширина контента">
         <Segmented value={section.width} options={WIDTH_OPTIONS} onChange={(width) => patch({ width })} />

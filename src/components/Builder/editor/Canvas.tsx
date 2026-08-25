@@ -51,6 +51,8 @@ export type Device = 'desktop' | 'mobile';
 
 export type CanvasApi = {
   device: Device;
+  /** The document stands in for the whole page rather than adding to it. */
+  takeover: boolean;
   selection: Selection | null;
   editingId: string | null;
   select: (selection: Selection | null) => void;

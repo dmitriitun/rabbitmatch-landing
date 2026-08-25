@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import type { Editor } from '@tiptap/react';
 import {
+  Download,
   Loader,
   Monitor,
   PanelsTopLeft,
@@ -40,6 +41,7 @@ import {
   starterSection,
 } from './docOps';
 import { AddNodeMenu, SectionFrame, type CanvasApi, type Device, type Selection } from './Canvas';
+import { importPageFromDom } from './importPage';
 import { Inspector } from './Inspector';
 import { TextToolbar } from './RichTextEditor';
 import { editorStyles as styles, Menu, MenuItem } from './ui';
@@ -93,6 +95,7 @@ export default function BuilderEditor({
   const [selection, setSelection] = useState<Selection | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [textEditor, setTextEditor] = useState<{ editor: Editor; anchor: HTMLElement | null } | null>(null);
+  const [importing, setImporting] = useState(false);
 
   /**
    * The document also lives in a ref.
@@ -108,6 +111,7 @@ export default function BuilderEditor({
   const [history, setHistory] = useState({ undo: 0, redo: 0 });
 
   const dirty = doc ? JSON.stringify(doc) !== saved : false;
+  const takeover = doc?.takeover === true;
 
   /** Mirror the stack depths into state so the toolbar can disable buttons. */
   const syncHistory = useCallback(() => {
@@ -227,6 +231,7 @@ export default function BuilderEditor({
 
     return {
       device,
+      takeover,
       selection,
       editingId,
       select: (next) => {
@@ -282,7 +287,7 @@ export default function BuilderEditor({
       setActiveTextEditor: (editor, anchor) =>
         setTextEditor(editor ? { editor, anchor } : null),
     };
-  }, [commitDoc, device, editingId, pushHistory, rememberForUndo, selection]);
+  }, [commitDoc, device, editingId, pushHistory, rememberForUndo, selection, takeover]);
 
   const addSectionTo = useCallback(
     (slot: SlotName) => {
@@ -331,6 +336,65 @@ export default function BuilderEditor({
       setSaving(false);
     }
   }, [commitDoc, doc, locale, page, router, saving]);
+
+  /**
+   * Write a document straight to the server and reload.
+   *
+   * Import and revert both change what the page *is*, not just what is in it,
+   * so the canvas cannot show the result: the mount points it is portalled
+   * into belong to the old rendering. Reloading is the honest way to land on
+   * the new one — and it is also the moment the admin gets to see whether the
+   * import was any good.
+   */
+  const publishAndReload = useCallback(
+    async (next: BuilderDoc, failure: string) => {
+      const res = await fetch('/api/builder', {
+        method: 'PUT',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ page, locale, doc: next }),
+      });
+      if (!res.ok) {
+        setLoadError(failure);
+        return false;
+      }
+      window.location.reload();
+      return true;
+    },
+    [locale, page],
+  );
+
+  const importPage = useCallback(async () => {
+    if (importing) return;
+    const result = importPageFromDom();
+
+    if (!result.sections) {
+      setLoadError('На этой странице не нашлось секций для импорта.');
+      return;
+    }
+    const ok = window.confirm(
+      `Перенести страницу в конструктор?\n\n` +
+        `Секций: ${result.sections}, элементов: ${result.nodes}` +
+        (result.skipped ? `, пропущено пустых: ${result.skipped}` : '') +
+        `.\n\nПосле этого страница будет собираться из конструктора, а не из кода. ` +
+        `Код страницы никуда не денется — «Вернуть исходную» отменяет перенос.`,
+    );
+    if (!ok) return;
+
+    setImporting(true);
+    const saved = await publishAndReload(result.doc, 'Импорт не сохранился — правки не применены.');
+    if (!saved) setImporting(false);
+  }, [importing, publishAndReload]);
+
+  const restoreOriginal = useCallback(async () => {
+    const current = docRef.current;
+    if (!current) return;
+    const ok = window.confirm(
+      'Вернуть исходную страницу из кода?\n\nСекции конструктора останутся сохранёнными — ' +
+        'страницу можно снова перенести в конструктор в любой момент.',
+    );
+    if (!ok) return;
+    await publishAndReload({ ...current, takeover: false }, 'Не удалось вернуть исходную страницу.');
+  }, [publishAndReload]);
 
   const exit = useCallback(() => {
     if (dirty && !window.confirm('Есть несохранённые изменения. Выйти и потерять их?')) return;
@@ -399,24 +463,38 @@ export default function BuilderEditor({
       <Menu label="Добавить секцию">
         {(close) => (
           <>
-            <MenuItem
-              hint="над контентом"
-              onClick={() => {
-                addSectionTo('top');
-                close();
-              }}
-            >
-              Сверху страницы
-            </MenuItem>
-            <MenuItem
-              hint="под контентом"
-              onClick={() => {
-                addSectionTo('bottom');
-                close();
-              }}
-            >
-              Снизу страницы
-            </MenuItem>
+            {takeover ? (
+              <MenuItem
+                hint="в конец"
+                onClick={() => {
+                  addSectionTo('page');
+                  close();
+                }}
+              >
+                Новая секция
+              </MenuItem>
+            ) : (
+              <>
+                <MenuItem
+                  hint="над контентом"
+                  onClick={() => {
+                    addSectionTo('top');
+                    close();
+                  }}
+                >
+                  Сверху страницы
+                </MenuItem>
+                <MenuItem
+                  hint="под контентом"
+                  onClick={() => {
+                    addSectionTo('bottom');
+                    close();
+                  }}
+                >
+                  Снизу страницы
+                </MenuItem>
+              </>
+            )}
           </>
         )}
       </Menu>
@@ -424,6 +502,29 @@ export default function BuilderEditor({
       {selectedSection ? (
         <AddNodeMenu onPick={(kind) => api.addNode(selectedSection.id, kind)} />
       ) : null}
+
+      {takeover ? (
+        <button
+          type="button"
+          className={styles.btn}
+          onClick={() => void restoreOriginal()}
+          title="Вернуть страницу к её исходному коду"
+        >
+          <Undo2 size={14} />
+          Вернуть исходную
+        </button>
+      ) : (
+        <button
+          type="button"
+          className={styles.btn}
+          onClick={() => void importPage()}
+          disabled={importing}
+          title="Перенести содержимое этой страницы в конструктор"
+        >
+          <Download size={14} />
+          {importing ? 'Импортирую…' : 'Импортировать страницу'}
+        </button>
+      )}
 
       <span className={styles.tsep} />
 

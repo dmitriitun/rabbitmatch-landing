@@ -380,3 +380,25 @@
 .spacer {
   width: 100%;
 }
+
+/* --- Node decoration ----------------------------------------------------
+   Set only when an admin asked for it, or when an import copied it off a
+   card in the original markup. Every property defaults to "no decoration",
+   so a plain node pays nothing for these.
+   ---------------------------------------------------------------------- */
+
+.node {
+  background: var(--rm-node-bg, transparent);
+  border: var(--rm-node-border, 0 solid transparent);
+  border-radius: var(--rm-node-radius, 0);
+  padding: var(--rm-node-pad, 0);
+  box-shadow: var(--rm-node-shadow, none);
+}
+
+.rich h1 {
+  font-size: var(--fs-h1);
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-4);
+}

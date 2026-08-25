@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { PageSchema } from '@/components/PageSchema/PageSchema';
 import { BuilderSlot } from '@/components/Builder/BuilderSlot';
+import { PageBody } from '@/components/Builder/PageBody';
 import {
   CtaBand,
   Faq,
@@ -52,6 +53,7 @@ export default async function PadelPage({
 
   return (
     <main>
+      <PageBody page={PATH} locale={locale}>
       <BuilderSlot page={PATH} slot="top" locale={locale} />
 
       <PageHero ns={NS} primaryHref="/players" secondaryHref="/faq" />
@@ -97,6 +99,9 @@ export default async function PadelPage({
         secondaryLabelKey={`${NS}.cta.secondary`}
       />
 
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
+      </PageBody>
+
       <PageSchema
         locale={locale}
         path={PATH}
@@ -104,7 +109,6 @@ export default async function PadelPage({
         faqKey={`${NS}.faq.items`}
         howToKey={`${NS}.start.items`}
       />
-      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }

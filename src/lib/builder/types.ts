@@ -28,8 +28,15 @@ export const ROW_H = 24;
 /** Viewport width at which the desktop grid takes over. Matches the CSS. */
 export const DESKTOP_BREAKPOINT = 768;
 
-export type SlotName = 'top' | 'bottom';
-export const SLOTS: readonly SlotName[] = ['top', 'bottom'];
+/**
+ * Where a section lives on a page.
+ *
+ * `top` and `bottom` are the two places a hand-written page offers to the
+ * builder. `page` is what a section gets once the page has been taken over
+ * entirely: there is no hand-written body left to sit above or below.
+ */
+export type SlotName = 'top' | 'bottom' | 'page';
+export const SLOTS: readonly SlotName[] = ['top', 'bottom', 'page'];
 
 /* --- Rich text ---------------------------------------------------------- */
 
@@ -65,7 +72,7 @@ export type RichBlockNode =
   | { type: 'paragraph'; attrs?: { textAlign?: TextAlign | null }; content?: RichInline[] }
   | {
       type: 'heading';
-      attrs?: { level?: 2 | 3 | 4; textAlign?: TextAlign | null };
+      attrs?: { level?: 1 | 2 | 3 | 4; textAlign?: TextAlign | null };
       content?: RichInline[];
     }
   | { type: 'bulletList'; content?: RichListItem[] }
@@ -78,6 +85,22 @@ export type RichListItem = { type: 'listItem'; content?: RichBlockNode[] };
 export type RichDoc = { type: 'doc'; content?: RichBlockNode[] };
 
 /* --- Nodes -------------------------------------------------------------- */
+
+/**
+ * Painted decoration on a node's own box.
+ *
+ * Imported cards need it — a feature card is a text block with a hairline,
+ * a radius and padding, and without these it would come across as bare
+ * text. It doubles as ordinary design control for anything else.
+ */
+export type NodeBoxStyle = {
+  background?: string;
+  border?: string;
+  borderWidth?: number;
+  radius?: number;
+  padding?: Sides;
+  shadow?: 'none' | 'sm' | 'md' | 'lg';
+};
 
 /** A rectangle of grid cells. `x`/`w` in columns, `y`/`h` in row tracks. */
 export type Box = { x: number; y: number; w: number; h: number };
@@ -99,6 +122,8 @@ export type BaseNode = {
   hiddenDesktop?: boolean;
   /** Vertical placement of the content inside its rectangle. */
   valign?: 'start' | 'center' | 'end';
+  /** Optional decoration painted on the node's own box. */
+  boxStyle?: NodeBoxStyle;
 };
 
 export type TextNode = BaseNode & {
@@ -190,6 +215,14 @@ export type BuilderSection = {
 
 export type BuilderDoc = {
   version: number;
+  /**
+   * The document *is* the page.
+   *
+   * With this set the hand-written body is not rendered at all and the
+   * sections below stand in for it. Metadata, `hreflang` and the JSON-LD
+   * blocks stay where they are — only the body changes hands.
+   */
+  takeover?: boolean;
   sections: BuilderSection[];
 };
 

@@ -17,6 +17,7 @@ import {
 } from '@/components/blocks';
 import { AppShot, ShotStack } from '@/components/appshot';
 import { BuilderSlot } from '@/components/Builder/BuilderSlot';
+import { PageBody } from '@/components/Builder/PageBody';
 import { isLocale, locales } from '@/i18n/config';
 import { pageMetadata } from '@/lib/page-meta';
 
@@ -48,6 +49,7 @@ export default async function PlayersPage({
 
   return (
     <main>
+      <PageBody page={PATH} locale={locale}>
       <BuilderSlot page={PATH} slot="top" locale={locale} />
 
       <PageHero
@@ -157,6 +159,9 @@ export default async function PlayersPage({
         secondaryLabelKey={`${NS}.cta.secondary`}
       />
 
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
+      </PageBody>
+
       <PageSchema
         locale={locale}
         path={PATH}
@@ -164,7 +169,6 @@ export default async function PlayersPage({
         faqKey={`${NS}.faq.items`}
         howToKey={`${NS}.steps.items`}
       />
-      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }

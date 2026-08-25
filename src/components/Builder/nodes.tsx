@@ -105,10 +105,14 @@ function renderBlocks(blocks: RichBlockNode[] | undefined, locale: string, keyBa
         break;
       }
       case 'heading': {
-        // Never an `h1`: every page already has exactly one, and a second
-        // would split the ranking target the page is written for.
+        // `h1` is reachable only on a page the builder has taken over, where
+        // the document supplies the page's single top-level heading.
         const level = block.attrs?.level ?? 2;
-        const Tag = (level === 3 ? 'h3' : level === 4 ? 'h4' : 'h2') as 'h2' | 'h3' | 'h4';
+        const Tag = (level === 1 ? 'h1' : level === 3 ? 'h3' : level === 4 ? 'h4' : 'h2') as
+          | 'h1'
+          | 'h2'
+          | 'h3'
+          | 'h4';
         const align = block.attrs?.textAlign;
         out.push(
           <Tag key={key} style={align ? { textAlign: align } : undefined}>
@@ -181,6 +185,23 @@ export function nodeStyle(node: BuilderNode): CSSProperties {
   if (node.type === 'button') {
     style['--rm-ai'] = FLEX_ALIGN[node.align];
   }
+
+  const box = node.boxStyle;
+  if (box) {
+    if (box.background) style['--rm-node-bg'] = box.background;
+    if (box.border && box.borderWidth) {
+      style['--rm-node-border'] = `${box.borderWidth}px solid ${box.border}`;
+    }
+    if (box.radius) style['--rm-node-radius'] = `${box.radius}px`;
+    if (box.padding) {
+      const { top, right, bottom, left } = box.padding;
+      style['--rm-node-pad'] = `${top}px ${right}px ${bottom}px ${left}px`;
+    }
+    if (box.shadow && box.shadow !== 'none') {
+      style['--rm-node-shadow'] = `var(--shadow-${box.shadow})`;
+    }
+  }
+
   return style as CSSProperties;
 }
 

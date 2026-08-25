@@ -9,6 +9,7 @@ import {
   type BuilderSection,
   type MediaNode,
   type MobileBox,
+  type NodeBoxStyle,
   type RichBlockNode,
   type RichDoc,
   type RichInline,
@@ -224,8 +225,10 @@ function normalizeBlock(input: unknown, depth: number): RichBlockNode | null {
     case 'paragraph':
       return { type: 'paragraph', attrs: { textAlign: safeAlign(attrs.textAlign) ?? null }, content: normalizeInline(content) };
     case 'heading': {
-      const raw = num(attrs.level, 2, 4, 2);
-      const level = (raw < 2 ? 2 : raw > 4 ? 4 : raw) as 2 | 3 | 4;
+      // Level 1 is legal now: once a page renders entirely from a document,
+      // its `<h1>` has to come from the document too.
+      const raw = num(attrs.level, 1, 4, 2);
+      const level = (raw < 1 ? 1 : raw > 4 ? 4 : raw) as 1 | 2 | 3 | 4;
       return {
         type: 'heading',
         attrs: { level, textAlign: safeAlign(attrs.textAlign) ?? null },
@@ -349,6 +352,23 @@ function normalizeSides(input: unknown, fallback: Sides): Sides {
 
 const VALIGNS = ['start', 'center', 'end'] as const;
 
+const NO_PADDING: Sides = { top: 0, bottom: 0, left: 0, right: 0 };
+
+function normalizeBoxStyle(input: unknown): NodeBoxStyle | undefined {
+  if (!input || typeof input !== 'object') return undefined;
+  const raw = input as Record<string, unknown>;
+  const style: NodeBoxStyle = {
+    background: safeColor(raw.background),
+    border: safeColor(raw.border),
+    borderWidth: raw.borderWidth == null ? undefined : num(raw.borderWidth, 0, 12, 0),
+    radius: raw.radius == null ? undefined : num(raw.radius, 0, 64, 0),
+    padding: raw.padding == null ? undefined : normalizeSides(raw.padding, NO_PADDING),
+    shadow: raw.shadow == null ? undefined : pick(raw.shadow, ['none', 'sm', 'md', 'lg'] as const, 'none'),
+  };
+  // An object of nothing but undefined is noise in the stored document.
+  return Object.values(style).some((v) => v !== undefined) ? style : undefined;
+}
+
 function normalizeNode(input: unknown): BuilderNode | null {
   if (!input || typeof input !== 'object') return null;
   const raw = input as Record<string, unknown>;
@@ -358,6 +378,7 @@ function normalizeNode(input: unknown): BuilderNode | null {
     mobile: normalizeMobile(raw.mobile),
     hiddenDesktop: bool(raw.hiddenDesktop),
     valign: pick(raw.valign, VALIGNS, 'start'),
+    boxStyle: normalizeBoxStyle(raw.boxStyle),
   };
 
   switch (raw.type) {
@@ -478,11 +499,17 @@ function normalizeSection(input: unknown): BuilderSection | null {
 }
 
 export function normalizeDoc(input: unknown): BuilderDoc {
-  const sections = (input as { sections?: unknown } | null)?.sections;
-  if (!Array.isArray(sections)) return { version: BUILDER_VERSION, sections: [] };
+  const raw = (input ?? {}) as { sections?: unknown; takeover?: unknown };
+  if (!Array.isArray(raw.sections)) return { version: BUILDER_VERSION, sections: [] };
+
+  const sections = raw.sections.slice(0, 60).map(normalizeSection).filter(Boolean) as BuilderSection[];
+
   return {
     version: BUILDER_VERSION,
-    sections: sections.slice(0, 60).map(normalizeSection).filter(Boolean) as BuilderSection[],
+    // Taking over an empty document would blank the page. The flag only means
+    // something when there is content to stand in for the original.
+    takeover: raw.takeover === true && sections.length > 0 ? true : undefined,
+    sections,
   };
 }
 

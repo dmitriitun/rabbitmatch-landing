@@ -4,6 +4,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { PageSchema } from '@/components/PageSchema/PageSchema';
 import { Pricing } from '@/components/Pricing/Pricing';
 import { BuilderSlot } from '@/components/Builder/BuilderSlot';
+import { PageBody } from '@/components/Builder/PageBody';
 import {
   CtaBand,
   Faq,
@@ -43,6 +44,7 @@ export default async function PricingPage({
 
   return (
     <main>
+      <PageBody page={PATH} locale={locale}>
       <BuilderSlot page={PATH} slot="top" locale={locale} />
 
       <PageHero ns={NS} primaryHref="/#contact" secondaryHref="/venues" />
@@ -101,8 +103,10 @@ export default async function PricingPage({
         secondaryLabelKey={`${NS}.cta.secondary`}
       />
 
-      <PageSchema locale={locale} path={PATH} ns={NS} faqKey={`${NS}.faq.items`} />
       <BuilderSlot page={PATH} slot="bottom" locale={locale} />
+      </PageBody>
+
+      <PageSchema locale={locale} path={PATH} ns={NS} faqKey={`${NS}.faq.items`} />
     </main>
   );
 }
