@@ -1,0 +1,382 @@
+/* =========================================================================
+   Page-builder rendering.
+
+   Every value an admin can set arrives as a CSS custom property on the
+   element's `style` attribute, and the rules below read those properties.
+   That is what lets the whole thing be server-rendered: there is no runtime
+   JavaScript computing layout, no injected <style> tag per page, and the
+   breakpoints live in this static file where the browser can apply them
+   before first paint.
+
+   Mobile is the base case; the desktop grid is layered on at 768px of
+   *container* width. A phone therefore gets a single-axis flow no matter what
+   the admin dragged around, which is the property that keeps authored content
+   from breaking the layout.
+   ========================================================================= */
+
+/*
+  The query container for everything below.
+
+  It sits on a wrapper rather than on the section itself, for the plain reason
+  that an element cannot answer its own container query. One frame per slot is
+  enough: every section spans the same width.
+*/
+.frame {
+  container-type: inline-size;
+  container-name: rmsec;
+}
+
+.section {
+  position: relative;
+  padding: var(--rm-pt-m, 40px) var(--rm-pr-m, 20px) var(--rm-pb-m, 40px) var(--rm-pl-m, 20px);
+  min-height: var(--rm-minh-m, 0px);
+  background-color: var(--rm-bg, transparent);
+}
+
+.bg {
+  position: absolute;
+  inset: 0;
+  background-image: var(--rm-bg-img);
+  background-size: var(--rm-bg-size, cover);
+  background-position: var(--rm-bg-pos, center);
+  background-repeat: var(--rm-bg-repeat, no-repeat);
+  pointer-events: none;
+}
+
+.bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / var(--rm-overlay, 0));
+}
+
+.inner {
+  position: relative;
+  width: 100%;
+  max-width: var(--rm-maxw, 1240px);
+  margin-inline: auto;
+}
+
+/* --- Tone --------------------------------------------------------------- */
+
+.toneDark {
+  color: var(--ink-inverse);
+}
+
+.toneDark a {
+  color: var(--lime);
+}
+
+.toneLight {
+  color: var(--ink);
+}
+
+/* --- Grid --------------------------------------------------------------- */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  align-content: start;
+  gap: 16px 0;
+}
+
+.node {
+  min-width: 0;
+  grid-column: span var(--rm-mw, 4);
+  display: flex;
+  flex-direction: column;
+  align-items: var(--rm-ai-m, stretch);
+  justify-content: var(--rm-jc, flex-start);
+}
+
+@container rmsec (min-width: 768px) {
+  .section {
+    padding: var(--rm-pt, 72px) var(--rm-pr, 20px) var(--rm-pb, 72px) var(--rm-pl, 20px);
+    min-height: var(--rm-minh, 0px);
+  }
+
+  .grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    /*
+      `auto` as the max is the safety net: a text box whose copy runs longer
+      than the rectangle the admin drew grows its row tracks and pushes what
+      is below it down, instead of spilling over the next element.
+    */
+    grid-auto-rows: minmax(24px, auto);
+    gap: 0;
+  }
+
+  .node {
+    grid-column: var(--rm-x, 1) / span var(--rm-w, 12);
+    grid-row: var(--rm-y, auto) / span var(--rm-h, 4);
+    align-items: var(--rm-ai, stretch);
+  }
+}
+
+/* --- Visibility --------------------------------------------------------- */
+
+/*
+  Two classes rather than one because the element they land on has a different
+  display type: a hidden section comes back as `block`, a hidden node as the
+  `flex` column every node is.
+*/
+.hiddenMobile,
+.hiddenMobileNode {
+  display: none;
+}
+
+@container rmsec (min-width: 768px) {
+  .hiddenMobile {
+    display: block;
+  }
+
+  .hiddenMobileNode {
+    display: flex;
+  }
+
+  .hiddenDesktop {
+    display: none;
+  }
+}
+
+/* --- Rich text ---------------------------------------------------------- */
+
+.rich {
+  width: 100%;
+  min-width: 0;
+}
+
+.rich > :first-child {
+  margin-top: 0;
+}
+
+.rich > :last-child {
+  margin-bottom: 0;
+}
+
+.rich h2 {
+  font-size: var(--fs-h2);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 var(--space-4);
+}
+
+.rich h3 {
+  font-size: var(--fs-h3);
+  line-height: 1.2;
+  font-weight: 700;
+  margin: var(--space-6) 0 var(--space-3);
+}
+
+.rich h4 {
+  font-size: var(--fs-lead);
+  line-height: 1.3;
+  font-weight: 700;
+  margin: var(--space-5) 0 var(--space-2);
+}
+
+.rich p {
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: inherit;
+  margin: 0 0 var(--space-4);
+}
+
+.rich ul,
+.rich ol {
+  margin: 0 0 var(--space-4);
+  padding-left: 1.35em;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rich ul {
+  list-style: disc;
+}
+
+.rich ol {
+  list-style: decimal;
+}
+
+.rich li {
+  line-height: 1.6;
+}
+
+.rich li > p {
+  margin: 0;
+}
+
+.rich blockquote {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--lime);
+  color: var(--ink-2);
+}
+
+.toneDark .rich blockquote {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.rich hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: var(--space-6) 0;
+}
+
+.rich a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.rich a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.rich code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(11, 11, 11, 0.06);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+/* --- Media -------------------------------------------------------------- */
+
+.figure {
+  margin: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.mediaBox {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--rm-radius, 0px);
+  /*
+    On a phone the box takes its height from the media's own proportions, so
+    an image can never be squashed into a rectangle drawn for a wide screen.
+  */
+  aspect-ratio: var(--rm-ar, 16 / 9);
+  background: rgba(11, 11, 11, 0.04);
+}
+
+@container rmsec (min-width: 768px) {
+  .mediaBox {
+    /*
+      On desktop the rectangle the admin drew wins: height is the row span
+      they resized to, in the same 24px units the grid uses.
+    */
+    aspect-ratio: auto;
+    height: calc(var(--rm-h, 8) * 24px);
+  }
+}
+
+.mediaBox > img,
+.mediaBox > video,
+.mediaBox > iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: var(--rm-fit, cover);
+  border: 0;
+}
+
+.caption {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.toneDark .caption {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.mediaLink {
+  display: block;
+  width: 100%;
+}
+
+/* --- Button ------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+.btnSm {
+  padding: 10px 18px;
+  font-size: var(--fs-sm);
+}
+
+.btnMd {
+  padding: 13px 26px;
+  font-size: var(--fs-body);
+}
+
+.btnLg {
+  padding: 17px 34px;
+  font-size: var(--fs-lead);
+}
+
+.btnPrimary {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+
+.btnPrimary:hover {
+  background: #a9d600;
+}
+
+.btnSecondary {
+  background: var(--ink);
+  color: var(--ink-inverse);
+}
+
+.toneDark .btnSecondary {
+  background: var(--ink-inverse);
+  color: var(--ink);
+}
+
+.btnGhost {
+  background: transparent;
+  border-color: currentColor;
+  color: inherit;
+}
+
+/* --- Divider / spacer --------------------------------------------------- */
+
+.divider {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--rm-line, var(--line));
+  margin: 0;
+}
+
+.toneDark .divider {
+  border-top-color: rgba(255, 255, 255, 0.16);
+}
+
+.spacer {
+  width: 100%;
+}

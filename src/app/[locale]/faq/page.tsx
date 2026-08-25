@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { JsonLd } from '@/components/JsonLd/JsonLd';
 import { CtaBand, Faq, PageHero, Section, SectionHead } from '@/components/blocks';
 import { list, type FaqItem } from '@/components/blocks/content';
+import { BuilderSlot } from '@/components/Builder/BuilderSlot';
 import { isLocale, locales } from '@/i18n/config';
 import { pageMetadata } from '@/lib/page-meta';
 import {
@@ -69,6 +70,8 @@ export default async function FaqPage({
 
   return (
     <main>
+      <BuilderSlot page={PATH} slot="top" locale={locale} />
+
       <PageHero ns={NS} primaryHref="/#download" secondaryHref="/#contact" />
 
       {GROUPS.map((group, i) => (
@@ -95,6 +98,7 @@ export default async function FaqPage({
       />
 
       <JsonLd data={schema} />
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }

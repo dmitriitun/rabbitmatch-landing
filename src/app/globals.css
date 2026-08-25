@@ -295,6 +295,26 @@ ul, ol {
   outline-color: var(--lime-deep);
 }
 
+/* --- Page builder ------------------------------------------------------
+   While the builder is open it portals an editable copy of a slot's sections
+   into `[data-rm-slot-mount]`. The server-rendered copy has to stand down for
+   the duration — it is the same content, and two of it would be confusing as
+   well as wrong.
+
+   The text editor above must also stop intercepting clicks: inside the
+   builder a click selects an element, and `data-rm-key` only exists on the
+   hand-written parts of the page anyway.
+   ---------------------------------------------------------------------- */
+
+[data-rm-editing] > [data-rm-slot-server] {
+  display: none;
+}
+
+.rm-building [data-rm-key] {
+  cursor: default;
+  outline-color: transparent !important;
+}
+
 /* --- Screen-reader only ------------------------------------------------ */
 
 .rm-sr-only {

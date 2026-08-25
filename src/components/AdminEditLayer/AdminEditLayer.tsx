@@ -42,6 +42,9 @@ export function AdminEditLayer() {
       // Alt-click falls through to normal behaviour so admins can still use
       // links and buttons that happen to wrap editable text.
       if (event.altKey) return;
+      // The page builder owns the pointer while it is open: there a click
+      // selects an element rather than opening the string editor.
+      if (root.classList.contains('rm-building')) return;
 
       event.preventDefault();
       event.stopPropagation();

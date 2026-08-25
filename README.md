@@ -61,6 +61,7 @@ cookie и `Accept-Language`.
 | [`docs/seo.md`](docs/seo.md) | Локали, canonical/hreflang, JSON-LD, оптимизация под ИИ-поиск |
 | [`docs/telegram-chat.md`](docs/telegram-chat.md) | Чат на сайте ↔ Telegram: настройка бота и группы |
 | [`docs/auth-and-editing.md`](docs/auth-and-editing.md) | Админ-сессии и правка контента на месте |
+| [`docs/page-builder.md`](docs/page-builder.md) | Конструктор: свои секции, медиа и кнопки без правки кода |
 | [`docs/i18n-auto-translation.md`](docs/i18n-auto-translation.md) | CI-перевод EN → RU |
 
 ## Контент

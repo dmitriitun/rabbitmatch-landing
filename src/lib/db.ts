@@ -169,6 +169,42 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
         ON chat_messages (telegram_message_id);
     `,
   },
+  {
+    // Page builder. One document per (page, locale) holding the sections an
+    // admin composed on top of the hand-written page, plus the media those
+    // sections point at.
+    id: '0005_page_builder',
+    sql: `
+      CREATE TABLE IF NOT EXISTS page_layouts (
+        id BIGSERIAL PRIMARY KEY,
+        -- Route path without the locale prefix: '/', '/players', ...
+        page TEXT NOT NULL,
+        locale TEXT NOT NULL,
+        doc JSONB NOT NULL DEFAULT '{"version":1,"sections":[]}'::jsonb,
+        updated_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        UNIQUE (page, locale)
+      );
+
+      CREATE TABLE IF NOT EXISTS media_assets (
+        -- SHA-256 of the bytes. Content-addressed, so re-uploading the same
+        -- file is idempotent and the URL can be cached forever.
+        id TEXT PRIMARY KEY,
+        mime TEXT NOT NULL,
+        bytes BYTEA NOT NULL,
+        size INTEGER NOT NULL,
+        width INTEGER,
+        height INTEGER,
+        filename TEXT,
+        alt TEXT,
+        created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS media_assets_created_at_idx
+        ON media_assets (created_at DESC);
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {

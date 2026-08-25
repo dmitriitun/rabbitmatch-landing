@@ -18,6 +18,7 @@ import {
   Steps,
 } from '@/components/blocks';
 import { AppShot } from '@/components/appshot';
+import { BuilderSlot } from '@/components/Builder/BuilderSlot';
 import { isLocale, locales } from '@/i18n/config';
 import { pageMetadata } from '@/lib/page-meta';
 
@@ -51,6 +52,8 @@ export default async function VenuesPage({
 
   return (
     <main>
+      <BuilderSlot page={PATH} slot="top" locale={locale} />
+
       <PageHero ns={NS} primaryHref="/#contact" secondaryHref="/pricing" aside={<AppShot name="venue-booking" priority />} />
 
       <Section tone="subtle">
@@ -139,6 +142,7 @@ export default async function VenuesPage({
         faqKey={`${NS}.faq.items`}
         howToKey={`${NS}.steps.items`}
       />
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }

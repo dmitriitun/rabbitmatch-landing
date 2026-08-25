@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { PageSchema } from '@/components/PageSchema/PageSchema';
 import { Pricing } from '@/components/Pricing/Pricing';
+import { BuilderSlot } from '@/components/Builder/BuilderSlot';
 import {
   CtaBand,
   Faq,
@@ -42,6 +43,8 @@ export default async function PricingPage({
 
   return (
     <main>
+      <BuilderSlot page={PATH} slot="top" locale={locale} />
+
       <PageHero ns={NS} primaryHref="/#contact" secondaryHref="/venues" />
 
       {/* Leading with what is free is deliberate: the most common objection to
@@ -99,6 +102,7 @@ export default async function PricingPage({
       />
 
       <PageSchema locale={locale} path={PATH} ns={NS} faqKey={`${NS}.faq.items`} />
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }

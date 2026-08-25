@@ -4,6 +4,7 @@ import { Onest } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminEditLayer } from '@/components/AdminEditLayer/AdminEditLayer';
+import { BuilderLauncher } from '@/components/Builder/BuilderLauncher';
 import { ChatWidget } from '@/components/ChatWidget/ChatWidget';
 import { CookieConsent } from '@/components/CookieConsent/CookieConsent';
 import { Footer } from '@/components/Footer/Footer';
@@ -121,6 +122,7 @@ export default async function LocaleLayout({
             <CookieConsent />
             <ChatWidget />
             <AdminEditLayer />
+            <BuilderLauncher />
           </AuthProvider>
         </NextIntlClientProvider>
         <JsonLd data={siteGraph} />

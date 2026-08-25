@@ -15,8 +15,11 @@ import {
   Steps,
 } from '@/components/blocks';
 import { AppShot } from '@/components/appshot';
+import { BuilderSlot } from '@/components/Builder/BuilderSlot';
 import { isLocale, locales } from '@/i18n/config';
 import styles from './page.module.css';
+
+const PATH = '/';
 
 const AUDIENCE_HREFS = ['/players', '/organizers', '/coaches', '/venues'] as const;
 
@@ -35,6 +38,8 @@ export default async function Home({
 
   return (
     <main>
+      <BuilderSlot page={PATH} slot="top" locale={locale} />
+
       <Hero />
 
       {/* The four audience cards are the home page's job: route the visitor to
@@ -129,6 +134,7 @@ export default async function Home({
       </Section>
 
       <Contact />
+      <BuilderSlot page={PATH} slot="bottom" locale={locale} />
     </main>
   );
 }
