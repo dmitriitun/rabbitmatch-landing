@@ -7,7 +7,18 @@
    the chrome never gets confused with the page being edited.
    ========================================================================= */
 
-.root {
+/*
+  The palette has to be declared on the canvas as well as on the chrome.
+
+  The canvas is portalled into the page, so it is not a descendant of the top
+  bar or the panel. Declaring these only on `.root` left every `var(--e-*)`
+  inside the canvas undefined — and an invalid `var()` does not fall back, it
+  voids the whole declaration. Selection outlines, resize handles, the section
+  label and its buttons all lost their colour and turned into black shapes on
+  a black fill: present, clickable, invisible.
+*/
+.root,
+.canvas {
   --e-bg: #14161a;
   --e-bg-2: #1d2027;
   --e-line: #2f333c;
@@ -15,6 +26,9 @@
   --e-muted: #9aa1ad;
   --e-accent: #b9e901;
   --e-danger: #ff6b6b;
+}
+
+.root {
   font-family: var(--font-sans);
 }
 

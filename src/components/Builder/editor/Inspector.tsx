@@ -21,6 +21,7 @@ import {
   type Sides,
 } from '@/lib/builder/types';
 import { MediaPicker, type MediaPick } from './MediaPicker';
+import { MEDIA_PLACEHOLDER } from './docOps';
 import type { CanvasApi } from './Canvas';
 import {
   Check,
@@ -232,7 +233,12 @@ function MediaFields({
   section: BuilderSection;
   api: CanvasApi;
 }) {
-  const [picking, setPicking] = useState(false);
+  /*
+    A freshly added image still shows the shipped placeholder, which means
+    nobody has chosen a file for it yet — so open the picker straight away.
+    "Add image" should put an image on the page, not a grey box plus homework.
+  */
+  const [picking, setPicking] = useState(node.src === MEDIA_PLACEHOLDER);
   const patch = (value: Partial<MediaNode>) => api.patchNode(section.id, node.id, value);
 
   const applyPick = (pick: MediaPick) => {
