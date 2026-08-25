@@ -191,26 +191,27 @@ export function duplicateSection(doc: BuilderDoc, sectionId: string): BuilderDoc
   return addSection(doc, copy, sectionId);
 }
 
-/** Move a section one place within its own slot. */
+/**
+ * Move a section one place in the document.
+ *
+ * It swaps across slots as well as within one, taking the neighbour's slot on
+ * the way. Restricting the move to a section's own slot made the arrows dead
+ * whenever a slot held a single section — the button was there, it just did
+ * nothing, which is worse than not offering it.
+ */
 export function moveSection(doc: BuilderDoc, sectionId: string, delta: -1 | 1): BuilderDoc {
-  const section = findSection(doc, sectionId);
-  if (!section) return doc;
-
-  const siblings = doc.sections.filter((s) => s.slot === section.slot);
-  const at = siblings.findIndex((s) => s.id === sectionId);
+  const at = doc.sections.findIndex((s) => s.id === sectionId);
   const to = at + delta;
-  if (to < 0 || to >= siblings.length) return doc;
+  if (at === -1 || to < 0 || to >= doc.sections.length) return doc;
 
-  const reordered = [...siblings];
-  [reordered[at], reordered[to]] = [reordered[to], reordered[at]];
+  const sections = [...doc.sections];
+  const moving = sections[at];
+  const neighbour = sections[to];
 
-  // Splice the reordered slot back into the full list, leaving the other
-  // slot's sections exactly where they were.
-  let i = 0;
-  return {
-    ...doc,
-    sections: doc.sections.map((s) => (s.slot === section.slot ? reordered[i++] : s)),
-  };
+  sections[at] = { ...neighbour, slot: moving.slot };
+  sections[to] = { ...moving, slot: neighbour.slot };
+
+  return { ...doc, sections };
 }
 
 export function addNode(doc: BuilderDoc, sectionId: string, node: BuilderNode): BuilderDoc {

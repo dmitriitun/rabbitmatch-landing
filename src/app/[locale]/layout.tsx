@@ -73,7 +73,14 @@ export async function generateMetadata({
       follow: true,
       googleBot: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1 },
     },
-    icons: { icon: '/favicon.ico' },
+    icons: {
+      // Built from public/images/logo.png by `npm run build:favicon`.
+      icon: [
+        { url: '/favicon.ico', sizes: '16x16 32x32 48x48' },
+        { url: '/icons/icon-512.png', type: 'image/png', sizes: '512x512' },
+      ],
+      apple: { url: '/icons/apple-touch-icon.png', sizes: '180x180' },
+    },
   };
 }
 

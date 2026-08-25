@@ -13,7 +13,8 @@
     "create-admin": "tsx scripts/create-admin.ts",
     "translate": "node scripts/translate.js",
     "telegram:webhook": "node scripts/telegram-webhook.js",
-    "build:shots": "node scripts/build-app-shots.js"
+    "build:shots": "node scripts/build-app-shots.js",
+    "build:favicon": "node scripts/build-favicon.js"
   },
   "dependencies": {
     "@tiptap/extension-text-align": "^3.30.3",

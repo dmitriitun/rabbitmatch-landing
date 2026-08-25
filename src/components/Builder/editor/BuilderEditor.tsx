@@ -96,6 +96,7 @@ export default function BuilderEditor({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [textEditor, setTextEditor] = useState<{ editor: Editor; anchor: HTMLElement | null } | null>(null);
   const [importing, setImporting] = useState(false);
+  const [hint, setHint] = useState<string | null>(null);
 
   /**
    * The document also lives in a ref.
@@ -189,6 +190,34 @@ export default function BuilderEditor({
       body.style.paddingRight = prevRight;
     };
   }, []);
+
+  /* --- Hand-written content is not silent ------------------------------- */
+
+  /*
+    Clicking a block that came from code used to do nothing at all, which
+    reads as a broken editor rather than as a boundary. Say what the boundary
+    is and what to do about it.
+  */
+  useEffect(() => {
+    if (takeover) return;
+
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const onClick = (event: MouseEvent) => {
+      const el = event.target as HTMLElement | null;
+      if (!el || !el.closest('main') || el.closest('[data-rm-slot]')) return;
+      setHint(
+        'Этот блок собран кодом, и конструктор его пока не видит. Нажмите «Импортировать страницу» — содержимое переедет сюда, и его можно будет двигать и править.',
+      );
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => setHint(null), 7000);
+    };
+
+    document.addEventListener('click', onClick, true);
+    return () => {
+      document.removeEventListener('click', onClick, true);
+      if (timer) clearTimeout(timer);
+    };
+  }, [takeover]);
 
   /* --- History ---------------------------------------------------------- */
 
@@ -413,6 +442,10 @@ export default function BuilderEditor({
           target.tagName === 'TEXTAREA' ||
           target.tagName === 'SELECT');
 
+      // A modal owns Escape while it is open: closing the picker should not
+      // also drop the selection the picker was opened for.
+      if (document.querySelector('[data-rm-modal]')) return;
+
       if (event.key === 'Escape') {
         if (editingId) setEditingId(null);
         else if (selection) setSelection(null);
@@ -590,6 +623,18 @@ export default function BuilderEditor({
   return (
     <>
       {createPortal(bar, document.body)}
+
+      {hint
+        ? createPortal(
+            <div className={`${styles.root} ${styles.hintToast}`} role="status">
+              {hint}
+              <button type="button" className={styles.hintClose} onClick={() => setHint(null)} aria-label="Скрыть">
+                <X size={13} />
+              </button>
+            </div>,
+            document.body,
+          )
+        : null}
 
       <Inspector section={selectedSection} node={selectedNode} api={api} />
 

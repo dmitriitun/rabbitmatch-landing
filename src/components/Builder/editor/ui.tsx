@@ -169,19 +169,29 @@ export function ColorInput({
         ? createPortal(
             <div
               data-rm-color-popover=""
-              className={styles.popover}
+              /*
+                `styles.root` matters here: the popover is portalled to `body`,
+                so without it the editor palette is undefined and the hex field
+                renders as bare text — a box you cannot tell is a box, let
+                alone type into.
+              */
+              className={`${styles.root} ${styles.popover}`}
               style={{
-                top: Math.min(rect.bottom + 8, window.innerHeight - 280),
+                top: Math.min(rect.bottom + 8, window.innerHeight - 300),
                 left: Math.max(12, Math.min(rect.left - 130, window.innerWidth - 240)),
               }}
             >
               <HexColorPicker color={value ?? '#000000'} onChange={onChange} />
-              <input
-                className={styles.input}
-                value={value ?? ''}
-                placeholder="#000000"
-                onChange={(e) => onChange(e.target.value || undefined)}
-              />
+              <label className={styles.field}>
+                <span className={styles.label}>Код цвета</span>
+                <input
+                  className={styles.input}
+                  value={value ?? ''}
+                  placeholder="#B9E901"
+                  spellCheck={false}
+                  onChange={(e) => onChange(e.target.value || undefined)}
+                />
+              </label>
               {allowClear ? (
                 <button type="button" className={styles.btn} onClick={() => onChange(undefined)}>
                   Убрать цвет
@@ -216,6 +226,8 @@ export function Modal({
 
   return createPortal(
     <div
+      // Marks the modal as the owner of Escape while it is open.
+      data-rm-modal=""
       className={`${styles.root} ${styles.modalBackdrop}`}
       role="dialog"
       aria-modal="true"

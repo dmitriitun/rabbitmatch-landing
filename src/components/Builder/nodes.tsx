@@ -262,7 +262,15 @@ function aspectRatio(node: MediaNode): string {
   return h > 0 ? `${w} / ${h}` : '16 / 9';
 }
 
-function MediaInner({ node }: { node: MediaNode }) {
+/**
+ * `eager` is set by the editor canvas.
+ *
+ * Lazy loading is right for a published page and wrong while composing one:
+ * an admin scrolling to a block should find the image there, not a gap that
+ * fills in a moment later — and an animation that has not been fetched yet
+ * looks exactly like an animation that stopped.
+ */
+function MediaInner({ node, eager }: { node: MediaNode; eager?: boolean }) {
   if (node.media === 'video') {
     return (
       <video
@@ -273,7 +281,7 @@ function MediaInner({ node }: { node: MediaNode }) {
         muted={node.muted}
         controls={node.controls}
         playsInline
-        preload={node.autoplay ? 'auto' : 'metadata'}
+        preload={eager || node.autoplay ? 'auto' : 'metadata'}
         aria-label={node.alt || undefined}
       />
     );
@@ -283,7 +291,7 @@ function MediaInner({ node }: { node: MediaNode }) {
       <iframe
         src={node.src}
         title={node.alt || 'Embedded media'}
-        loading="lazy"
+        loading={eager ? 'eager' : 'lazy'}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
       />
@@ -303,13 +311,21 @@ function MediaInner({ node }: { node: MediaNode }) {
       alt={node.alt}
       width={node.width}
       height={node.height}
-      loading="lazy"
-      decoding="async"
+      loading={eager ? 'eager' : 'lazy'}
+      decoding={eager ? 'sync' : 'async'}
     />
   );
 }
 
-export function BuilderMedia({ node, locale }: { node: MediaNode; locale: string }) {
+export function BuilderMedia({
+  node,
+  locale,
+  eager,
+}: {
+  node: MediaNode;
+  locale: string;
+  eager?: boolean;
+}) {
   const box = (
     <div
       className={styles.mediaBox}
@@ -322,7 +338,7 @@ export function BuilderMedia({ node, locale }: { node: MediaNode; locale: string
         } as CSSProperties
       }
     >
-      <MediaInner node={node} />
+      <MediaInner node={node} eager={eager} />
     </div>
   );
 
@@ -356,12 +372,20 @@ const BTN_VARIANT = {
 
 const BTN_SIZE = { sm: styles.btnSm, md: styles.btnMd, lg: styles.btnLg } as const;
 
-export function BuilderNodeBody({ node, locale }: { node: BuilderNode; locale: string }) {
+export function BuilderNodeBody({
+  node,
+  locale,
+  eager,
+}: {
+  node: BuilderNode;
+  locale: string;
+  eager?: boolean;
+}) {
   switch (node.type) {
     case 'text':
       return <RichText doc={node.rich} locale={locale} />;
     case 'media':
-      return <BuilderMedia node={node} locale={locale} />;
+      return <BuilderMedia node={node} locale={locale} eager={eager} />;
     case 'button':
       return (
         <a

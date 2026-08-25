@@ -751,3 +751,82 @@
   color: inherit;
   cursor: pointer;
 }
+
+/* --- Per-element actions ------------------------------------------------
+   Sitting on the element itself, because "delete this" is a thought you have
+   while looking at the thing, not while looking at a panel.
+   ---------------------------------------------------------------------- */
+
+.nodeTools {
+  position: absolute;
+  top: -26px;
+  right: -2px;
+  z-index: 34;
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 7px 7px 0 0;
+  background: var(--e-bg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.nodeTool {
+  width: 22px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--e-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nodeTool:hover {
+  background: #2a2e37;
+}
+
+.nodeToolDanger {
+  color: var(--e-danger);
+}
+
+.hintToast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 9500;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: min(560px, calc(100vw - 340px));
+  padding: 12px 12px 12px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--e-line);
+  background: var(--e-bg);
+  color: var(--e-text);
+  font-size: 13px;
+  line-height: 1.45;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.4);
+}
+
+.hintClose {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--e-muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hintClose:hover {
+  background: #2a2e37;
+  color: var(--e-text);
+}

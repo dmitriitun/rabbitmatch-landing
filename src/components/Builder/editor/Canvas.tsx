@@ -11,6 +11,8 @@ import type { Editor } from '@tiptap/react';
 import {
   ArrowDown,
   ArrowUp,
+  ChevronDown,
+  ChevronUp,
   Copy,
   Image as ImageIcon,
   Minus,
@@ -354,7 +356,7 @@ function NodeFrame({
           onEditorReady={(editor) => api.setActiveTextEditor(editor, editor ? ref.current : null)}
         />
       ) : (
-        <BuilderNodeBody node={node} locale={locale} />
+        <BuilderNodeBody node={node} locale={locale} eager />
       )}
 
       {selected ? (
@@ -362,6 +364,57 @@ function NodeFrame({
           <span className={styles.nodeBadge}>
             {NODE_LABEL[node.type]}
             {hiddenHere ? ' · скрыт' : ''}
+          </span>
+
+          {/*
+            Duplicate and delete belong on the element, not only in a panel on
+            the far side of the screen: the thing you want to remove is the
+            thing you are looking at. `stopPropagation` on pointerdown keeps a
+            press on these from starting a drag.
+          */}
+          <span className={styles.nodeTools} onPointerDown={(event) => event.stopPropagation()}>
+            {node.type === 'text' ? (
+              <button
+                type="button"
+                className={styles.nodeTool}
+                title="Редактировать текст"
+                onClick={() => api.setEditing(node.id)}
+              >
+                <Type size={13} />
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className={styles.nodeTool}
+              title="Поднять над соседями"
+              onClick={() => api.reorderNode(sectionId, node.id, 1)}
+            >
+              <ChevronUp size={13} />
+            </button>
+            <button
+              type="button"
+              className={styles.nodeTool}
+              title="Опустить под соседей"
+              onClick={() => api.reorderNode(sectionId, node.id, -1)}
+            >
+              <ChevronDown size={13} />
+            </button>
+            <button
+              type="button"
+              className={styles.nodeTool}
+              title="Дублировать"
+              onClick={() => api.copyNode(sectionId, node.id)}
+            >
+              <Copy size={13} />
+            </button>
+            <button
+              type="button"
+              className={`${styles.nodeTool} ${styles.nodeToolDanger}`}
+              title="Удалить элемент"
+              onClick={() => api.removeNode(sectionId, node.id)}
+            >
+              <Trash2 size={13} />
+            </button>
           </span>
           {handles.map((mode) => (
             <span
