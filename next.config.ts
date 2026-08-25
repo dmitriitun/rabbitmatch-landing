@@ -52,13 +52,25 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      {
-        // Hashed build assets are immutable by construction.
-        source: '/_next/static/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
+      /*
+        There is deliberately no rule for `/_next/static/:path*`.
+
+        Hashed build assets are immutable by construction, and Next already
+        says so — its static handler sets `max-age=31536000, immutable` itself,
+        on responses that actually carry a file. A rule here would apply to
+        *whatever the route returns*, and a `headers()` entry cannot look at
+        the status code.
+
+        That distinction is not academic. One deploy shipped without a single
+        CSS chunk; the 404 for it went out with `immutable, max-age=1 year`,
+        Cloudflare cached the 404, and from then on the origin was never asked
+        again. Later deploys had the file back and the site stayed broken —
+        no redeploy and no restart can reach a CDN entry with a year to live.
+        The symptom was every CSS module missing at once, which reads as
+        "the login button does nothing" rather than as a caching problem.
+
+        See the same reasoning, learned the same way, on the rule below.
+      */
       {
         /**
          * Screenshots and the logo. These filenames are not fingerprinted, so
