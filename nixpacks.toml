@@ -9,8 +9,17 @@
 [phases.setup]
 nixPkgs = ['nodejs_22']
 
+# `--include=dev` is not optional.
+#
+# Nixpacks sets NODE_ENV=production for the build, and npm reads that as
+# `omit=dev`: `npm ci` then skips typescript, @types/* and eslint. The build
+# does need them, so Next notices TypeScript is missing and runs its own
+# `npm install typescript @types/node` in the middle of the build — 106 extra
+# packages, inside the process that is already holding the compiled app, on a
+# builder with a ~330 MB heap. That is what pushed the build into
+# "JavaScript heap out of memory".
 [phases.install]
-cmds = ['npm ci']
+cmds = ['npm ci --include=dev']
 
 [phases.build]
 cmds = ['npm run build']

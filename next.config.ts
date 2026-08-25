@@ -22,6 +22,28 @@ const nextConfig: NextConfig = {
   // No value to us, one less header on every response.
   poweredByHeader: false,
 
+  /**
+   * Types are checked, just not from here.
+   *
+   * `next build` runs `tsc` inside its own build worker, and Next strips
+   * `--max-old-space-size` from that worker's options on purpose
+   * (`isolatedMemory` in `next/dist/build/index.js`). On a builder whose Node
+   * default heap is ~330 MB, type-checking this project — 807 files, ~243 MB
+   * at peak once Tiptap's declarations are in — runs out of memory *inside*
+   * the worker that is also holding the compiled app, and the build dies with
+   * "Ineffective mark-compacts near heap limit".
+   *
+   * So the check moved one step earlier: `npm run build` is
+   * `npm run typecheck && next build`, and `typecheck` is a plain `tsc
+   * --noEmit` in its own process, where the heap flag is honoured. Same
+   * coverage, a fraction of the peak, and a type error still fails the build
+   * before a single page is emitted.
+   *
+   * The one thing this gives up: `next build` on its own no longer checks
+   * types. Run it through `npm run build`, which is what the deploy does.
+   */
+  typescript: { ignoreBuildErrors: true },
+
   turbopack: {
     root: fileURLToPath(new URL('.', import.meta.url)),
   },

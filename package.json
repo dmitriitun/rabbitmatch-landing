@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "prebuild": "node scripts/clean-build-output.js",
-    "build": "next build",
+    "typecheck": "node --max-old-space-size=1024 node_modules/typescript/bin/tsc --noEmit",
+    "build": "npm run typecheck && next build",
     "postbuild": "node scripts/copy-standalone-assets.js",
     "start": "next start",
     "lint": "eslint",
