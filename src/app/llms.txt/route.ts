@@ -1,5 +1,7 @@
 import { locales } from '@/i18n/config';
 import { absoluteUrl, legalSlugs, links, routeOrder, routes, siteUrl } from '@/lib/site';
+import { loadTree } from '@/lib/tree/store';
+import { flatten, nodeSummary, nodeTitle, type TreeNode } from '@/lib/tree/types';
 
 export const dynamic = 'force-static';
 
@@ -30,7 +32,24 @@ const DESCRIPTIONS: Record<string, string> = {
   faq: 'Consolidated questions and answers, grouped by audience.',
 };
 
-function body(): string {
+/**
+ * The knowledge base, indented to show the hierarchy.
+ *
+ * An answer engine reading this gets the shape of the section, not just a flat
+ * list of URLs — which topic a guide belongs to is most of what decides
+ * whether it is the right thing to quote for a question.
+ */
+function treeLines(nodes: ReadonlyArray<TreeNode>): string[] {
+  return flatten(nodes).map((node) => {
+    const indent = '  '.repeat(node.depth);
+    const summary = nodeSummary(node, 'en');
+    return `${indent}- [${nodeTitle(node, 'en')}](${absoluteUrl('en', node.path)})${
+      summary ? `: ${summary}` : ''
+    }`;
+  });
+}
+
+function body(tree: ReadonlyArray<TreeNode>): string {
   const lines: string[] = [];
 
   lines.push('# RabbitMatch');
@@ -49,6 +68,13 @@ function body(): string {
     lines.push(`- [${key}](${absoluteUrl('en', path)}): ${DESCRIPTIONS[key] ?? ''}`);
   }
   lines.push('');
+
+  if (tree.length) {
+    lines.push('## Knowledge base');
+    lines.push('');
+    lines.push(...treeLines(tree));
+    lines.push('');
+  }
 
   lines.push('## Languages');
   lines.push('');
@@ -75,8 +101,8 @@ function body(): string {
   return lines.join('\n');
 }
 
-export function GET(): Response {
-  return new Response(body(), {
+export async function GET(): Promise<Response> {
+  return new Response(body(await loadTree()), {
     headers: {
       'content-type': 'text/plain; charset=utf-8',
       'cache-control': 'public, max-age=3600, s-maxage=86400',

@@ -4,6 +4,8 @@ import { Onest } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { AdminEditLayer } from '@/components/AdminEditLayer/AdminEditLayer';
+import { AdminStatsBar } from '@/components/Analytics/AdminStatsBar';
+import { PageViewTracker } from '@/components/Analytics/PageViewTracker';
 import { BuilderLauncher } from '@/components/Builder/BuilderLauncher';
 import { ChatWidget } from '@/components/ChatWidget/ChatWidget';
 import { CookieConsent } from '@/components/CookieConsent/CookieConsent';
@@ -15,6 +17,7 @@ import { isLocale, locales, localeHreflang, type Locale } from '@/i18n/config';
 import { loadMessages, pickClientMessages } from '@/lib/messages';
 import { absoluteUrl, alternatesFor, siteName, siteUrl } from '@/lib/site';
 import { appNode, graph, organizationNode, webSiteNode } from '@/lib/structured-data';
+import { loadNavSections } from '@/lib/tree/store';
 import '../globals.css';
 
 /**
@@ -108,6 +111,15 @@ export default async function LocaleLayout({
   const messages = await loadMessages(locale);
   const t = await getTranslations({ locale, namespace: 'meta' });
 
+  /*
+    Menu items an admin created. Read here rather than inside `Header` because
+    the header is a client component, and read at render rather than per
+    request because nothing about it is request-dependent — the layout stays
+    prerenderable, and a change to the tree flushes it through
+    `revalidatePath` the same way a content edit does.
+  */
+  const sections = await loadNavSections(locale);
+
   const siteGraph = graph([
     organizationNode(locale as Locale, t('description')),
     webSiteNode(locale as Locale, siteName, t('description')),
@@ -123,13 +135,15 @@ export default async function LocaleLayout({
         */}
         <NextIntlClientProvider locale={locale} messages={pickClientMessages(messages)}>
           <AuthProvider>
-            <Header />
+            <Header sections={sections} />
             {children}
             <Footer />
             <CookieConsent />
             <ChatWidget />
             <AdminEditLayer />
             <BuilderLauncher />
+            <AdminStatsBar />
+            <PageViewTracker />
           </AuthProvider>
         </NextIntlClientProvider>
         <JsonLd data={siteGraph} />

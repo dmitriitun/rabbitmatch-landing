@@ -3,7 +3,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
-import { LogIn, Menu, X } from 'lucide-react';
+import { ChevronDown, LogIn, Menu, X } from 'lucide-react';
+import type { NavSection } from '@/lib/tree/types';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { LoginModal } from '@/components/LoginModal/LoginModal';
 import { useAuth } from '@/components/Providers/AuthProvider';
@@ -26,7 +27,17 @@ const NAV = [
   { id: 'pricing', href: '/pricing' },
 ] as const;
 
-export function Header() {
+/**
+ * `sections` are the menu items an admin created in the site tree, resolved on
+ * the server and handed down as plain data.
+ *
+ * A section with sub-pages gets a dropdown, and the dropdown is CSS — the
+ * panel is in the DOM, revealed by `:hover`/`:focus-within`. That is not a
+ * shortcut: those links are the entry points to the knowledge base, and a menu
+ * built from client state would hide them from a crawler that does not open
+ * menus, which is all of them.
+ */
+export function Header({ sections = [] }: { sections?: ReadonlyArray<NavSection> }) {
   const t = useTranslations('nav');
   const { user } = useAuth();
   const pathname = usePathname();
@@ -81,6 +92,46 @@ export function Header() {
               >
                 {t(link.id)}
               </Link>
+            ))}
+
+            {sections.map((section) => (
+              <div key={section.path} className={styles.navGroup}>
+                <Link
+                  href={section.path}
+                  className={`${styles.navLink} ${
+                    pathname === section.path || pathname.startsWith(`${section.path}/`)
+                      ? styles.navLinkActive
+                      : ''
+                  }`}
+                >
+                  {section.title}
+                  {section.children.length ? (
+                    <ChevronDown size={14} aria-hidden="true" className={styles.navChevron} />
+                  ) : null}
+                </Link>
+
+                {section.children.length ? (
+                  <div className={styles.navPanel}>
+                    <ul>
+                      {section.children.map((child) => (
+                        <li key={child.path}>
+                          <Link href={child.path} className={styles.navPanelLink}>
+                            <span className={styles.navPanelTitle}>{child.title}</span>
+                            {child.summary ? (
+                              <span className={styles.navPanelText}>{child.summary}</span>
+                            ) : null}
+                          </Link>
+                        </li>
+                      ))}
+                      <li>
+                        <Link href={section.path} className={styles.navPanelAll}>
+                          {section.title} →
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
             ))}
           </nav>
 
@@ -146,6 +197,25 @@ export function Header() {
           <Link href="/faq" className={styles.mobileLink} onClick={closeMenu}>
             {t('faq')}
           </Link>
+
+          {sections.map((section) => (
+            <div key={section.path}>
+              <Link href={section.path} className={styles.mobileLink} onClick={closeMenu}>
+                {section.title}
+              </Link>
+              {section.children.length ? (
+                <ul className={styles.mobileSub}>
+                  {section.children.map((child) => (
+                    <li key={child.path}>
+                      <Link href={child.path} className={styles.mobileSubLink} onClick={closeMenu}>
+                        {child.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
+          ))}
         </nav>
 
         <div className={styles.mobileFooter}>

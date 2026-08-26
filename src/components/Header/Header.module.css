@@ -262,6 +262,120 @@
   font-weight: 700;
 }
 
+/* --- Tree sections ------------------------------------------------------
+   Menu items that came from the site tree. A section with sub-pages opens a
+   panel on hover or keyboard focus — CSS only, so the sub-page links are in
+   the served HTML rather than behind a click a crawler will never make.
+   ---------------------------------------------------------------------- */
+
+.navGroup {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.navGroup .navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.navChevron {
+  color: var(--ink-3);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.navGroup:hover .navChevron,
+.navGroup:focus-within .navChevron {
+  transform: rotate(180deg);
+}
+
+.navPanel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  min-width: 280px;
+  max-width: 340px;
+  padding: var(--space-2);
+  margin-top: 6px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+
+  /* Hidden without `display: none`, so focus can still reach the links and
+     open the panel by doing so. */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    visibility var(--duration-fast);
+}
+
+.navGroup:hover .navPanel,
+.navGroup:focus-within .navPanel {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.navPanelLink {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.navPanelLink:hover {
+  background: var(--bg-subtle);
+}
+
+.navPanelTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.navPanelText {
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  color: var(--ink-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.navPanelAll {
+  display: block;
+  padding: 10px 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--lime-deep);
+}
+
+.mobileSub {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--line);
+  margin: var(--space-2) 0 var(--space-3);
+}
+
+.mobileSubLink {
+  padding: var(--space-2) 0;
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
 /* --- Breakpoints -------------------------------------------------------- */
 
 @media (min-width: 1000px) {

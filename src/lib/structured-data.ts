@@ -153,6 +153,74 @@ export function howToNode(
   };
 }
 
+/**
+ * A knowledge-base entry.
+ *
+ * `Article` rather than `WebPage` for pages in the learning section: it is the
+ * type answer engines quote from, it carries an author and a date — the two
+ * things that decide whether a guide is treated as current — and it is what
+ * makes an article eligible for the article rich result instead of a plain
+ * blue link.
+ */
+export function articleNode(
+  locale: Locale,
+  path: string,
+  headline: string,
+  description: string,
+  updated: string | null,
+): Json {
+  return {
+    '@type': 'Article',
+    '@id': `${absoluteUrl(locale, path)}#article`,
+    headline,
+    ...(description ? { description } : {}),
+    inLanguage: locale,
+    isPartOf: { '@id': siteId },
+    mainEntityOfPage: { '@id': `${absoluteUrl(locale, path)}#webpage` },
+    author: { '@id': orgId },
+    publisher: { '@id': orgId },
+    ...(updated ? { dateModified: updated } : {}),
+  };
+}
+
+/**
+ * The listing page of a section.
+ *
+ * `CollectionPage` says "this page's job is to point at other pages", which
+ * keeps a section index from competing with its own articles for the query
+ * they answer.
+ */
+export function collectionNode(
+  locale: Locale,
+  path: string,
+  name: string,
+  description: string,
+  items: ReadonlyArray<{ name: string; path: string }>,
+): Json {
+  return {
+    '@type': 'CollectionPage',
+    '@id': `${absoluteUrl(locale, path)}#collection`,
+    url: absoluteUrl(locale, path),
+    name,
+    ...(description ? { description } : {}),
+    inLanguage: locale,
+    isPartOf: { '@id': siteId },
+    ...(items.length
+      ? {
+          mainEntity: {
+            '@type': 'ItemList',
+            itemListElement: items.map((item, i) => ({
+              '@type': 'ListItem',
+              position: i + 1,
+              name: item.name,
+              url: absoluteUrl(locale, item.path),
+            })),
+          },
+        }
+      : {}),
+  };
+}
+
 /** Wrap nodes into a single `@graph` document. */
 export function graph(nodes: ReadonlyArray<Json>): string {
   return JSON.stringify({ '@context': 'https://schema.org', '@graph': nodes });

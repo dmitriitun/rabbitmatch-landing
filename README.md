@@ -42,10 +42,16 @@ cookie и `Accept-Language`.
 /{locale}/padel      справочник: что такое падел
 /{locale}/pricing    тарифы
 /{locale}/faq        сводный FAQ
+/{locale}/learn      Академия: обучающие материалы (дерево разделов)
+/{locale}/<раздел>/… разделы, созданные админом, любой глубины
 /{locale}/legal/*    юридические документы
 ```
 
-Добавление страницы: создать `src/app/[locale]/<путь>/page.tsx` и дописать
+Разделы Академии и любые другие пункты меню создаются на живом сайте —
+«Конструктор» → «Разделы», см. [`docs/site-tree.md`](docs/site-tree.md). Кодом
+добавляют только страницы с собственной вёрсткой.
+
+Добавление такой страницы: создать `src/app/[locale]/<путь>/page.tsx` и дописать
 маршрут в `routes` в `src/lib/site.ts` — этого достаточно, чтобы страница попала
 в `sitemap.xml`, в hreflang-кластер и в `/llms.txt`.
 
@@ -62,6 +68,8 @@ cookie и `Accept-Language`.
 | [`docs/telegram-chat.md`](docs/telegram-chat.md) | Чат на сайте ↔ Telegram: настройка бота и группы |
 | [`docs/auth-and-editing.md`](docs/auth-and-editing.md) | Админ-сессии и правка контента на месте |
 | [`docs/page-builder.md`](docs/page-builder.md) | Конструктор: свои секции, медиа и кнопки без правки кода |
+| [`docs/site-tree.md`](docs/site-tree.md) | Разделы меню, подстраницы без ограничения вложенности, Академия |
+| [`docs/analytics.md`](docs/analytics.md) | Счётчики просмотров и панель статистики для админов |
 | [`docs/i18n-auto-translation.md`](docs/i18n-auto-translation.md) | CI-перевод EN → RU |
 
 ## Контент

@@ -513,9 +513,20 @@ export function normalizeDoc(input: unknown): BuilderDoc {
   };
 }
 
-/** Page paths the builder is allowed to write to. Mirrors the routes we ship. */
+/**
+ * Page paths the builder is allowed to write to.
+ *
+ * Shallow when it only had to cover the routes in `app/`. Sections created in
+ * the tree nest as deep as their content needs — `/learn/rules/scoring/tie-
+ * break` is an ordinary page there — so the shape check follows: lowercase
+ * slug segments, and a depth bound that exists to keep a path a path rather
+ * than to say how a knowledge base should be organised.
+ */
 export function isBuilderPage(value: unknown): value is string {
-  return typeof value === 'string' && /^\/(?:[a-z0-9-]{1,40}(?:\/[a-z0-9-]{1,40})?)?$/.test(value);
+  return (
+    typeof value === 'string' &&
+    /^\/(?:[a-z0-9-]{1,60}(?:\/[a-z0-9-]{1,60}){0,7})?$/.test(value)
+  );
 }
 
 export { DEFAULT_PAD, DEFAULT_PAD_MOBILE };

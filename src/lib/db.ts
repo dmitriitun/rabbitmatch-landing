@@ -205,6 +205,102 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
         ON media_assets (created_at DESC);
     `,
   },
+  {
+    /*
+      Site tree: admin-created menu items, their sub-pages and the folders in
+      between.
+
+      One row per page, `parent_id` giving the hierarchy and no depth limit —
+      a section holds groups, a group holds groups, and so on, exactly like a
+      forum. `path` is the materialised full path ('/learn/rules/scoring') so
+      that resolving a URL is one indexed lookup instead of a walk up the
+      tree; it is rewritten for the whole subtree whenever a slug moves.
+
+      Titles live in a JSONB map keyed by locale rather than in a row per
+      language, because the *structure* is shared between languages and only
+      the label differs. A missing translation falls back to the other locale
+      instead of hiding the page from half the site.
+
+      The page body itself is not here: every node is edited with the page
+      builder, so its content is a normal `page_layouts` row keyed by the same
+      path.
+    */
+    id: '0006_site_tree',
+    sql: `
+      CREATE TABLE IF NOT EXISTS site_nodes (
+        id BIGSERIAL PRIMARY KEY,
+        parent_id BIGINT REFERENCES site_nodes(id) ON DELETE CASCADE,
+        slug TEXT NOT NULL,
+        path TEXT NOT NULL UNIQUE,
+        -- 'category' lists what is inside it; 'article' is a leaf with a body.
+        kind TEXT NOT NULL DEFAULT 'category',
+        titles JSONB NOT NULL DEFAULT '{}'::jsonb,
+        summaries JSONB NOT NULL DEFAULT '{}'::jsonb,
+        position INTEGER NOT NULL DEFAULT 0,
+        -- Top-level nodes only: show this item in the header menu.
+        in_nav BOOLEAN NOT NULL DEFAULT FALSE,
+        hidden BOOLEAN NOT NULL DEFAULT FALSE,
+        -- Whether the group starts expanded in the section tree.
+        open_by_default BOOLEAN NOT NULL DEFAULT TRUE,
+        views BIGINT NOT NULL DEFAULT 0,
+        created_by BIGINT REFERENCES users(id) ON DELETE SET NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS site_nodes_parent_idx
+        ON site_nodes (parent_id, position, id);
+      CREATE UNIQUE INDEX IF NOT EXISTS site_nodes_sibling_slug_idx
+        ON site_nodes (COALESCE(parent_id, 0), slug);
+
+      -- The learning section exists from the first boot, so the header has
+      -- something to point at and the admin starts by filling it rather than
+      -- by inventing it. Everything about it is editable, including the slug.
+      INSERT INTO site_nodes (parent_id, slug, path, kind, titles, summaries, position, in_nav)
+      SELECT NULL, 'learn', '/learn', 'category',
+             '{"en":"Academy","ru":"Академия"}'::jsonb,
+             '{"en":"Guides, rules and answers for players, coaches and clubs.","ru":"Гайды, правила и разборы для игроков, тренеров и клубов."}'::jsonb,
+             10, TRUE
+      WHERE NOT EXISTS (SELECT 1 FROM site_nodes WHERE path = '/learn');
+    `,
+  },
+  {
+    /*
+      Cookieless traffic log.
+
+      `visitor` is a hash of IP + user agent + the day + the app secret. It
+      identifies a browser for the length of one day and cannot be reversed
+      into an address, so there is no identifier stored on the visitor's
+      device and nothing here needs a consent banner to be lawful. The cost is
+      that "unique visitors" resets at midnight UTC, which is the trade every
+      cookieless analytics tool makes.
+
+      Rows are raw hits rather than pre-aggregated counters: the admin panel
+      wants "top pages last 30 days" and "referrers", neither of which can be
+      recovered from a counter. Retention is bounded by a prune (see
+      `lib/analytics.ts`) so the table cannot grow without limit.
+    */
+    id: '0007_page_views',
+    sql: `
+      CREATE TABLE IF NOT EXISTS page_views (
+        id BIGSERIAL PRIMARY KEY,
+        -- Route without the locale prefix, so both languages aggregate together.
+        path TEXT NOT NULL,
+        locale TEXT,
+        visitor TEXT NOT NULL,
+        referrer_host TEXT,
+        node_id BIGINT REFERENCES site_nodes(id) ON DELETE SET NULL,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      );
+
+      CREATE INDEX IF NOT EXISTS page_views_created_idx
+        ON page_views (created_at DESC);
+      CREATE INDEX IF NOT EXISTS page_views_path_idx
+        ON page_views (path, created_at DESC);
+      CREATE INDEX IF NOT EXISTS page_views_visitor_idx
+        ON page_views (visitor, created_at DESC);
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {

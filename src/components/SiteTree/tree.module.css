@@ -1,0 +1,510 @@
+/* Pages that come from the site tree: section indexes, articles, and the
+   collapsible tree they share. Same vocabulary as blocks.module.css — solid
+   fills, 1px hairlines, the 4pt spacing scale — so a knowledge-base page sits
+   next to a hand-written one without announcing that it was generated. */
+
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+}
+
+/* --- Head --------------------------------------------------------------- */
+
+.hero {
+  padding-block: clamp(28px, 5vw, 56px) clamp(24px, 3vw, 36px);
+  background: var(--bg-subtle);
+  border-bottom: 1px solid var(--line);
+}
+
+.heroArticle {
+  background: var(--bg);
+}
+
+.heroTitle {
+  font-size: var(--fs-h1);
+  max-width: 22ch;
+  margin-block: var(--space-4) 0;
+}
+
+.heroArticle .heroTitle {
+  max-width: 24ch;
+}
+
+.heroLead {
+  margin-top: var(--space-4);
+  font-size: var(--fs-lead);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 68ch;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.metaItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* --- Breadcrumbs -------------------------------------------------------- */
+
+.crumbs {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+}
+
+.crumbList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.crumbLink {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.crumbLink:hover {
+  color: var(--ink);
+  text-decoration-color: currentColor;
+}
+
+.crumbCurrent {
+  color: var(--ink-3);
+}
+
+.crumbSep {
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+
+/* --- Body --------------------------------------------------------------- */
+
+.body {
+  padding-block: clamp(40px, 6vw, 72px);
+}
+
+.bodyHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.bodyTitle {
+  font-size: var(--fs-h3);
+}
+
+.empty {
+  padding: var(--space-8);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--ink-3);
+  text-align: center;
+}
+
+/* --- Tree ----------------------------------------------------------------
+   The rows are one shared `.summary` layout whether they are a disclosure or
+   a link, so a group and an article line up on the same grid and the eye can
+   read the hierarchy from the indent rather than from two different shapes.
+   ------------------------------------------------------------------------ */
+
+.tree {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.list {
+  display: block;
+}
+
+.item + .item {
+  border-top: 1px solid var(--line);
+}
+
+.item[hidden] {
+  display: none;
+}
+
+.summary {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  list-style: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  background: var(--bg-subtle);
+}
+
+.chevron {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 24px;
+  color: var(--ink-3);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.group[open] > .summary > .chevron {
+  transform: rotate(90deg);
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: var(--ink-3);
+}
+
+.leaf .icon {
+  color: var(--lime-deep);
+}
+
+.main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.leaf:hover .title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.summaryText {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  line-height: 1.45;
+}
+
+.meta {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-top: 2px;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.count {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  font-weight: 600;
+}
+
+.views {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Indent stops growing after the third level: a deep branch has to stay
+   readable on a 390px screen, and past that depth the disclosure state is
+   what tells you where you are, not the offset. */
+.children {
+  padding-left: clamp(12px, 3vw, 28px);
+  border-top: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-subtle) 45%, var(--bg));
+}
+
+.children .children {
+  padding-left: clamp(8px, 2vw, 20px);
+}
+
+.children .children .children {
+  padding-left: var(--space-3);
+}
+
+.children .tree {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.children > .list > .item:first-child {
+  border-top: 0;
+}
+
+.groupLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: var(--space-3) 0 0 var(--space-5);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--lime-deep);
+}
+
+.groupLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- Filter ------------------------------------------------------------- */
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.searchInput {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 36px 0 36px;
+  font: inherit;
+  font-size: var(--fs-sm);
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  appearance: none;
+}
+
+.searchInput::-webkit-search-cancel-button {
+  display: none;
+}
+
+.searchInput:focus-visible {
+  border-color: var(--ink);
+  outline: none;
+}
+
+.searchClear {
+  position: absolute;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  color: var(--ink-3);
+}
+
+.searchClear:hover {
+  background: var(--bg-subtle);
+  color: var(--ink);
+}
+
+.filterActions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.filterBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.filterBtn:hover {
+  border-color: var(--line-strong);
+  color: var(--ink);
+}
+
+.filterStatus {
+  flex-basis: 100%;
+  min-height: 0;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+.filterStatus:empty {
+  display: none;
+}
+
+/* --- Popular ------------------------------------------------------------ */
+
+.popular {
+  margin-top: clamp(32px, 4vw, 56px);
+}
+
+.popularTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-h3);
+  margin-bottom: var(--space-5);
+}
+
+.popularList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.popularCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.popularCard:hover {
+  border-color: var(--line-strong);
+  transform: translateY(-2px);
+}
+
+.popularName {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.popularViews {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--fs-xs);
+  color: var(--ink-3);
+}
+
+/* --- Article footer ----------------------------------------------------- */
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.pagerLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  color: var(--ink);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.pagerLink:hover {
+  border-color: var(--line-strong);
+}
+
+.pagerNext {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.pagerLabel {
+  display: block;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+
+.pagerName {
+  display: block;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.siblings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.siblingsParent {
+  font-size: var(--fs-sm);
+  color: var(--ink-3);
+  margin-bottom: var(--space-2);
+}
+
+@media (max-width: 640px) {
+  .summary {
+    flex-wrap: wrap;
+    padding: var(--space-4);
+  }
+
+  .meta {
+    flex-basis: 100%;
+    padding-left: 44px;
+  }
+
+  .pager {
+    grid-template-columns: 1fr;
+  }
+
+  .searchBox {
+    min-width: 100%;
+  }
+}

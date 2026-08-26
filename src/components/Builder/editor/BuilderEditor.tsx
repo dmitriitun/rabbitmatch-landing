@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import type { Editor } from '@tiptap/react';
 import {
   Download,
+  ListTree,
   Loader,
   Monitor,
   PanelsTopLeft,
@@ -44,6 +45,7 @@ import { AddNodeMenu, SectionFrame, type CanvasApi, type Device, type Selection 
 import { importPageFromDom } from './importPage';
 import { Inspector } from './Inspector';
 import { TextToolbar } from './RichTextEditor';
+import { SiteTreeManager } from './SiteTreeManager';
 import { editorStyles as styles, Menu, MenuItem } from './ui';
 
 /**
@@ -97,6 +99,7 @@ export default function BuilderEditor({
   const [textEditor, setTextEditor] = useState<{ editor: Editor; anchor: HTMLElement | null } | null>(null);
   const [importing, setImporting] = useState(false);
   const [hint, setHint] = useState<string | null>(null);
+  const [treeOpen, setTreeOpen] = useState(false);
 
   /**
    * The document also lives in a ref.
@@ -536,6 +539,16 @@ export default function BuilderEditor({
         <AddNodeMenu onPick={(kind) => api.addNode(selectedSection.id, kind)} />
       ) : null}
 
+      <button
+        type="button"
+        className={styles.btn}
+        onClick={() => setTreeOpen(true)}
+        title="Пункты меню, подразделы и страницы внутри них"
+      >
+        <ListTree size={14} />
+        Разделы
+      </button>
+
       {takeover ? (
         <button
           type="button"
@@ -635,6 +648,8 @@ export default function BuilderEditor({
             document.body,
           )
         : null}
+
+      {treeOpen ? <SiteTreeManager locale={locale} onClose={() => setTreeOpen(false)} /> : null}
 
       <Inspector section={selectedSection} node={selectedNode} api={api} />
 

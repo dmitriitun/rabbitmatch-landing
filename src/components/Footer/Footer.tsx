@@ -7,6 +7,9 @@ import { TelegramIcon } from '@/components/icons/TelegramIcon';
 import { TikTokIcon } from '@/components/icons/TikTokIcon';
 import { Link } from '@/i18n/navigation';
 import { legalSlugs, links } from '@/lib/site';
+import { loadNavSections } from '@/lib/tree/store';
+import type { Locale } from '@/i18n/config';
+import { getLocale } from 'next-intl/server';
 import styles from './Footer.module.css';
 
 const AUDIENCES = [
@@ -30,6 +33,14 @@ const RESOURCES = [
 export async function Footer() {
   const tFooter = await getTranslations('footer');
   const tNav = await getTranslations('nav');
+
+  /*
+    Sections from the site tree join the resources column. The footer is the
+    site's full internal link graph — it is how a crawler reaches every page
+    from any page — and a knowledge base that only the header links to would
+    be one hop further away from every article it contains.
+  */
+  const sections = await loadNavSections((await getLocale()) as Locale);
 
   const socials = [
     { key: 'instagram' as const, href: links.instagram, Icon: InstagramIcon },
@@ -95,6 +106,13 @@ export async function Footer() {
                 <li key={link.id}>
                   <Link href={link.href} className={styles.link}>
                     {tNav(link.id)}
+                  </Link>
+                </li>
+              ))}
+              {sections.map((section) => (
+                <li key={section.path}>
+                  <Link href={section.path} className={styles.link}>
+                    {section.title}
                   </Link>
                 </li>
               ))}

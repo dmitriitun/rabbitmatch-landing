@@ -1274,6 +1274,32 @@
       "secondary": "Talk to us"
     }
   },
+  "learn": {
+    "home": "Home",
+    "breadcrumbs": "Breadcrumbs",
+    "contents": "What is inside",
+    "materials": "{count, plural, =0 {no materials} one {# material} other {# materials}}",
+    "views": "{count, plural, =0 {no views} one {# view} other {# views}}",
+    "openSection": "Open the section",
+    "emptySection": "This section is being written. Come back soon — or ask us in the chat, we answer faster than we publish.",
+    "popular": "Most read",
+    "searchPlaceholder": "Search in this section",
+    "searchClear": "Clear the search",
+    "searchEmpty": "Nothing here matches that.",
+    "searchFound": "Matches: {count}",
+    "expandAll": "Expand all",
+    "collapseAll": "Collapse all",
+    "pager": "Article navigation",
+    "previous": "Previous",
+    "next": "Next",
+    "inThisSection": "More in this section",
+    "cta": {
+      "title": "Reading is one thing. Playing is another.",
+      "lead": "Open games at your level, book a court and enter a tournament — from the app, in a couple of taps.",
+      "primary": "Get the app",
+      "secondary": "See the plans"
+    }
+  },
   "appShots": {
     "bestMatch": {
       "alt": "Players in the city sorted by how good a game you would have, each with the reason underneath.",

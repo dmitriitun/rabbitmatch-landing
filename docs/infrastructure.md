@@ -30,6 +30,7 @@ src/
       page.tsx              # главная
       players|organizers|coaches|venues|padel|pricing|faq/page.tsx
       legal/[slug]/page.tsx
+      [...rest]/page.tsx      # страницы дерева разделов + локализованный 404
     api/
       auth/{login,logout,me}/route.ts
       chat/{message,messages}/route.ts
@@ -54,6 +55,8 @@ src/
     chat.ts                 # треды и сообщения чата
     telegram.ts             # клиент Bot API
     site.ts                 # маршруты, URL, ссылки — единый источник
+    tree/                   # дерево разделов: типы и хранилище
+    analytics.ts            # учёт заходов без cookie + сводка
     structured-data.ts      # JSON-LD
     page-meta.ts            # generateMetadata для контентных страниц
     rate-limit.ts
@@ -98,6 +101,10 @@ docs/
 | `cookie_consents` | Журнал согласий на cookie |
 | `chat_threads` | Беседы в чате сайта → топики Telegram |
 | `chat_messages` | Сообщения чата в обе стороны |
+| `page_layouts` | Документы конструктора: `(page, locale)` уникальны |
+| `media_assets` | Загруженные файлы, ключ — SHA-256 содержимого |
+| `site_nodes` | Дерево разделов: пункты меню и их подстраницы |
+| `page_views` | Журнал заходов для админской статистики |
 
 ## Аутентификация
 
@@ -126,6 +133,10 @@ docs/
 | `POST` | `/api/chat/message` | Сообщение посетителя → БД → Telegram |
 | `GET` | `/api/chat/messages` | Опрос новых сообщений треда |
 | `POST` | `/api/telegram/webhook` | Ответы модераторов из Telegram |
+| `GET` / `PUT` | `/api/builder` | Документ конструктора для `(page, locale)` |
+| `GET` / `POST` / `PATCH` / `DELETE` | `/api/site-tree` | Дерево разделов (только админ) |
+| `POST` | `/api/analytics/hit` | Один просмотр страницы от браузера |
+| `GET` | `/api/analytics/summary` | Сводка трафика (только админ) |
 | `GET` | `/api/health` | Liveness-проба (БД не трогает) |
 
 ## Деплой
