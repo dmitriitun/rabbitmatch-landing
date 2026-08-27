@@ -6,6 +6,7 @@ import {
   ChevronUp,
   Eye,
   EyeOff,
+  FileCode,
   FileText,
   Folder,
   IndentDecrease,
@@ -15,9 +16,11 @@ import {
   SquareArrowOutUpRight,
   Trash2,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import { locales, type Locale } from '@/i18n/config';
 import {
   buildTree,
+  CODE_PAGE_SLUGS,
   flatten,
   nodeTitle,
   type NodeKind,
@@ -81,6 +84,9 @@ const ERRORS: Record<string, string> = {
 };
 
 export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: () => void }) {
+  // The hand-written pages are labelled from the same catalogue the header
+  // reads, so the list here says exactly what the menu says.
+  const nav = useTranslations('nav');
   const [nodes, setNodes] = useState<SiteNode[] | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [draft, setDraft] = useState<Draft | null>(null);
@@ -156,6 +162,21 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
   const tree = useMemo(() => buildTree(nodes ?? []), [nodes]);
   const rows = useMemo(() => flatten(tree), [tree]);
 
+  /**
+   * Hand-written pages that have no anchor row yet.
+   *
+   * Listed even though they are not in the tree, because otherwise there is
+   * nothing to click: "add a sub-page under Игрокам" has to start somewhere,
+   * and a page that exists as a file is invisible to a manager that only
+   * renders rows. Once attached, the page joins the list above as a normal
+   * branch and disappears from here.
+   */
+  const unattached = useMemo(() => {
+    if (!nodes) return [];
+    const taken = new Set(nodes.map((node) => node.path));
+    return CODE_PAGE_SLUGS.filter((slug) => !taken.has(`/${slug}`));
+  }, [nodes]);
+
   /* --- Structure -------------------------------------------------------- */
 
   const siblingsOf = useCallback(
@@ -208,6 +229,36 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
       setSelectedId((body.node as SiteNode).id);
     },
     [active, reload, request],
+  );
+
+  /**
+   * Add a sub-page under a hand-written route.
+   *
+   * Two steps, because the tree has no row for `/players` until someone wants
+   * one: create (or find) the anchor, then add the page under it. The admin
+   * sees one action — this is what makes "подраздел для страницы Игрокам" the
+   * same gesture as adding a page anywhere else.
+   */
+  const addUnderCodePage = useCallback(
+    async (slug: string, label: string) => {
+      const attached = await request({
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          action: 'attach-code-page',
+          slug,
+          // The working language only, like every other create here. The other
+          // locale falls back to it until someone fills it in, which is better
+          // than writing a Russian label into the English breadcrumb trail and
+          // calling it translated.
+          titles: { [active]: label },
+        }),
+      });
+      if (!attached?.node) return;
+      setChanged(true);
+      await add((attached.node as SiteNode).id, 'article');
+    },
+    [active, add, request],
   );
 
   const remove = useCallback(
@@ -306,8 +357,15 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
                       setDraft(null);
                     }}
                   >
-                    {node.kind === 'article' ? <FileText size={14} /> : <Folder size={14} />}
+                    {node.codePage ? (
+                      <FileCode size={14} />
+                    ) : node.kind === 'article' ? (
+                      <FileText size={14} />
+                    ) : (
+                      <Folder size={14} />
+                    )}
                     <span className={styles.treeLabel}>{nodeTitle(node, active)}</span>
+                    {node.codePage ? <span className={styles.treeBadge}>страница сайта</span> : null}
                     {node.inNav ? <span className={styles.treeBadge}>меню</span> : null}
                     {node.hidden ? <EyeOff size={12} /> : null}
                     {node.kind === 'article' && node.views > 0 ? (
@@ -351,7 +409,9 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
                       type="button"
                       className={styles.nodeTool}
                       title="Вложить в предыдущий"
-                      disabled={busy || index <= 0}
+                      // A code page is pinned to its route: nesting it would
+                      // move every sub-page to a URL no file answers.
+                      disabled={busy || index <= 0 || node.codePage}
                       onClick={() => void move(node.id, siblings[index - 1].id, null)}
                     >
                       <IndentIncrease size={13} />
@@ -360,7 +420,7 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
                       type="button"
                       className={styles.nodeTool}
                       title="Вынести на уровень выше"
-                      disabled={busy || !parent}
+                      disabled={busy || !parent || node.codePage}
                       onClick={() =>
                         void move(
                           node.id,
@@ -392,6 +452,37 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
               );
             })
           )}
+
+          {unattached.length ? (
+            <div className={styles.treeAttach}>
+              <p className={styles.groupTitle}>Страницы сайта</p>
+              <p className={styles.hint}>
+                Эти страницы собраны кодом, поэтому их нет в списке выше. Кнопка добавляет внутрь
+                такой страницы подраздел: он получит адрес вида /players/…, попадёт в выпадающее
+                меню и в список внизу самой страницы.
+              </p>
+              {unattached.map((slug) => (
+                <div key={slug} className={styles.treeRow}>
+                  <span className={`${styles.treeName} ${styles.treeNameStatic}`}>
+                    <FileCode size={14} />
+                    <span className={styles.treeLabel}>{nav(slug)}</span>
+                    <code className={styles.treeSlug}>/{slug}</code>
+                  </span>
+                  <div className={styles.treeTools}>
+                    <button
+                      type="button"
+                      className={styles.nodeTool}
+                      title="Добавить подраздел внутрь этой страницы"
+                      disabled={busy}
+                      onClick={() => void addUnderCodePage(slug, nav(slug))}
+                    >
+                      <Plus size={13} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className={styles.treeForm}>
@@ -428,22 +519,33 @@ export function SiteTreeManager({ locale, onClose }: { locale: string; onClose: 
                 </Field>
               ))}
 
-              <Field label="Адрес (латиницей)">
-                <TextInput
-                  value={values.slug}
-                  onChange={(value) => setDraft({ ...values, slug: value })}
-                />
-              </Field>
+              {selected.codePage ? (
+                <p className={styles.hint}>
+                  Это страница сайта, собранная кодом. Здесь она нужна только как место для
+                  подразделов: адрес и тип менять нельзя, содержимое правится конструктором прямо
+                  на самой странице. Название и описание используются в хлебных крошках подразделов
+                  и в выпадающем меню.
+                </p>
+              ) : (
+                <>
+                  <Field label="Адрес (латиницей)">
+                    <TextInput
+                      value={values.slug}
+                      onChange={(value) => setDraft({ ...values, slug: value })}
+                    />
+                  </Field>
 
-              <Field label="Тип страницы">
-                <Segmented
-                  value={values.kind}
-                  options={KIND_OPTIONS}
-                  onChange={(kind) => setDraft({ ...values, kind })}
-                />
-              </Field>
+                  <Field label="Тип страницы">
+                    <Segmented
+                      value={values.kind}
+                      options={KIND_OPTIONS}
+                      onChange={(kind) => setDraft({ ...values, kind })}
+                    />
+                  </Field>
+                </>
+              )}
 
-              {selected.parentId === null ? (
+              {selected.parentId === null && !selected.codePage ? (
                 <Check
                   checked={values.inNav}
                   onChange={(inNav) => setDraft({ ...values, inNav })}

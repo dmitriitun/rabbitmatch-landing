@@ -416,18 +416,34 @@
   pointer-events: none;
 }
 
-/* Column guides, drawn behind the content while editing. */
+/*
+  The grid, drawn behind the content while editing.
+
+  Both axes, because both are draggable: the columns say where a box may start
+  and stop sideways, the row lines say the same vertically. The row lines are
+  the fainter of the two — at a 12px pitch a full-strength horizontal rule
+  every twelve pixels reads as hatching rather than as a grid.
+*/
 .guides {
   position: absolute;
   inset: 0;
+  z-index: 0;
   pointer-events: none;
-  background-image: repeating-linear-gradient(
-    to right,
-    rgba(185, 233, 1, 0.16) 0,
-    rgba(185, 233, 1, 0.16) 1px,
-    transparent 1px,
-    transparent calc(100% / var(--rm-cols, 12))
-  );
+  background-image:
+    repeating-linear-gradient(
+      to right,
+      rgba(185, 233, 1, 0.22) 0,
+      rgba(185, 233, 1, 0.22) 1px,
+      transparent 1px,
+      transparent calc(100% / var(--rm-cols, 24))
+    ),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(11, 11, 11, 0.07) 0,
+      rgba(11, 11, 11, 0.07) 1px,
+      transparent 1px,
+      transparent var(--rm-row, 12px)
+    );
 }
 
 .nodeFrame {
@@ -907,6 +923,37 @@
   gap: 3px;
   color: var(--e-muted);
   font-size: 11px;
+}
+
+/* --- Hand-written pages, offered as parents ------------------------------ */
+
+.treeAttach {
+  margin-top: 12px;
+  padding: 10px 8px 4px;
+  border-top: 1px dashed var(--e-line);
+}
+
+.treeAttach .treeRow {
+  padding-left: 8px;
+}
+
+/* The label of a page that is a file rather than a row: nothing to select. */
+.treeNameStatic {
+  color: var(--e-muted);
+  cursor: default;
+}
+
+.treeSlug {
+  flex: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--e-muted);
+}
+
+/* Always visible here: the row has exactly one action and hiding it until
+   hover would make the list look inert. */
+.treeAttach .treeTools {
+  opacity: 1;
 }
 
 /* Tools stay out of the way until the row is worth acting on — a row of seven

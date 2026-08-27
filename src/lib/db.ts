@@ -301,6 +301,28 @@ const MIGRATIONS: ReadonlyArray<{ id: string; sql: string }> = [
         ON page_views (visitor, created_at DESC);
     `,
   },
+  {
+    /*
+      Sub-pages under a hand-written route.
+
+      Until now the tree and `app/` were disjoint: `RESERVED_SLUGS` stopped an
+      admin from creating `/players` in the tree precisely because a file
+      already answered that URL. The cost was that `/players` could never grow
+      a sub-page — the only way to add one was to write another route file.
+
+      A "code page" row closes that gap. It occupies the colliding path on
+      purpose and is never rendered (Next resolves a static segment before a
+      catch-all, so the real file always wins); what it provides is a parent for
+      `/players/<slug>`, which the catch-all *does* answer, and an ancestor for
+      that page's breadcrumbs. The flag is what keeps it out of the sitemap and
+      the menu, where it would otherwise appear a second time.
+    */
+    id: '0008_code_page_nodes',
+    sql: `
+      ALTER TABLE site_nodes
+        ADD COLUMN IF NOT EXISTS code_page BOOLEAN NOT NULL DEFAULT FALSE;
+    `,
+  },
 ];
 
 async function applyMigrations(): Promise<void> {

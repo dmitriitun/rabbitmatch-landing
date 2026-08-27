@@ -7,6 +7,7 @@ import { ChevronDown, LogIn, Menu, X } from 'lucide-react';
 import type { NavSection } from '@/lib/tree/types';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher/LanguageSwitcher';
 import { LoginModal } from '@/components/LoginModal/LoginModal';
+import { SiteSearch } from '@/components/Search/SiteSearch';
 import { useAuth } from '@/components/Providers/AuthProvider';
 import { Link, usePathname } from '@/i18n/navigation';
 import { tap } from '@/lib/haptics';
@@ -37,7 +38,22 @@ const NAV = [
  * built from client state would hide them from a crawler that does not open
  * menus, which is all of them.
  */
-export function Header({ sections = [] }: { sections?: ReadonlyArray<NavSection> }) {
+export function Header({
+  sections = [],
+  codePageChildren = {},
+}: {
+  sections?: ReadonlyArray<NavSection>;
+  /**
+   * Sub-pages filed under a hand-written route, keyed by that route's path.
+   *
+   * `NAV` above is a list of files; this is the part of the same menu that
+   * lives in a table. Merging them here rather than turning `NAV` into tree
+   * rows keeps the audience pages exactly where they are — first, in a fixed
+   * order, translated from the catalogue — and lets an admin grow a section
+   * under one without touching code.
+   */
+  codePageChildren?: Record<string, NavSection['children']>;
+}) {
   const t = useTranslations('nav');
   const { user } = useAuth();
   const pathname = usePathname();
@@ -83,16 +99,50 @@ export function Header({ sections = [] }: { sections?: ReadonlyArray<NavSection>
           </Link>
 
           <nav className={styles.nav} aria-label={t('primaryNav')}>
-            {NAV.map((link) => (
-              <Link
-                key={link.id}
-                href={link.href}
-                className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ''}`}
-                aria-current={pathname === link.href ? 'page' : undefined}
-              >
-                {t(link.id)}
-              </Link>
-            ))}
+            {NAV.map((link) => {
+              const children = codePageChildren[link.href] ?? [];
+              const active = pathname === link.href || pathname.startsWith(`${link.href}/`);
+              const anchor = (
+                <Link
+                  href={link.href}
+                  className={`${styles.navLink} ${active ? styles.navLinkActive : ''}`}
+                  aria-current={pathname === link.href ? 'page' : undefined}
+                >
+                  {t(link.id)}
+                  {children.length ? (
+                    <ChevronDown size={14} aria-hidden="true" className={styles.navChevron} />
+                  ) : null}
+                </Link>
+              );
+
+              // No sub-pages, no wrapper: the group exists to host a dropdown.
+              if (!children.length) return <span key={link.id}>{anchor}</span>;
+
+              return (
+                <div key={link.id} className={styles.navGroup}>
+                  {anchor}
+                  <div className={styles.navPanel}>
+                    <ul>
+                      {children.map((child) => (
+                        <li key={child.path}>
+                          <Link href={child.path} className={styles.navPanelLink}>
+                            <span className={styles.navPanelTitle}>{child.title}</span>
+                            {child.summary ? (
+                              <span className={styles.navPanelText}>{child.summary}</span>
+                            ) : null}
+                          </Link>
+                        </li>
+                      ))}
+                      <li>
+                        <Link href={link.href} className={styles.navPanelAll}>
+                          {t(link.id)} →
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              );
+            })}
 
             {sections.map((section) => (
               <div key={section.path} className={styles.navGroup}>
@@ -136,6 +186,7 @@ export function Header({ sections = [] }: { sections?: ReadonlyArray<NavSection>
           </nav>
 
           <div className={styles.actions}>
+            <SiteSearch />
             <LanguageSwitcher compact />
 
             {user ? (
@@ -182,14 +233,22 @@ export function Header({ sections = [] }: { sections?: ReadonlyArray<NavSection>
       >
         <nav className={styles.mobileNav} aria-label={t('mobileNav')}>
           {NAV.map((link) => (
-            <Link
-              key={link.id}
-              href={link.href}
-              className={styles.mobileLink}
-              onClick={closeMenu}
-            >
-              {t(link.id)}
-            </Link>
+            <div key={link.id}>
+              <Link href={link.href} className={styles.mobileLink} onClick={closeMenu}>
+                {t(link.id)}
+              </Link>
+              {codePageChildren[link.href]?.length ? (
+                <ul className={styles.mobileSub}>
+                  {codePageChildren[link.href].map((child) => (
+                    <li key={child.path}>
+                      <Link href={child.path} className={styles.mobileSubLink} onClick={closeMenu}>
+                        {child.title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
           ))}
           <Link href="/padel" className={styles.mobileLink} onClick={closeMenu}>
             {t('padel')}

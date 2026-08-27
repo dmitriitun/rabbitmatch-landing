@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { loadBuilderDoc } from '@/lib/builder/store';
 import type { Locale } from '@/i18n/config';
+import { CodePageChildren } from '@/components/SiteTree/CodePageChildren';
 import { BuilderSlot } from './BuilderSlot';
 
 /**
@@ -33,9 +34,28 @@ export async function PageBody({
 }) {
   const doc = await loadBuilderDoc(page, locale);
 
+  /*
+    Sub-pages filed under this route are appended in both modes, because they
+    are not part of the body at all — they are the page's children, and
+    replacing the body with a document should not make them vanish. On every
+    page that has none (which is most of them, most of the time) this renders
+    nothing.
+  */
+  const subPages = <CodePageChildren page={page} locale={locale} />;
+
   if (doc.takeover) {
-    return <BuilderSlot page={page} slot="page" locale={locale} />;
+    return (
+      <>
+        <BuilderSlot page={page} slot="page" locale={locale} />
+        {subPages}
+      </>
+    );
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {subPages}
+    </>
+  );
 }

@@ -112,8 +112,18 @@ export function SectionFrame({
       >
         {section.background.kind === 'image' ? <div className={builderStyles.bg} aria-hidden="true" /> : null}
         <div className={builderStyles.inner}>
-          <div className={styles.guides} style={{ ['--rm-cols' as string]: cols }} aria-hidden="true" />
+          {/*
+            Inside the grid, not beside it. The section's side padding now
+            lives on `.inner` (so builder content lines up with the rest of the
+            site), which means a guide layer pinned to `.inner` would be offset
+            from the columns it is supposed to be drawing.
+          */}
           <div className={builderStyles.grid} ref={gridRef}>
+            <div
+              className={styles.guides}
+              style={{ ['--rm-cols' as string]: cols, ['--rm-row' as string]: `${ROW_H}px` }}
+              aria-hidden="true"
+            />
             {section.nodes.map((node) => (
               <NodeFrame
                 key={node.id}

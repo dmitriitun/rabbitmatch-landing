@@ -69,7 +69,8 @@ cookie и `Accept-Language`.
 | [`docs/auth-and-editing.md`](docs/auth-and-editing.md) | Админ-сессии и правка контента на месте |
 | [`docs/page-builder.md`](docs/page-builder.md) | Конструктор: свои секции, медиа и кнопки без правки кода |
 | [`docs/site-tree.md`](docs/site-tree.md) | Разделы меню, подстраницы без ограничения вложенности, Академия |
-| [`docs/analytics.md`](docs/analytics.md) | Счётчики просмотров и панель статистики для админов |
+| [`docs/analytics.md`](docs/analytics.md) | Счётчики просмотров, панель статистики за год и анализатор страницы (SEO + AI) |
+| [`docs/search.md`](docs/search.md) | Поиск по всему сайту и подсветка найденного на странице |
 | [`docs/i18n-auto-translation.md`](docs/i18n-auto-translation.md) | CI-перевод EN → RU |
 
 ## Контент

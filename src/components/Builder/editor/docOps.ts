@@ -84,7 +84,7 @@ export function starterSection(slot: SlotName, heading: string, body: string): B
     ...section,
     nodes: [
       {
-        ...baseNode({ x: 0, y: 0, w: 7, h: 3 }),
+        ...baseNode({ x: 0, y: 0, w: 14, h: 6 }),
         type: 'text',
         rich: {
           type: 'doc',
@@ -92,7 +92,7 @@ export function starterSection(slot: SlotName, heading: string, body: string): B
         },
       },
       {
-        ...baseNode({ x: 0, y: 3, w: 6, h: 3 }),
+        ...baseNode({ x: 0, y: 6, w: 12, h: 6 }),
         type: 'text',
         rich: {
           type: 'doc',
@@ -123,7 +123,7 @@ export function newNode(kind: NodeKind, section: BuilderSection, labels: NodeLab
   switch (kind) {
     case 'text':
       return {
-        ...baseNode({ x: 0, y, w: 6, h: 4 }),
+        ...baseNode({ x: 0, y, w: 12, h: 8 }),
         type: 'text',
         rich: {
           type: 'doc',
@@ -132,7 +132,7 @@ export function newNode(kind: NodeKind, section: BuilderSection, labels: NodeLab
       };
     case 'media':
       return {
-        ...baseNode({ x: 0, y, w: 6, h: 10 }),
+        ...baseNode({ x: 0, y, w: 12, h: 20 }),
         type: 'media',
         media: 'image',
         // A shipped placeholder rather than an empty src: the node is visible
@@ -146,7 +146,7 @@ export function newNode(kind: NodeKind, section: BuilderSection, labels: NodeLab
       };
     case 'button':
       return {
-        ...baseNode({ x: 0, y, w: 4, h: 3 }),
+        ...baseNode({ x: 0, y, w: 8, h: 6 }),
         type: 'button',
         label: labels.button,
         href: '/',
@@ -155,9 +155,9 @@ export function newNode(kind: NodeKind, section: BuilderSection, labels: NodeLab
         align: 'start',
       };
     case 'divider':
-      return { ...baseNode({ x: 0, y, w: 12, h: 1 }), type: 'divider', valign: 'center' };
+      return { ...baseNode({ x: 0, y, w: 24, h: 2 }), type: 'divider', valign: 'center' };
     case 'spacer':
-      return { ...baseNode({ x: 0, y, w: 12, h: 2 }), type: 'spacer' };
+      return { ...baseNode({ x: 0, y, w: 24, h: 4 }), type: 'spacer' };
   }
 }
 

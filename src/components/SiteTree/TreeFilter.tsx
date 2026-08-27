@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronsDownUp, ChevronsUpDown, Search, X } from 'lucide-react';
+import { SearchResults } from '@/components/Search/SearchResults';
+import { useSiteSearch } from '@/components/Search/useSiteSearch';
+import searchStyles from '@/components/Search/search.module.css';
 import styles from './tree.module.css';
 
 /**
@@ -15,6 +18,12 @@ import styles from './tree.module.css';
  *
  * With JavaScript off, the field never appears (this component renders it) and
  * the tree still works: `<details>` opens on click on its own.
+ *
+ * The same typing also runs a site-wide search, whose results appear under the
+ * filtered tree. Two behaviours in one field, and they do not compete: the tree
+ * narrows to the rows that match, and below it sits everything else on the site
+ * that matches — because a reader who searches here and finds nothing in this
+ * section has not stopped wanting an answer.
  */
 
 export function TreeFilter({
@@ -42,6 +51,7 @@ export function TreeFilter({
   const [value, setValue] = useState('');
   const [found, setFound] = useState<number | null>(null);
   const rootRef = useRef<HTMLElement | null>(null);
+  const site = useSiteSearch(value);
 
   const root = useCallback((): HTMLElement | null => {
     if (!rootRef.current) rootRef.current = document.getElementById(targetId);
@@ -194,6 +204,18 @@ export function TreeFilter({
             ? labels.empty
             : labels.found.replace('{count}', String(found))}
       </p>
+
+      {/*
+        Everything else on the site that matches. Rendered below the tree rather
+        than mixed into it: those rows are this section, these results are the
+        rest of the site, and merging them would leave a reader unable to tell
+        which is which.
+      */}
+      <div className={styles.filterSite}>
+        <div className={searchStyles.results}>
+          <SearchResults data={site.data} loading={site.loading} query={value} />
+        </div>
+      </div>
     </div>
   );
 }

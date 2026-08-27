@@ -339,3 +339,26 @@ ul, ol {
     scroll-behavior: auto !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Search landing highlight
+
+   Painted by `SearchHighlight` on the page a search result opens: every
+   occurrence of the searched words is wrapped in a `<mark>` and the first one
+   is outlined and scrolled to. It lives here rather than in the search
+   component's own module because the elements it styles are created against
+   the page's markup, anywhere on the page, long after that module decided what
+   it was scoping.
+   -------------------------------------------------------------------------- */
+
+mark[data-rm-found] {
+  background: var(--lime);
+  color: var(--on-lime);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+mark[data-rm-found='first'] {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}

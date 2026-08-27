@@ -45,8 +45,13 @@ const FONT_SIZES = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48, 56, 64, 72, 88];
 */
 const EXTENSIONS = [
   StarterKit.configure({
-    // One `h1` per page already exists and belongs to the page itself.
-    heading: { levels: [2, 3, 4] },
+    /*
+      `h1` is offered too. A hand-written page brings its own and a second one
+      is a mistake — but a page the builder has taken over has no other source
+      for it, and refusing the level here left that page unable to state its
+      own subject. The SEO panel is what flags the duplicate case.
+    */
+    heading: { levels: [1, 2, 3, 4] },
     link: { openOnClick: false, autolink: true },
     codeBlock: false,
   }),
@@ -121,7 +126,7 @@ type ToolbarState = {
 
 function readState(editor: Editor): ToolbarState {
   const attrs = editor.getAttributes('textStyle') as { color?: string; fontSize?: string };
-  const heading = [2, 3, 4].find((level) => editor.isActive('heading', { level }));
+  const heading = [1, 2, 3, 4].find((level) => editor.isActive('heading', { level }));
   return {
     bold: editor.isActive('bold'),
     italic: editor.isActive('italic'),
@@ -197,9 +202,20 @@ export function TextToolbar({ editor, anchor }: { editor: Editor; anchor: HTMLEl
       ref={barRef}
       className={`${styles.root} ${styles.textbar}`}
       style={{ top: pos.top, left: pos.left }}
-      // Keep the selection alive: a mousedown on the bar would otherwise blur
-      // the editor and collapse the range the button is about to act on.
-      onMouseDown={(e) => e.preventDefault()}
+      /*
+        Keep the selection alive: a mousedown on the bar would otherwise blur
+        the editor and collapse the range the button is about to act on.
+
+        Form controls are the exception, and missing it cost the two dropdowns
+        entirely: opening a native `<select>` *is* the default action of its
+        mousedown, so cancelling it here left the block and font-size menus
+        looking present and doing nothing. They keep their own selection alive
+        by re-focusing the editor in the change handler instead.
+      */
+      onMouseDown={(e) => {
+        if ((e.target as HTMLElement).closest('select, input, textarea')) return;
+        e.preventDefault();
+      }}
     >
       <select
         className={styles.tselect}
@@ -207,10 +223,11 @@ export function TextToolbar({ editor, anchor }: { editor: Editor; anchor: HTMLEl
         onChange={(e) => {
           const value = e.target.value;
           if (value === 'p') chain().setParagraph().run();
-          else chain().setHeading({ level: Number(value.slice(1)) as 2 | 3 | 4 }).run();
+          else chain().setHeading({ level: Number(value.slice(1)) as 1 | 2 | 3 | 4 }).run();
         }}
       >
         <option value="p">Абзац</option>
+        <option value="h1">Заголовок H1</option>
         <option value="h2">Заголовок H2</option>
         <option value="h3">Заголовок H3</option>
         <option value="h4">Заголовок H4</option>

@@ -3,6 +3,7 @@ import { revalidatePath } from 'next/cache';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
 import { invalidateContentCache } from '@/lib/content';
+import { invalidateSearchIndex } from '@/lib/search';
 import { enforceRateLimit } from '@/lib/rate-limit';
 import { isLocale } from '@/i18n/config';
 
@@ -82,6 +83,9 @@ export async function PUT(request: Request): Promise<Response> {
   // would only ever appear after the next deploy. A key can be rendered by any
   // page, so the whole tree under the root layout is revalidated.
   revalidatePath('/', 'layout');
+  // Published copy is searchable copy: without this the index keeps the old
+  // wording until its TTL expires, and an admin cannot find what they just saved.
+  invalidateSearchIndex();
 
   return NextResponse.json({ ok: true });
 }

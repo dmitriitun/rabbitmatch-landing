@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { Metadata, Viewport } from 'next';
 import { notFound } from 'next/navigation';
 import { Onest } from 'next/font/google';
@@ -13,11 +14,12 @@ import { Footer } from '@/components/Footer/Footer';
 import { Header } from '@/components/Header/Header';
 import { JsonLd } from '@/components/JsonLd/JsonLd';
 import { AuthProvider } from '@/components/Providers/AuthProvider';
+import { SearchHighlight } from '@/components/Search/SearchHighlight';
 import { isLocale, locales, localeHreflang, type Locale } from '@/i18n/config';
 import { loadMessages, pickClientMessages } from '@/lib/messages';
 import { absoluteUrl, alternatesFor, siteName, siteUrl } from '@/lib/site';
 import { appNode, graph, organizationNode, webSiteNode } from '@/lib/structured-data';
-import { loadNavSections } from '@/lib/tree/store';
+import { loadCodePageChildren, loadNavSections } from '@/lib/tree/store';
 import '../globals.css';
 
 /**
@@ -118,7 +120,12 @@ export default async function LocaleLayout({
     prerenderable, and a change to the tree flushes it through
     `revalidatePath` the same way a content edit does.
   */
-  const sections = await loadNavSections(locale);
+  const [sections, codePageChildren] = await Promise.all([
+    loadNavSections(locale),
+    // Sub-pages an admin filed under a hand-written route, so those menu items
+    // can open onto them the same way a tree section does.
+    loadCodePageChildren(locale),
+  ]);
 
   const siteGraph = graph([
     organizationNode(locale as Locale, t('description')),
@@ -135,7 +142,7 @@ export default async function LocaleLayout({
         */}
         <NextIntlClientProvider locale={locale} messages={pickClientMessages(messages)}>
           <AuthProvider>
-            <Header sections={sections} />
+            <Header sections={sections} codePageChildren={codePageChildren} />
             {children}
             <Footer />
             <CookieConsent />
@@ -144,6 +151,15 @@ export default async function LocaleLayout({
             <BuilderLauncher />
             <AdminStatsBar />
             <PageViewTracker />
+            {/*
+              Reads the search query a result link carries and marks it up on
+              the page it opened. Wrapped in Suspense because it reads the
+              query string: without the boundary that read would opt every
+              page out of static rendering.
+            */}
+            <Suspense fallback={null}>
+              <SearchHighlight />
+            </Suspense>
           </AuthProvider>
         </NextIntlClientProvider>
         <JsonLd data={siteGraph} />

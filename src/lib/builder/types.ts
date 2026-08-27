@@ -17,14 +17,34 @@
  * rectangle pushes the rows below it instead of overlapping them.
  */
 
-export const BUILDER_VERSION = 1;
+/**
+ * 1 — the original grid: 12 columns, 24px rows.
+ * 2 — the same grid at half the pitch: 24 columns, 12px rows. A version 1
+ *     document is upgraded on read by doubling every coordinate, so an
+ *     existing page lands on exactly the pixels it already occupied and only
+ *     gains the stops in between.
+ */
+export const BUILDER_VERSION = 2;
 
-/** Desktop grid columns. 12 divides by 2, 3, 4 and 6 — every common layout. */
-export const COLS_DESKTOP = 12;
-/** Mobile grid columns. 4 gives full / half / quarter widths and no more. */
-export const COLS_MOBILE = 4;
+/**
+ * Desktop grid columns.
+ *
+ * 24 divides by 2, 3, 4, 6, 8 and 12 — every layout the old 12-column grid
+ * could express, plus the half-column offsets it could not. The finer pitch is
+ * the point: at 12 columns the smallest sideways nudge on a 1200px container
+ * was 100px, which is wider than most things anyone actually wants to move.
+ */
+export const COLS_DESKTOP = 24;
+/** Mobile grid columns. 8 gives full / half / quarter / eighth widths. */
+export const COLS_MOBILE = 8;
 /** Height of one row track, in px. The vertical quantum of the canvas. */
-export const ROW_H = 24;
+export const ROW_H = 12;
+/**
+ * How much finer version 2 is than version 1, per axis. Read by the upgrade in
+ * `normalize.ts`; kept here so the constants above and the migration that
+ * depends on them cannot drift apart.
+ */
+export const GRID_SCALE_V1_TO_V2 = 2;
 /** Viewport width at which the desktop grid takes over. Matches the CSS. */
 export const DESKTOP_BREAKPOINT = 768;
 

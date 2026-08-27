@@ -1,5 +1,6 @@
 import { Fragment, type CSSProperties, type ReactNode } from 'react';
 import {
+  COLS_DESKTOP,
   ROW_H,
   SECTION_MAX_WIDTH,
   type BuilderNode,
@@ -252,12 +253,15 @@ export function sectionClassName(section: BuilderSection, extra?: string): strin
 
 /* --- Media --------------------------------------------------------------- */
 
+/** Roughly one desktop column, in px, on a `wide` section. */
+const COL_PX = 1200 / COLS_DESKTOP;
+
 function aspectRatio(node: MediaNode): string {
   if (node.width && node.height) return `${node.width} / ${node.height}`;
   // No intrinsic size (an external URL, a video, an embed): fall back to the
-  // proportions of the rectangle the admin drew, treating a desktop column as
-  // roughly 100px so the phone gets a similar shape rather than a default.
-  const w = node.box.w * 100;
+  // proportions of the rectangle the admin drew, converting both spans to px
+  // so the phone gets a similar shape rather than a default.
+  const w = node.box.w * COL_PX;
   const h = node.box.h * ROW_H;
   return h > 0 ? `${w} / ${h}` : '16 / 9';
 }

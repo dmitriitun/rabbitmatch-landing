@@ -1,9 +1,17 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { BarChart3, ExternalLink, Loader, RefreshCw, X } from 'lucide-react';
+import { useLocale } from 'next-intl';
+import { BarChart3, ExternalLink, Gauge, Loader, RefreshCw, X } from 'lucide-react';
 import { useAuthOptional } from '@/components/Providers/AuthProvider';
-import type { AnalyticsSummary } from '@/lib/analytics';
+import { usePathname } from '@/i18n/navigation';
+import {
+  ANALYTICS_RANGES,
+  DEFAULT_RANGE,
+  type AnalyticsRange,
+  type AnalyticsSummary,
+} from '@/lib/analytics-shared';
+import { SeoAudit } from './SeoAudit';
 import styles from './stats.module.css';
 
 /**
@@ -23,6 +31,15 @@ const REFRESH_MS = 60_000;
 
 const nf = new Intl.NumberFormat('ru-RU');
 
+const RANGE_LABEL: Record<AnalyticsRange, string> = {
+  7: '7 дней',
+  30: '30 дней',
+  90: '90 дней',
+  365: 'Год',
+};
+
+type Tab = 'traffic' | 'seo';
+
 function delta(now: number, before: number): { text: string; up: boolean } | null {
   if (!before) return null;
   const change = Math.round(((now - before) / before) * 100);
@@ -33,8 +50,12 @@ function delta(now: number, before: number): { text: string; up: boolean } | nul
 export function AdminStatsBar() {
   const auth = useAuthOptional();
   const isAdmin = auth?.user?.isAdmin === true;
+  const locale = useLocale();
+  const pathname = usePathname();
 
   const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<Tab>('traffic');
+  const [range, setRange] = useState<AnalyticsRange>(DEFAULT_RANGE);
   const [data, setData] = useState<AnalyticsSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -42,7 +63,9 @@ export function AdminStatsBar() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/analytics/summary', { credentials: 'same-origin' });
+      const res = await fetch(`/api/analytics/summary?range=${range}`, {
+        credentials: 'same-origin',
+      });
       if (!res.ok) throw new Error(String(res.status));
       const body = (await res.json()) as { summary: AnalyticsSummary };
       setData(body.summary);
@@ -52,7 +75,7 @@ export function AdminStatsBar() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [range]);
 
   /*
     The pill shows today's count, so the first fetch happens as soon as an
@@ -61,9 +84,12 @@ export function AdminStatsBar() {
     an aggregate over the traffic table is the last thing that should compete
     with it.
 
-    Refreshing on a timer only runs while the panel is open. A closed pill does
-    not need to be live, and the query behind it is the most expensive read in
-    the app.
+    Changing the range refetches through the same effect, because `load` is
+    keyed to it.
+
+    Refreshing on a timer only runs while the panel is open on the traffic tab.
+    A closed pill does not need to be live, and the query behind it is the most
+    expensive read in the app.
   */
   useEffect(() => {
     if (!isAdmin) return;
@@ -72,10 +98,10 @@ export function AdminStatsBar() {
   }, [isAdmin, load]);
 
   useEffect(() => {
-    if (!isAdmin || !open) return;
+    if (!isAdmin || !open || tab !== 'traffic') return;
     const timer = setInterval(() => void load(), REFRESH_MS);
     return () => clearInterval(timer);
-  }, [isAdmin, load, open]);
+  }, [isAdmin, load, open, tab]);
 
   if (!isAdmin) return null;
 
@@ -84,27 +110,29 @@ export function AdminStatsBar() {
 
   return (
     <div className={styles.root}>
-      {open && data ? (
+      {open ? (
         <section className={styles.panel} aria-label="Статистика сайта">
           <header className={styles.head}>
             <BarChart3 size={15} aria-hidden="true" />
             <strong>Статистика сайта</strong>
-            {data.online > 0 ? (
+            {data && data.online > 0 ? (
               <span className={styles.live}>
                 <span className={styles.liveDot} aria-hidden="true" />
                 {nf.format(data.online)} сейчас
               </span>
             ) : null}
             <span className={styles.spacer} />
-            <button
-              type="button"
-              className={styles.iconBtn}
-              onClick={() => void load()}
-              disabled={loading}
-              title="Обновить"
-            >
-              {loading ? <Loader size={14} /> : <RefreshCw size={14} />}
-            </button>
+            {tab === 'traffic' ? (
+              <button
+                type="button"
+                className={styles.iconBtn}
+                onClick={() => void load()}
+                disabled={loading}
+                title="Обновить"
+              >
+                {loading ? <Loader size={14} /> : <RefreshCw size={14} />}
+              </button>
+            ) : null}
             <button
               type="button"
               className={styles.iconBtn}
@@ -115,60 +143,109 @@ export function AdminStatsBar() {
             </button>
           </header>
 
-          <div className={styles.body}>
-            {!data.available ? (
-              <p className={styles.note}>
-                База аналитики недоступна — цифры появятся, как только соединение вернётся.
-              </p>
-            ) : null}
-
-            <div className={styles.tiles}>
-              <Tile label="Сегодня" totals={data.today} trend={trend} />
-              <Tile label="Вчера" totals={data.yesterday} />
-              <Tile label="7 дней" totals={data.week} />
-              <Tile label="30 дней" totals={data.month} />
-            </div>
-
-            <Sparkline daily={data.daily} />
-
-            <Column
-              title="Страницы"
-              empty="Пока ни одного просмотра."
-              rows={data.topPaths.map((row) => ({
-                key: row.path,
-                label: row.path,
-                href: row.path,
-                value: `${nf.format(row.views)} / ${nf.format(row.visitors)}`,
-              }))}
-              hint="просмотры / посетители"
-            />
-
-            <Column
-              title="Источники"
-              empty="Все заходы прямые — по ссылке или из закладок."
-              rows={data.topReferrers.map((row) => ({
-                key: row.host,
-                label: row.host,
-                value: nf.format(row.views),
-              }))}
-            />
-
-            <Column
-              title="Материалы"
-              empty="Счётчики статей начнут считать после первых заходов."
-              rows={data.topArticles.map((row) => ({
-                key: row.path,
-                label: row.title,
-                href: row.path,
-                value: nf.format(row.views),
-              }))}
-            />
-
-            <p className={styles.foot}>
-              Без cookie: посетитель определяется дневным хешем IP и браузера. Заходы админов не
-              считаются.
-            </p>
+          <div className={styles.tabs} role="tablist">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'traffic'}
+              className={`${styles.tab} ${tab === 'traffic' ? styles.tabOn : ''}`}
+              onClick={() => setTab('traffic')}
+            >
+              <BarChart3 size={13} aria-hidden="true" />
+              Трафик
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === 'seo'}
+              className={`${styles.tab} ${tab === 'seo' ? styles.tabOn : ''}`}
+              onClick={() => setTab('seo')}
+            >
+              <Gauge size={13} aria-hidden="true" />
+              SEO и AI
+            </button>
           </div>
+
+          {tab === 'seo' ? (
+            <SeoAudit path={pathname || '/'} locale={locale} />
+          ) : !data ? (
+            <div className={styles.body}>
+              <p className={styles.note}>{failed ? 'Статистика недоступна.' : 'Загружаю…'}</p>
+            </div>
+          ) : (
+            <div className={styles.body}>
+              {!data.available ? (
+                <p className={styles.note}>
+                  База аналитики недоступна — цифры появятся, как только соединение вернётся.
+                </p>
+              ) : null}
+
+              <div className={styles.ranges} role="group" aria-label="Период">
+                {ANALYTICS_RANGES.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    aria-pressed={range === option}
+                    className={`${styles.rangeBtn} ${range === option ? styles.rangeOn : ''}`}
+                    onClick={() => setRange(option)}
+                  >
+                    {RANGE_LABEL[option]}
+                  </button>
+                ))}
+              </div>
+
+              <div className={styles.tiles}>
+                <Tile label="Сегодня" totals={data.today} trend={trend} />
+                <Tile label="Вчера" totals={data.yesterday} />
+                <Tile label="7 дней" totals={data.week} />
+                <Tile label="30 дней" totals={data.month} />
+                <Tile label="Год" totals={data.year} />
+                <Tile label={RANGE_LABEL[data.range]} totals={data.selected} />
+              </div>
+
+              <Chart summary={data} />
+
+              <Column
+                title="Страницы"
+                empty="Пока ни одного просмотра."
+                rows={data.topPaths.map((row) => ({
+                  key: row.path,
+                  label: row.path,
+                  href: row.path,
+                  value: `${nf.format(row.views)} / ${nf.format(row.visitors)}`,
+                }))}
+                hint="просмотры / посетители"
+              />
+
+              <Column
+                title="Источники"
+                empty="Все заходы прямые — по ссылке или из закладок."
+                rows={data.topReferrers.map((row) => ({
+                  key: row.host,
+                  label: row.host,
+                  value: nf.format(row.views),
+                }))}
+              />
+
+              <Column
+                title="Материалы"
+                empty="Счётчики статей начнут считать после первых заходов."
+                rows={data.topArticles.map((row) => ({
+                  key: row.path,
+                  label: row.title,
+                  href: row.path,
+                  value: nf.format(row.views),
+                }))}
+                hint="за всё время"
+              />
+
+              <p className={styles.foot}>
+                Без cookie: посетитель определяется дневным хешем IP и браузера. Заходы админов не
+                считаются. История хранится {nf.format(data.retentionDays)} дней — год с запасом,
+                поэтому сезонность видно целиком.
+              </p>
+            </div>
+          )}
         </section>
       ) : null}
 
@@ -220,28 +297,51 @@ function Tile({
   );
 }
 
+const MONTHS = [
+  'янв', 'фев', 'мар', 'апр', 'май', 'июн',
+  'июл', 'авг', 'сен', 'окт', 'ноя', 'дек',
+];
+
+/** `2026-08-27` → `27.08`, `2026-08` → `авг 26`. */
+function bucketLabel(key: string, unit: 'day' | 'month'): string {
+  if (unit === 'month') {
+    const [year, month] = key.split('-');
+    return `${MONTHS[Number(month) - 1] ?? month} ${year.slice(2)}`;
+  }
+  const [, month, day] = key.split('-');
+  return `${day}.${month}`;
+}
+
 /**
- * Thirty days of traffic as bars.
+ * The selected window as bars.
  *
- * Heights are a share of the busiest day rather than an absolute scale: the
+ * Heights are a share of the busiest bucket rather than an absolute scale: the
  * question this answers is "is it growing", and a fixed scale would flatten
  * every week that is not the record one into the same stub.
  */
-function Sparkline({ daily }: { daily: AnalyticsSummary['daily'] }) {
-  if (!daily.length) return null;
-  const peak = daily.reduce((max, day) => Math.max(max, day.views), 0);
+function Chart({ summary }: { summary: AnalyticsSummary }) {
+  const { series, seriesUnit } = summary;
+  if (!series.length) return null;
+  const peak = series.reduce((max, point) => Math.max(max, point.views), 0);
   if (!peak) return null;
 
   return (
-    <div className={styles.chart} aria-hidden="true">
-      {daily.map((day) => (
-        <span
-          key={day.day}
-          className={styles.bar}
-          style={{ height: `${Math.max(3, Math.round((day.views / peak) * 100))}%` }}
-          title={`${day.day}: ${nf.format(day.views)} просмотров, ${nf.format(day.visitors)} посетителей`}
-        />
-      ))}
+    <div>
+      <div className={styles.chart}>
+        {series.map((point) => (
+          <span
+            key={point.key}
+            className={styles.bar}
+            style={{ height: `${Math.max(3, Math.round((point.views / peak) * 100))}%` }}
+            title={`${bucketLabel(point.key, seriesUnit)}: ${nf.format(point.views)} просмотров, ${nf.format(point.visitors)} посетителей`}
+          />
+        ))}
+      </div>
+      <div className={styles.chartAxis} aria-hidden="true">
+        <span>{bucketLabel(series[0].key, seriesUnit)}</span>
+        <span>пик: {nf.format(peak)}</span>
+        <span>{bucketLabel(series[series.length - 1].key, seriesUnit)}</span>
+      </div>
     </div>
   );
 }

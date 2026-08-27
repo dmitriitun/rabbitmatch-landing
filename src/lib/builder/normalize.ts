@@ -2,6 +2,7 @@ import {
   BUILDER_VERSION,
   COLS_DESKTOP,
   COLS_MOBILE,
+  GRID_SCALE_V1_TO_V2,
   SLOTS,
   type Box,
   type BuilderDoc,
@@ -317,22 +318,37 @@ export function richToPlain(doc: RichDoc | undefined): string {
 
 /* --- Geometry ------------------------------------------------------------ */
 
-function normalizeBox(input: unknown): Box {
+/**
+ * Grid coordinates, in whatever pitch the stored document was written for.
+ *
+ * `scale` is 2 for a version 1 document and 1 for a current one. It has to be
+ * applied *before* the clamps, not after: a v1 box at column 10 of 12 is
+ * column 20 of 24, but clamping it to the v2 grid first would pin it at 23 and
+ * then double it into nonsense. Scaling first is what makes the upgrade
+ * invisible — every existing page keeps the exact pixels it had.
+ */
+function grid(value: unknown, scale: number, min: number, max: number, fallback: number): number {
+  const n = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, Math.round(n * scale)));
+}
+
+function normalizeBox(input: unknown, scale: number): Box {
   const raw = (input ?? {}) as Record<string, unknown>;
-  const x = num(raw.x, 0, COLS_DESKTOP - 1, 0);
-  const w = num(raw.w, 1, COLS_DESKTOP - x, Math.min(COLS_DESKTOP - x, COLS_DESKTOP));
+  const x = grid(raw.x, scale, 0, COLS_DESKTOP - 1, 0);
+  const w = grid(raw.w, scale, 1, COLS_DESKTOP - x, Math.min(COLS_DESKTOP - x, COLS_DESKTOP));
   return {
     x,
-    y: num(raw.y, 0, 400, 0),
+    y: grid(raw.y, scale, 0, 800, 0),
     w,
-    h: num(raw.h, 1, 200, 4),
+    h: grid(raw.h, scale, 1, 400, 8),
   };
 }
 
-function normalizeMobile(input: unknown, fallbackW = COLS_MOBILE): MobileBox {
+function normalizeMobile(input: unknown, scale: number, fallbackW = COLS_MOBILE): MobileBox {
   const raw = (input ?? {}) as Record<string, unknown>;
   return {
-    w: num(raw.w, 1, COLS_MOBILE, fallbackW),
+    w: grid(raw.w, scale, 1, COLS_MOBILE, fallbackW),
     align: pick(raw.align, ['start', 'center', 'end'] as const, 'start'),
     hidden: raw.hidden === true,
   };
@@ -369,13 +385,13 @@ function normalizeBoxStyle(input: unknown): NodeBoxStyle | undefined {
   return Object.values(style).some((v) => v !== undefined) ? style : undefined;
 }
 
-function normalizeNode(input: unknown): BuilderNode | null {
+function normalizeNode(input: unknown, scale: number): BuilderNode | null {
   if (!input || typeof input !== 'object') return null;
   const raw = input as Record<string, unknown>;
   const base = {
     id: safeId(raw.id, 'n'),
-    box: normalizeBox(raw.box),
-    mobile: normalizeMobile(raw.mobile),
+    box: normalizeBox(raw.box, scale),
+    mobile: normalizeMobile(raw.mobile, scale),
     hiddenDesktop: bool(raw.hiddenDesktop),
     valign: pick(raw.valign, VALIGNS, 'start'),
     boxStyle: normalizeBoxStyle(raw.boxStyle),
@@ -469,11 +485,14 @@ function normalizeBackground(input: unknown): SectionBackground {
 const DEFAULT_PAD: Sides = { top: 72, bottom: 72, left: 20, right: 20 };
 const DEFAULT_PAD_MOBILE: Sides = { top: 40, bottom: 40, left: 20, right: 20 };
 
-function normalizeSection(input: unknown): BuilderSection | null {
+function normalizeSection(input: unknown, scale: number): BuilderSection | null {
   if (!input || typeof input !== 'object') return null;
   const raw = input as Record<string, unknown>;
   const nodes = Array.isArray(raw.nodes)
-    ? (raw.nodes.slice(0, 120).map(normalizeNode).filter(Boolean) as BuilderNode[])
+    ? (raw.nodes
+        .slice(0, 120)
+        .map((node) => normalizeNode(node, scale))
+        .filter(Boolean) as BuilderNode[])
     : [];
 
   return {
@@ -499,10 +518,25 @@ function normalizeSection(input: unknown): BuilderSection | null {
 }
 
 export function normalizeDoc(input: unknown): BuilderDoc {
-  const raw = (input ?? {}) as { sections?: unknown; takeover?: unknown };
+  const raw = (input ?? {}) as { version?: unknown; sections?: unknown; takeover?: unknown };
   if (!Array.isArray(raw.sections)) return { version: BUILDER_VERSION, sections: [] };
 
-  const sections = raw.sections.slice(0, 60).map(normalizeSection).filter(Boolean) as BuilderSection[];
+  /*
+    The grid upgrade, applied on the way in.
+
+    A document is stored at whatever version wrote it and normalised to the
+    current one on every read, so the migration lives here rather than in a SQL
+    `UPDATE`: nothing has to be rewritten in place, a document that has not been
+    opened since the change still renders correctly, and the row is only written
+    back at the new version the next time an admin saves it.
+  */
+  const version = Number(raw.version);
+  const scale = Number.isFinite(version) && version >= 2 ? 1 : GRID_SCALE_V1_TO_V2;
+
+  const sections = raw.sections
+    .slice(0, 60)
+    .map((section) => normalizeSection(section, scale))
+    .filter(Boolean) as BuilderSection[];
 
   return {
     version: BUILDER_VERSION,

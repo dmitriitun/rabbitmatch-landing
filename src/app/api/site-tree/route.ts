@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
+import { invalidateSearchIndex } from '@/lib/search';
 import { getSession } from '@/lib/auth';
 import { locales, type Locale } from '@/i18n/config';
 import {
   createNode,
   deleteNode,
+  ensureCodePageNode,
   loadNodes,
   moveNode,
   TreeConflict,
@@ -72,6 +74,9 @@ function conflictResponse(err: unknown): NextResponse {
  */
 function flush(): void {
   revalidatePath('/', 'layout');
+  // Published copy is searchable copy: without this the index keeps the old
+  // wording until its TTL expires, and an admin cannot find what they just saved.
+  invalidateSearchIndex();
 }
 
 export async function GET(): Promise<Response> {
@@ -96,6 +101,24 @@ export async function POST(request: Request): Promise<Response> {
   const titles = localeText(body.titles) ?? {};
   if (!locales.some((locale) => titles[locale])) {
     return NextResponse.json({ error: 'title_required' }, { status: 400 });
+  }
+
+  /*
+    Attaching the tree to a hand-written route.
+
+    Separate from the ordinary create because it is idempotent and because it
+    is the one path allowed to take a reserved slug. The manager calls it right
+    before adding the first sub-page under, say, "Игрокам"; every call after
+    that just hands the same row back.
+  */
+  if (body.action === 'attach-code-page') {
+    try {
+      const node = await ensureCodePageNode(String(body.slug ?? ''), titles, auth.uid);
+      flush();
+      return NextResponse.json({ node });
+    } catch (err) {
+      return conflictResponse(err);
+    }
   }
 
   try {

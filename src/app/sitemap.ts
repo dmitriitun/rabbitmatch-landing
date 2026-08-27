@@ -44,6 +44,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     stale a week later.
   */
   for (const node of flatten(await loadTree())) {
+    // A code-page anchor is a parent for sub-pages, not a page: `/players` is
+    // already in the loop above, from `routeOrder`.
+    if (node.codePage) continue;
     for (const locale of locales) {
       entries.push({
         url: absoluteUrl(locale, node.path),

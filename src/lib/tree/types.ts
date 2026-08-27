@@ -44,6 +44,20 @@ export type SiteNode = {
   inNav: boolean;
   hidden: boolean;
   openByDefault: boolean;
+  /**
+   * This node stands for a page that exists in `app/`, and holds sub-pages
+   * under it.
+   *
+   * `/players` is a route with its own file, and the router will always answer
+   * it — this row never renders. What it does is give the tree somewhere to
+   * hang `/players/kak-vybrat-raketku`, which nothing in `app/` can express,
+   * and give that page a breadcrumb trail that leads back to the real one.
+   *
+   * The distinction is load-bearing in three places: a code page must not go
+   * into the sitemap twice, must not appear in the header menu twice, and must
+   * never have its slug edited — the slug is the route.
+   */
+  codePage: boolean;
   views: number;
   updatedAt: string | null;
 };
@@ -75,10 +89,38 @@ export type NavSection = {
 export const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 /**
+ * Hand-written pages that can host tree children.
+ *
+ * These are the audience pages: the ones an admin will want to grow a guide
+ * section under ("Игрокам" → "Как выбрать ракетку"). `/legal` and the API are
+ * deliberately absent — nothing belongs under them.
+ *
+ * The order is the order of the header menu, so the tree manager lists them
+ * the way the site does.
+ */
+export const CODE_PAGE_SLUGS = [
+  'players',
+  'organizers',
+  'coaches',
+  'venues',
+  'padel',
+  'pricing',
+  'faq',
+] as const;
+
+export type CodePageSlug = (typeof CODE_PAGE_SLUGS)[number];
+
+export function isCodePageSlug(value: string): value is CodePageSlug {
+  return (CODE_PAGE_SLUGS as readonly string[]).includes(value);
+}
+
+/**
  * First segments that belong to code rather than to the tree.
  *
  * A node may still be created with one of these as a *deep* slug — only the
- * top level collides with a real route.
+ * top level collides with a real route. The exception is a code-page anchor
+ * (see `SiteNode.codePage`), which is deliberately created *on* the collision
+ * so that the route and its sub-pages share one path prefix.
  */
 export const RESERVED_SLUGS = new Set([
   'api',

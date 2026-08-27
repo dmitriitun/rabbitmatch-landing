@@ -14,6 +14,7 @@ import {
 import {
   COLS_DESKTOP,
   COLS_MOBILE,
+  ROW_H,
   type BuilderNode,
   type BuilderSection,
   type MediaNode,
@@ -173,10 +174,10 @@ function NodeInspector({
         </div>
         <div className={styles.row}>
           <Field label="Ряд">
-            <NumberInput value={node.box.y} min={0} max={400} onChange={(y) => patch({ box: { ...node.box, y } })} />
+            <NumberInput value={node.box.y} min={0} max={800} onChange={(y) => patch({ box: { ...node.box, y } })} />
           </Field>
-          <Field label="Высота, рядов по 24px">
-            <NumberInput value={node.box.h} min={1} max={200} onChange={(h) => patch({ box: { ...node.box, h } })} />
+          <Field label={`Высота, рядов по ${ROW_H}px`}>
+            <NumberInput value={node.box.h} min={1} max={400} onChange={(h) => patch({ box: { ...node.box, h } })} />
           </Field>
         </div>
         <Field label="Содержимое по вертикали">

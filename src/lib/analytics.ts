@@ -2,6 +2,13 @@ import 'server-only';
 import { createHash } from 'node:crypto';
 import { query } from './db';
 import { locales } from '@/i18n/config';
+import {
+  DEFAULT_RANGE,
+  type AnalyticsRange,
+  type AnalyticsSummary,
+  type SeriesPoint,
+  type Totals,
+} from './analytics-shared';
 
 /**
  * Traffic statistics, without a tracking cookie.
@@ -121,15 +128,22 @@ export async function recordHit(hit: HitInput): Promise<boolean> {
 /**
  * Retention, run at most once a day per process.
  *
- * Without it the table is the one thing in this app that grows forever, and
- * the panel never looks further back than 30 days anyway. Failures are
- * swallowed: a prune that did not run is not a reason to fail a page view.
+ * Without it the table is the one thing in this app that grows forever.
+ * The window is a year plus five weeks: the panel's longest range is twelve
+ * months, and the slack is what keeps "the last 12 months" from losing its
+ * oldest month the moment the calendar turns over.
+ *
+ * Failures are swallowed: a prune that did not run is not a reason to fail a
+ * page view.
  */
 declare global {
   var __rmLastPrune: number | undefined;
 }
 
-const RETENTION_DAYS = Number(process.env.ANALYTICS_RETENTION_DAYS ?? 180);
+export const RETENTION_DAYS = Math.max(
+  1,
+  Number(process.env.ANALYTICS_RETENTION_DAYS ?? 400) || 400,
+);
 const DAY_MS = 86_400_000;
 
 async function prune(): Promise<void> {
@@ -145,50 +159,91 @@ async function prune(): Promise<void> {
 
 /* --- Reporting ----------------------------------------------------------- */
 
-export type Totals = { views: number; visitors: number };
-
-export type AnalyticsSummary = {
-  online: number;
-  today: Totals;
-  yesterday: Totals;
-  week: Totals;
-  month: Totals;
-  /** One entry per day, oldest first, gaps filled with zeroes. */
-  daily: Array<{ day: string; views: number; visitors: number }>;
-  topPaths: Array<{ path: string; views: number; visitors: number }>;
-  topReferrers: Array<{ host: string; views: number }>;
-  topArticles: Array<{ path: string; title: string; views: number }>;
-  /** False when the analytics table is unreachable — the panel says so. */
-  available: boolean;
-};
+/*
+  The report's shape lives in `lib/analytics-shared.ts`, because the admin panel
+  is a client component and this module is not importable from the browser.
+  Re-exported here so server callers have one import to reach for.
+*/
+export {
+  ANALYTICS_RANGES,
+  DEFAULT_RANGE,
+  toRange,
+  type AnalyticsRange,
+  type AnalyticsSummary,
+  type SeriesPoint,
+  type Totals,
+} from './analytics-shared';
 
 function num(value: unknown): number {
   const n = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(n) ? n : 0;
 }
 
-const EMPTY: AnalyticsSummary = {
-  online: 0,
-  today: { views: 0, visitors: 0 },
-  yesterday: { views: 0, visitors: 0 },
-  week: { views: 0, visitors: 0 },
-  month: { views: 0, visitors: 0 },
-  daily: [],
-  topPaths: [],
-  topReferrers: [],
-  topArticles: [],
-  available: false,
-};
+const NO_TOTALS: Totals = { views: 0, visitors: 0 };
 
-const SERIES_DAYS = 30;
+function emptySummary(range: AnalyticsRange): AnalyticsSummary {
+  return {
+    range,
+    online: 0,
+    today: NO_TOTALS,
+    yesterday: NO_TOTALS,
+    week: NO_TOTALS,
+    month: NO_TOTALS,
+    year: NO_TOTALS,
+    selected: NO_TOTALS,
+    series: [],
+    seriesUnit: range === 365 ? 'month' : 'day',
+    topPaths: [],
+    topReferrers: [],
+    topArticles: [],
+    retentionDays: RETENTION_DAYS,
+    available: false,
+  };
+}
 
-export async function analyticsSummary(): Promise<AnalyticsSummary> {
+/** `date_trunc(...)::date` arrives as a Date on some drivers and a string on others. */
+function dayKey(value: Date | string): string {
+  return value instanceof Date ? value.toISOString().slice(0, 10) : String(value).slice(0, 10);
+}
+
+/** The last `count` day keys ending today, oldest first. */
+function dayAxis(count: number): string[] {
+  const start = new Date();
+  start.setUTCHours(0, 0, 0, 0);
+  const out: string[] = [];
+  for (let i = count - 1; i >= 0; i -= 1) {
+    out.push(new Date(start.getTime() - i * DAY_MS).toISOString().slice(0, 10));
+  }
+  return out;
+}
+
+/** The last twelve month keys ending this month, oldest first. */
+function monthAxis(): string[] {
+  const now = new Date();
+  const out: string[] = [];
+  for (let i = 11; i >= 0; i -= 1) {
+    const month = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() - i, 1));
+    out.push(month.toISOString().slice(0, 7));
+  }
+  return out;
+}
+
+/**
+ * Everything the admin panel shows, for one window.
+ *
+ * Four queries rather than a dozen: the fixed windows — today, yesterday, 7d,
+ * 30d, 365d, the selected range and who is on the site right now — all come
+ * out of a single scan with `FILTER`, and the chart, the page ranking and the
+ * referrer ranking are one aggregate each. That first scan now covers a year
+ * instead of a month, which is why the panel only refreshes on a timer while
+ * it is actually open.
+ */
+export async function analyticsSummary(
+  range: AnalyticsRange = DEFAULT_RANGE,
+): Promise<AnalyticsSummary> {
+  const byMonth = range === 365;
+
   try {
-    /*
-      One scan for every window rather than five queries: the aggregate is
-      already reading the last 30 days, and `FILTER` narrows each column out
-      of the same pass.
-    */
     const totals = await query<Record<string, string>>(`
       SELECT
         COUNT(*) FILTER (WHERE created_at >= date_trunc('day', NOW())) AS today_views,
@@ -199,27 +254,43 @@ export async function analyticsSummary(): Promise<AnalyticsSummary> {
                            AND created_at < date_trunc('day', NOW())) AS yday_visitors,
         COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') AS week_views,
         COUNT(DISTINCT visitor) FILTER (WHERE created_at >= NOW() - INTERVAL '7 days') AS week_visitors,
-        COUNT(*) AS month_views,
-        COUNT(DISTINCT visitor) AS month_visitors,
+        COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '30 days') AS month_views,
+        COUNT(DISTINCT visitor) FILTER (WHERE created_at >= NOW() - INTERVAL '30 days') AS month_visitors,
+        COUNT(*) AS year_views,
+        COUNT(DISTINCT visitor) AS year_visitors,
+        COUNT(*) FILTER (WHERE created_at >= NOW() - INTERVAL '${range} days') AS sel_views,
+        COUNT(DISTINCT visitor) FILTER (WHERE created_at >= NOW() - INTERVAL '${range} days') AS sel_visitors,
         COUNT(DISTINCT visitor) FILTER (WHERE created_at >= NOW() - INTERVAL '5 minutes') AS online
       FROM page_views
-      WHERE created_at >= NOW() - INTERVAL '${SERIES_DAYS} days'
+      WHERE created_at >= NOW() - INTERVAL '365 days'
     `);
 
-    const daily = await query<{ day: Date | string; views: string; visitors: string }>(`
-      SELECT date_trunc('day', created_at)::date AS day,
-             COUNT(*) AS views,
-             COUNT(DISTINCT visitor) AS visitors
-      FROM page_views
-      WHERE created_at >= date_trunc('day', NOW()) - INTERVAL '${SERIES_DAYS - 1} days'
-      GROUP BY 1
-      ORDER BY 1
-    `);
+    const buckets = await query<{ bucket: Date | string; views: string; visitors: string }>(
+      byMonth
+        ? `
+          SELECT date_trunc('month', created_at)::date AS bucket,
+                 COUNT(*) AS views,
+                 COUNT(DISTINCT visitor) AS visitors
+          FROM page_views
+          WHERE created_at >= date_trunc('month', NOW()) - INTERVAL '11 months'
+          GROUP BY 1
+          ORDER BY 1
+        `
+        : `
+          SELECT date_trunc('day', created_at)::date AS bucket,
+                 COUNT(*) AS views,
+                 COUNT(DISTINCT visitor) AS visitors
+          FROM page_views
+          WHERE created_at >= date_trunc('day', NOW()) - INTERVAL '${range - 1} days'
+          GROUP BY 1
+          ORDER BY 1
+        `,
+    );
 
     const paths = await query<{ path: string; views: string; visitors: string }>(`
       SELECT path, COUNT(*) AS views, COUNT(DISTINCT visitor) AS visitors
       FROM page_views
-      WHERE created_at >= NOW() - INTERVAL '${SERIES_DAYS} days'
+      WHERE created_at >= NOW() - INTERVAL '${range} days'
       GROUP BY path
       ORDER BY views DESC
       LIMIT 12
@@ -228,7 +299,7 @@ export async function analyticsSummary(): Promise<AnalyticsSummary> {
     const referrers = await query<{ host: string; views: string }>(`
       SELECT referrer_host AS host, COUNT(*) AS views
       FROM page_views
-      WHERE created_at >= NOW() - INTERVAL '${SERIES_DAYS} days' AND referrer_host IS NOT NULL
+      WHERE created_at >= NOW() - INTERVAL '${range} days' AND referrer_host IS NOT NULL
       GROUP BY host
       ORDER BY views DESC
       LIMIT 8
@@ -244,28 +315,26 @@ export async function analyticsSummary(): Promise<AnalyticsSummary> {
 
     const row = totals.rows[0] ?? {};
 
-    const byDay = new Map<string, { views: number; visitors: number }>();
-    for (const entry of daily.rows) {
-      const key =
-        entry.day instanceof Date ? entry.day.toISOString().slice(0, 10) : String(entry.day).slice(0, 10);
-      byDay.set(key, { views: num(entry.views), visitors: num(entry.visitors) });
+    const found = new Map<string, Totals>();
+    for (const entry of buckets.rows) {
+      const key = byMonth ? dayKey(entry.bucket).slice(0, 7) : dayKey(entry.bucket);
+      found.set(key, { views: num(entry.views), visitors: num(entry.visitors) });
     }
 
-    const series: AnalyticsSummary['daily'] = [];
-    const start = new Date();
-    start.setUTCHours(0, 0, 0, 0);
-    for (let i = SERIES_DAYS - 1; i >= 0; i -= 1) {
-      const day = new Date(start.getTime() - i * DAY_MS).toISOString().slice(0, 10);
-      series.push({ day, ...(byDay.get(day) ?? { views: 0, visitors: 0 }) });
-    }
+    const axis = byMonth ? monthAxis() : dayAxis(range);
+    const series: SeriesPoint[] = axis.map((key) => ({ key, ...(found.get(key) ?? NO_TOTALS) }));
 
     return {
+      range,
       online: num(row.online),
       today: { views: num(row.today_views), visitors: num(row.today_visitors) },
       yesterday: { views: num(row.yday_views), visitors: num(row.yday_visitors) },
       week: { views: num(row.week_views), visitors: num(row.week_visitors) },
       month: { views: num(row.month_views), visitors: num(row.month_visitors) },
-      daily: series,
+      year: { views: num(row.year_views), visitors: num(row.year_visitors) },
+      selected: { views: num(row.sel_views), visitors: num(row.sel_visitors) },
+      series,
+      seriesUnit: byMonth ? 'month' : 'day',
       topPaths: paths.rows.map((r) => ({
         path: r.path,
         views: num(r.views),
@@ -277,13 +346,14 @@ export async function analyticsSummary(): Promise<AnalyticsSummary> {
         title: articleTitle(r.titles, r.path),
         views: num(r.views),
       })),
+      retentionDays: RETENTION_DAYS,
       available: true,
     };
   } catch (err) {
     if (process.env.NODE_ENV !== 'production') {
       console.warn('[analytics] summary unavailable', err);
     }
-    return EMPTY;
+    return emptySummary(range);
   }
 }
 

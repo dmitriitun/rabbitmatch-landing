@@ -5,6 +5,7 @@ import { locales, type Locale } from '@/i18n/config';
 import {
   buildTree,
   childPath,
+  isCodePageSlug,
   RESERVED_SLUGS,
   SLUG_RE,
   nodeSummary,
@@ -43,6 +44,7 @@ type Row = {
   in_nav: boolean;
   hidden: boolean;
   open_by_default: boolean;
+  code_page: boolean;
   views: string | number;
   updated_at: Date | string | null;
 };
@@ -87,6 +89,7 @@ function toNode(row: Row): SiteNode {
     inNav: row.in_nav === true,
     hidden: row.hidden === true,
     openByDefault: row.open_by_default === true,
+    codePage: row.code_page === true,
     views: int(row.views),
     updatedAt: row.updated_at instanceof Date ? row.updated_at.toISOString() : row.updated_at,
   };
@@ -94,7 +97,7 @@ function toNode(row: Row): SiteNode {
 
 const SELECT = `
   SELECT id, parent_id, slug, path, kind, titles, summaries, position,
-         in_nav, hidden, open_by_default, views, updated_at
+         in_nav, hidden, open_by_default, code_page, views, updated_at
   FROM site_nodes
   ORDER BY position, id
 `;
@@ -132,7 +135,61 @@ export async function loadTree(includeHidden = false): Promise<TreeNode[]> {
 /** Top-level nodes flagged for the header, with one level of children. */
 export async function loadNavTree(): Promise<TreeNode[]> {
   const tree = await loadTree();
-  return tree.filter((node) => node.inNav);
+  return tree.filter((node) => node.inNav && !node.codePage);
+}
+
+/**
+ * Sub-pages hanging off the hand-written routes, keyed by route path.
+ *
+ * The header renders those routes from a static list — they are files, not
+ * rows — so their dropdowns cannot come from `loadNavSections`. This is the
+ * one extra lookup that makes "Игрокам" open onto the guides an admin filed
+ * under it, and it costs nothing when nobody has filed any: the tree is
+ * already in memory and the result is an empty object.
+ */
+export async function loadCodePageChildren(
+  locale: Locale,
+): Promise<Record<string, NavSection['children']>> {
+  const tree = await loadTree();
+  const out: Record<string, NavSection['children']> = {};
+
+  for (const node of tree) {
+    if (!node.codePage || !node.children.length) continue;
+    out[node.path] = node.children.slice(0, NAV_CHILDREN).map((child) => ({
+      path: child.path,
+      title: nodeTitle(child, locale),
+      summary: nodeSummary(child, locale),
+    }));
+  }
+
+  return out;
+}
+
+/**
+ * Create the anchor for a hand-written route, or hand back the existing one.
+ *
+ * Idempotent on purpose: the tree manager calls it as the first half of "add a
+ * sub-page under Игрокам", and that gesture has to work the same whether or
+ * not anyone has ever added one before.
+ */
+export async function ensureCodePageNode(
+  slug: string,
+  titles: LocaleText,
+  userId: number,
+): Promise<SiteNode> {
+  if (!isCodePageSlug(slug)) throw new TreeConflict('reserved_slug');
+
+  const path = `/${slug}`;
+  const existing = (await loadNodes()).find((node) => node.path === path);
+  if (existing) {
+    if (!existing.codePage) throw new TreeConflict('duplicate');
+    return existing;
+  }
+
+  return createNode(
+    { parentId: null, slug, kind: 'category', titles, codePage: true },
+    userId,
+  );
 }
 
 /** How many sub-pages a menu dropdown shows before it stops being a menu. */
@@ -183,10 +240,14 @@ async function uniqueSlug(
   desired: string,
   parentId: number | null,
   exceptId: number | null,
+  /** Set when the collision with a real route is the intent, not a mistake. */
+  allowReserved = false,
 ): Promise<string> {
   const base = SLUG_RE.test(desired) ? desired : slugify(desired);
   if (!base) throw new TreeConflict('invalid_slug');
-  if (parentId === null && RESERVED_SLUGS.has(base)) throw new TreeConflict('reserved_slug');
+  if (parentId === null && !allowReserved && RESERVED_SLUGS.has(base)) {
+    throw new TreeConflict('reserved_slug');
+  }
 
   const nodes = await loadNodes();
   const taken = new Set(
@@ -210,6 +271,8 @@ export type CreateInput = {
   titles: LocaleText;
   summaries?: LocaleText;
   inNav?: boolean;
+  /** Creating the anchor for a hand-written route rather than a real page. */
+  codePage?: boolean;
 };
 
 export async function createNode(input: CreateInput, userId: number): Promise<SiteNode> {
@@ -217,9 +280,26 @@ export async function createNode(input: CreateInput, userId: number): Promise<Si
   const parent = input.parentId === null ? null : nodes.find((n) => n.id === input.parentId);
   if (input.parentId !== null && !parent) throw new TreeConflict('not_found');
 
+  /*
+    A code page is only ever a root, and only ever one of the routes that
+    actually exist — otherwise this would be a way to shadow arbitrary paths
+    with rows nobody can reach.
+  */
+  const codePage =
+    input.codePage === true &&
+    input.parentId === null &&
+    isCodePageSlug((input.slug ?? '').trim());
+
+  if (input.codePage === true && !codePage) throw new TreeConflict('reserved_slug');
+
   const titles = cleanTitles(input.titles);
   const fallbackTitle = locales.map((l) => titles[l]).find(Boolean) ?? 'page';
-  const slug = await uniqueSlug(input.slug?.trim() || slugify(fallbackTitle), input.parentId, null);
+  const slug = await uniqueSlug(
+    input.slug?.trim() || slugify(fallbackTitle),
+    input.parentId,
+    null,
+    codePage,
+  );
   const path = childPath(parent?.path ?? null, slug);
 
   const position =
@@ -230,22 +310,25 @@ export async function createNode(input: CreateInput, userId: number): Promise<Si
   const { rows } = await query<Row>(
     `
     INSERT INTO site_nodes
-      (parent_id, slug, path, kind, titles, summaries, position, in_nav, created_by)
-    VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, $9)
+      (parent_id, slug, path, kind, titles, summaries, position, in_nav, code_page, created_by)
+    VALUES ($1, $2, $3, $4, $5::jsonb, $6::jsonb, $7, $8, $9, $10)
     RETURNING id, parent_id, slug, path, kind, titles, summaries, position,
-              in_nav, hidden, open_by_default, views, updated_at
+              in_nav, hidden, open_by_default, code_page, views, updated_at
     `,
     [
       input.parentId,
       slug,
       path,
-      input.kind,
+      codePage ? 'category' : input.kind,
       JSON.stringify(titles),
       JSON.stringify(cleanTitles(input.summaries)),
       position,
       // Only a top-level node can be a menu item; a child appears in its
-      // parent's dropdown by being a child, not by being flagged.
-      input.parentId === null ? input.inNav === true : false,
+      // parent's dropdown by being a child, not by being flagged. A code page
+      // is already in the menu as a hand-written link — flagging it too would
+      // put it there twice.
+      input.parentId === null && !codePage ? input.inNav === true : false,
+      codePage,
       userId,
     ],
   );
@@ -277,8 +360,18 @@ export async function updateNode(id: number, patch: UpdateInput): Promise<SiteNo
   const node = nodes.find((n) => n.id === id);
   if (!node) throw new TreeConflict('not_found');
 
+  /*
+    A code page's slug *is* the route in `app/`. Renaming it would leave the
+    row pointing at a URL no file answers and orphan every sub-page under it,
+    so the field is simply ignored here rather than rejected — the manager
+    already renders it read-only, and an admin who edits it another way should
+    get their titles saved, not an error.
+  */
   const nextSlug =
-    patch.slug !== undefined && patch.slug.trim() && patch.slug.trim() !== node.slug
+    !node.codePage &&
+    patch.slug !== undefined &&
+    patch.slug.trim() &&
+    patch.slug.trim() !== node.slug
       ? await uniqueSlug(patch.slug.trim(), node.parentId, node.id)
       : node.slug;
 
@@ -306,7 +399,7 @@ export async function updateNode(id: number, patch: UpdateInput): Promise<SiteNo
           updated_at = NOW()
         WHERE id = $1
         RETURNING id, parent_id, slug, path, kind, titles, summaries, position,
-                  in_nav, hidden, open_by_default, views, updated_at
+                  in_nav, hidden, open_by_default, code_page, views, updated_at
         `,
         [
           id,
@@ -382,7 +475,14 @@ export async function moveNode(
     throw new TreeConflict('cycle');
   }
 
-  const slug = parentId === node.parentId ? node.slug : await uniqueSlug(node.slug, parentId, id);
+  // A code page is pinned to the route it stands for. Nesting it would move
+  // its whole subtree to a path the router does not serve.
+  if (node.codePage && parentId !== null) throw new TreeConflict('cycle');
+
+  const slug =
+    parentId === node.parentId
+      ? node.slug
+      : await uniqueSlug(node.slug, parentId, id, node.codePage);
   const nextPath = childPath(parent?.path ?? null, slug);
 
   const siblings = nodes

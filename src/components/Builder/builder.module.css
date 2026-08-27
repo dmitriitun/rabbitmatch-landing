@@ -28,7 +28,7 @@
 
 .section {
   position: relative;
-  padding: var(--rm-pt-m, 40px) var(--rm-pr-m, 20px) var(--rm-pb-m, 40px) var(--rm-pl-m, 20px);
+  padding-block: var(--rm-pt-m, 40px) var(--rm-pb-m, 40px);
   min-height: var(--rm-minh-m, 0px);
   background-color: var(--rm-bg, transparent);
 }
@@ -50,11 +50,24 @@
   background: rgb(0 0 0 / var(--rm-overlay, 0));
 }
 
+/*
+  The side padding lives here, inside the max-width — not on `.section` around
+  it.
+
+  With it on the outside the content box was `min(1240px, viewport - 40px)`
+  centred in the viewport, while every hand-written `.container` on the site is
+  `min(1240px, viewport)` with the same 20px *inside* it. The two agree on
+  width and disagree on origin by exactly one pad, which is why a builder
+  section used to sit 20px to the left of the page's own `<h1>` and there was
+  no setting that could line them up. Now both are the same box.
+*/
 .inner {
   position: relative;
+  box-sizing: border-box;
   width: 100%;
   max-width: var(--rm-maxw, 1240px);
   margin-inline: auto;
+  padding-inline: var(--rm-pl-m, 20px) var(--rm-pr-m, 20px);
 }
 
 /* --- Tone --------------------------------------------------------------- */
@@ -74,8 +87,11 @@
 /* --- Grid --------------------------------------------------------------- */
 
 .grid {
+  /* `relative`, so the editor's column guides can be pinned to the content
+     box the nodes actually occupy rather than to the padded frame. */
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(8, minmax(0, 1fr));
   grid-auto-rows: auto;
   align-content: start;
   gap: 16px 0;
@@ -83,7 +99,7 @@
 
 .node {
   min-width: 0;
-  grid-column: span var(--rm-mw, 4);
+  grid-column: span var(--rm-mw, 8);
   display: flex;
   flex-direction: column;
   align-items: var(--rm-ai-m, stretch);
@@ -92,24 +108,28 @@
 
 @container rmsec (min-width: 768px) {
   .section {
-    padding: var(--rm-pt, 72px) var(--rm-pr, 20px) var(--rm-pb, 72px) var(--rm-pl, 20px);
+    padding-block: var(--rm-pt, 72px) var(--rm-pb, 72px);
     min-height: var(--rm-minh, 0px);
   }
 
+  .inner {
+    padding-inline: var(--rm-pl, 20px) var(--rm-pr, 20px);
+  }
+
   .grid {
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: repeat(24, minmax(0, 1fr));
     /*
       `auto` as the max is the safety net: a text box whose copy runs longer
       than the rectangle the admin drew grows its row tracks and pushes what
       is below it down, instead of spilling over the next element.
     */
-    grid-auto-rows: minmax(24px, auto);
+    grid-auto-rows: minmax(12px, auto);
     gap: 0;
   }
 
   .node {
-    grid-column: var(--rm-x, 1) / span var(--rm-w, 12);
-    grid-row: var(--rm-y, auto) / span var(--rm-h, 4);
+    grid-column: var(--rm-x, 1) / span var(--rm-w, 24);
+    grid-row: var(--rm-y, auto) / span var(--rm-h, 8);
     align-items: var(--rm-ai, stretch);
   }
 }
@@ -272,10 +292,10 @@
   .mediaBox {
     /*
       On desktop the rectangle the admin drew wins: height is the row span
-      they resized to, in the same 24px units the grid uses.
+      they resized to, in the same 12px units the grid uses.
     */
     aspect-ratio: auto;
-    height: calc(var(--rm-h, 8) * 24px);
+    height: calc(var(--rm-h, 16) * 12px);
   }
 }
 

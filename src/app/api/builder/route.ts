@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
+import { invalidateSearchIndex } from '@/lib/search';
 import { getSession } from '@/lib/auth';
 import { enforceRateLimit } from '@/lib/rate-limit';
 import { isLocale } from '@/i18n/config';
@@ -72,6 +73,9 @@ export async function PUT(request: Request): Promise<Response> {
   // Pages are prerendered; dropping the in-memory cache is not enough on its
   // own. Same reasoning as `PUT /api/content`.
   revalidatePath('/', 'layout');
+  // Published copy is searchable copy: without this the index keeps the old
+  // wording until its TTL expires, and an admin cannot find what they just saved.
+  invalidateSearchIndex();
 
   return NextResponse.json({ ok: true, doc: clean });
 }

@@ -383,6 +383,16 @@
   display: none;
 }
 
+/* Site-wide matches, under the filtered tree. It collapses to nothing when the
+   field is empty, so an unused search costs no vertical space. */
+.filterSite {
+  flex-basis: 100%;
+}
+
+.filterSite > :empty {
+  display: none;
+}
+
 /* --- Popular ------------------------------------------------------------ */
 
 .popular {

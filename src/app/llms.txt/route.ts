@@ -39,9 +39,9 @@ const DESCRIPTIONS: Record<string, string> = {
  * list of URLs — which topic a guide belongs to is most of what decides
  * whether it is the right thing to quote for a question.
  */
-function treeLines(nodes: ReadonlyArray<TreeNode>): string[] {
+function treeLines(nodes: ReadonlyArray<TreeNode>, baseDepth = 0): string[] {
   return flatten(nodes).map((node) => {
-    const indent = '  '.repeat(node.depth);
+    const indent = '  '.repeat(node.depth - baseDepth);
     const summary = nodeSummary(node, 'en');
     return `${indent}- [${nodeTitle(node, 'en')}](${absoluteUrl('en', node.path)})${
       summary ? `: ${summary}` : ''
@@ -66,13 +66,22 @@ function body(tree: ReadonlyArray<TreeNode>): string {
   for (const key of routeOrder) {
     const path = routes[key];
     lines.push(`- [${key}](${absoluteUrl('en', path)}): ${DESCRIPTIONS[key] ?? ''}`);
+    /*
+      Sub-pages an admin filed under this route, nested under it. They belong
+      here rather than in the knowledge base below: their parent is a
+      hand-written page, and listing the parent twice — once as a page, once as
+      a section — would give the same URL two different descriptions.
+    */
+    const anchor = tree.find((node) => node.codePage && node.path === path);
+    if (anchor?.children.length) lines.push(...treeLines(anchor.children, 1));
   }
   lines.push('');
 
-  if (tree.length) {
+  const sections = tree.filter((node) => !node.codePage);
+  if (sections.length) {
     lines.push('## Knowledge base');
     lines.push('');
-    lines.push(...treeLines(tree));
+    lines.push(...treeLines(sections));
     lines.push('');
   }
 
